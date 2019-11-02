@@ -1,0 +1,11 @@
+.git
+.cache
+*.aes
+.travis.yml
+.drone.yml
+.azure-pipelines.yml
+Jenkinsfile
+# mkdocs
+docs/
+mkdocs.yml
+site/

@@ -10,20 +10,31 @@ env:
     - DOCKER_USER=jsloan117
     - DOCKER_PASS=
     - DOCKER_REPO=hackmyresume
+    - DOCKERFILE=Dockerfile
 
 #install: skip
 
 jobs:
   include:
-    - stage: Set Docker image tag
-      script: |
-        echo "<<< Checking branches to set docker image tag >>>"
-        
     - stage: build docker image
       script: |
-        echo "<<< Building default docker image >>>"
-        if [ "$TRAVIS_BRANCH" == "master" ]; then docker build -f Dockerfile -t $DOCKER_USER/$DOCKER_REPO:latest .; fi
-        if [ "$TRAVIS_BRANCH" != "master" ]; then docker build -f Dockerfile -t $DOCKER_USER/$DOCKER_REPO:$TRAVIS_BRANCH .; fi
-    - stage: environment
+        echo "<<< Building default docker images >>>"
+        if [ "$TRAVIS_BRANCH" == "master" ]; then docker build -f $DOCKERFILE -t $DOCKER_USER/$DOCKER_REPO:latest .; fi
+        if [ "$TRAVIS_BRANCH" != "master" ]; then docker build -f $DOCKERFILE -t $DOCKER_USER/$DOCKER_REPO:$TRAVIS_BRANCH .; fi
+
+    - stage: build alt docker image
+      env: DOCKERFILE=Dockerfile.ubuntu
       script: |
-        echo "<<< Gathering environemtal info >>>"
+        echo "<<< Building alternative docker images >>>"
+        if [ "$TRAVIS_BRANCH" == "master" ]; then docker build -f $DOCKERFILE -t $DOCKER_USER/$DOCKER_REPO:ubuntu-latest .; fi
+        if [ "$TRAVIS_BRANCH" != "master" ]; then docker build -f $DOCKERFILE -t $DOCKER_USER/$DOCKER_REPO:ubuntu-$TRAVIS_BRANCH .; fi
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $TOKEN
+  keep_history: true
+  #local_dir: site
+  committer_from_gh: true
+  on:
+    branch: master
