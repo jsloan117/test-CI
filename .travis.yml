@@ -11,7 +11,7 @@ env:
     - DOCKER_PASS=
     - DOCKER_REPO=hackmyresume
 
-install: skip1
+#install: skip
 
 jobs:
   include:
