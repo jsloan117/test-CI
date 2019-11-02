@@ -12,7 +12,7 @@ steps:
       from_secret: docker_repo
     DOCKERFILE: Dockerfile
   commands: |
-    echo "<<< Building docker images >>>"
+    echo '<<< Building docker images >>>'
     if [ "$DRONE_BRANCH" == "master" ]; then docker build -f $DOCKERFILE -t $DOCKER_USER/$DOCKER_REPO:ubuntu-latest .; fi
     if [ "$DRONE_BRANCH" != "master" ]; then docker build -f $DOCKERFILE -t $DOCKER_USER/$DOCKER_REPO:ubuntu-$DRONE_BRANCH .; fi
 
@@ -24,6 +24,6 @@ steps:
       from_secret: docker_repo
     DOCKERFILE: Dockerfile.ubuntu
   commands: |
-    echo "<<< Building alternative docker images >>>"
+    echo '<<< Building alternative docker images >>>'
     if [ "$DRONE_BRANCH" == "master" ]; then docker build -f $DOCKERFILE -t $DOCKER_USER/$DOCKER_REPO:ubuntu-latest .; fi
     if [ "$DRONE_BRANCH" != "master" ]; then docker build -f $DOCKERFILE -t $DOCKER_USER/$DOCKER_REPO:ubuntu-$DRONE_BRANCH .; fi
