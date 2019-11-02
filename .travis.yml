@@ -15,8 +15,15 @@ env:
 
 jobs:
   include:
+    - stage: Set Docker image tag
+      script: |
+        echo "<<< Checking branches to set docker image tag >>>"
+        
     - stage: build docker image
       script: |
         echo "<<< Building default docker image >>>"
         if [ "$TRAVIS_BRANCH" == "master" ]; then docker build -f Dockerfile -t $DOCKER_USER/$DOCKER_REPO:latest .; fi
         if [ "$TRAVIS_BRANCH" != "master" ]; then docker build -f Dockerfile -t $DOCKER_USER/$DOCKER_REPO:$TRAVIS_BRANCH .; fi
+    - stage: environment
+      script: |
+        echo "<<< Gathering environemtal info >>>"
