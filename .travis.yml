@@ -1,1 +1,22 @@
+sudo: required
 
+dist: xenial
+
+services:
+  - docker
+
+env:
+  global:
+    - DOCKER_USER=jsloan117
+    - DOCKER_PASS=
+    - DOCKER_REPO=hackmyresume
+
+install: skip1
+
+jobs:
+  include:
+    - stage: build docker image
+      script: |
+        echo "<<< Building default docker image >>>"
+        if [ "$TRAVIS_BRANCH" == "master" ]; then docker build -f Dockerfile -t $DOCKER_USER/$DOCKER_REPO:latest; fi
+        if [ "$TRAVIS_BRANCH" != "master" ]; then docker build -f Dockerfile -t $DOCKER_USER/$DOCKER_REPO:$TRAVIS_BRANCH; fi
