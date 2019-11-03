@@ -45,7 +45,7 @@ steps:
 
   - task: Bash@3
     displayName: Get environment info
-    condition: and(succeeded())
+    condition: succeeded()
     inputs:
       targetType: inline
       script: |
@@ -55,7 +55,7 @@ steps:
 
   - task: Bash@3
     displayName: Set image tag
-    condition: and(succeeded())
+    condition: succeeded()
     inputs:
       targetType: inline
       script: |
@@ -65,7 +65,7 @@ steps:
 
   - task: Bash@3
     displayName: Build docker images
-    condition: and(succeeded())
+    condition: succeeded()
     env:
       DOCKERFILE: Dockerfile
     inputs:
@@ -77,7 +77,7 @@ steps:
 
   - task: Bash@3
     displayName: Build ubuntu docker images
-    condition: and(succeeded())
+    condition: succeeded()
     env:
       DOCKERFILE: Dockerfile.ubuntu
       DIST: ubuntu
@@ -90,7 +90,7 @@ steps:
 
   - task: Bash@3
     displayName: Inspect images
-    condition: and(succeeded())
+    condition: succeeded()
     inputs:
       targetType: inline
       script: |
