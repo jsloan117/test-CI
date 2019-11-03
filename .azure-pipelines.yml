@@ -1,11 +1,11 @@
 # Azure DevOps Build Pipeline for test-CI container
 # Trying to prevent all the docker labels ADO likes to inject into the images
 
-name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+name: $(BuildRepositoryName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
 
 variables:
 - name: system.debug
-  value: false
+  value: true
 - name: ADO_BRANCH
   value: $Build.SourceBranchName
 - name: IMAGE_NAME
@@ -60,7 +60,8 @@ steps:
       targetType: inline
       script: |
         echo -e '\n<<< Setting docker image tag format >>>\n'
-        if [ "$ADO_BRANCH" == "master" ]; then IMAGE_TAG=lastest; else IMAGE_TAG=$ADO_BRANCH; fi
+        if [ "$(ADO_BRANCH)" == "master" ]; then IMAGE_TAG=lastest; else IMAGE_TAG=$(ADO_BRANCH); fi
+        echo $(IMAGE_TAG); export IMAGE_TAG
     enabled: true
 
   - task: Bash@3
@@ -72,7 +73,7 @@ steps:
       targetType: inline
       script: |
         echo -e '\n<<< Building docker images >>>\n'
-        docker build -f $DOCKERFILE -t $IMAGE_NAME:$IMAGE_TAG .
+        docker build -f $(DOCKERFILE) -t $(IMAGE_NAME):$(IMAGE_TAG) .
     enabled: true
 
   - task: Bash@3
@@ -85,7 +86,7 @@ steps:
       targetType: inline
       script: |
         echo -e '\n<<< Building ubuntu docker images >>>\n'
-        docker build -f $DOCKERFILE -t $IMAGE_NAME:$DIST-$IMAGE_TAG .
+        docker build -f $(DOCKERFILE) -t $(IMAGE_NAME):$(DIST)-$(IMAGE_TAG) .
     enabled: true
 
   - task: Bash@3

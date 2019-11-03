@@ -10,7 +10,7 @@ env:
     - DOCKER_USER=jsloan117
     - DOCKER_PASS=
     - DOCKER_REPO=test-ci
-    - IMAGE_NAME=$DOCKER_USER/$DOCKER_REPO
+    - IMAGE_NAME=jsloan117/test-ci
     - DOCKERFILE=Dockerfile
 
 #install: skip
@@ -22,7 +22,6 @@ jobs:
         echo -e '\n<<< Setting docker image tag format >>>\n'
         if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=lastest; else IMAGE_TAG=$TRAVIS_BRANCH; fi
         echo $IMAGE_TAG; export IMAGE_TAG
-        env
 
     - stage: build docker image
       script: |
@@ -35,7 +34,7 @@ jobs:
         - DIST=ubuntu
       script: |
         echo -e '\n<<< Building alternative docker images >>>\n'
-        docker build -f $DOCKERFILE -t $IMAGE_NAME:$DIST-$IMAGE_TAG
+        docker build -f $DOCKERFILE -t $IMAGE_NAME:$DIST-$IMAGE_TAG .
 
 deploy:
   provider: pages
