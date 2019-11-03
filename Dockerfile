@@ -1,22 +1,15 @@
 FROM alpine:latest
-LABEL Name=hackmyresume Version=1.2
+LABEL Name=test-CI Version=0.3
 LABEL maintainer="Jonathan Sloan"
 
 RUN echo "*** updating system ***" \
-    && apk update && apk upgrade \
+    && apk update \
     && echo "*** installing packages ***" \
-    && apk --no-cache add bash wkhtmltopdf nodejs npm \
+    && apk --no-cache add bash \
     && echo "*** cleanup ***" \
     && rm -rf /tmp/* /var/tmp/*
 
-RUN npm install -g \
-    hackmyresume \
-    jsonresume-theme-eloquent
+ADD hello-world.sh /
+RUN chmod +x /hello-world.sh
 
-WORKDIR /resumes
-
-VOLUME [ "/resumes" ]
-
-#ARG DEFAULT_THEME=/usr/lib/node_modules/jsonresume-theme-eloquent
-
-CMD [ "hackmyresume" ]
+CMD [ "bash", "/hello-world.sh" ]

@@ -1,4 +1,15 @@
-# Azure DevOps Build Pipeline for Hackmyresume Docker container
+# Azure DevOps Build Pipeline for test-CI container
+# Trying to prevent all the docker labels ADO likes to inject into the images
+
+name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
+variables:
+- name: system.debug
+  value: false
+- name: ADO_BRANCH
+  value: $Build.SourceBranchName
+- name: IMAGE_NAME
+  value: jsloan117/test-ci
 
 schedules:
   - cron: '0 0 * * 6'
@@ -26,89 +37,78 @@ pool:
 
 steps:
   - task: Docker@2
-    displayName: Login
+    displayName: Docker Login
     inputs:
       containerRegistry: 'Docker Hub'
       command: login
     enabled: true
 
-  - task: Docker@2
-    displayName: 'Build Alpine Image dev'
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
+  - task: Bash@3
+    displayName: Get environment info
+    condition: and(succeeded())
     inputs:
-      containerRegistry: 'Docker Hub'
-      repository: '$(repo)'
-      command: build
-      Dockerfile: Dockerfile
-      tags: |
-        $(Build.BuildId)
-        $(Build.SourceBranchName)
+      targetType: inline
+      script: |
+        env
+        docker --version
     enabled: true
-  - task: Docker@2
-    displayName: 'Build Ubuntu Image dev'
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
+
+  - task: Bash@3
+    displayName: Set image tag
+    condition: and(succeeded())
     inputs:
-      containerRegistry: 'Docker Hub'
-      repository: '$(repo)'
-      command: build
-      Dockerfile: Dockerfile.ubuntu
-      tags: |
-        $(Build.BuildId)
-        ubuntu-$(Build.SourceBranchName)
+      targetType: inline
+      script: |
+        echo -e '\n<<< Setting docker image tag format >>>\n'
+        if [ "$ADO_BRANCH" == "master" ]; then IMAGE_TAG=lastest; else IMAGE_TAG=$ADO_BRANCH; fi
+    enabled: true
+
+  - task: Bash@3
+    displayName: Build docker images
+    condition: and(succeeded())
     env:
-      DEBIAN_FRONTEND: noninteractive
+      DOCKERFILE: Dockerfile
+    inputs:
+      targetType: inline
+      script: |
+        echo -e '\n<<< Building docker images >>>\n'
+        docker build -f $DOCKERFILE -t $IMAGE_NAME:$IMAGE_TAG .
     enabled: true
 
-  - task: Docker@2
-    displayName: 'Push Alpine Image dev'
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
-    inputs:
-      containerRegistry: 'Docker Hub'
-      repository: '$(repo)'
-      command: push
-      tags: '$(Build.SourceBranchName)'
-    enabled: true
-  - task: Docker@2
-    displayName: 'Push Ubuntu Image dev'
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
-    inputs:
-      containerRegistry: 'Docker Hub'
-      repository: '$(repo)'
-      command: push
-      tags: 'ubuntu-$(Build.SourceBranchName)'
-    enabled: true
-
-  - task: Docker@2
-    displayName: 'Build Alpine Image latest'
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-    inputs:
-      containerRegistry: 'Docker Hub'
-      repository: '$(repo)'
-      command: build
-      Dockerfile: Dockerfile
-      tags: |
-        latest
-        $(Build.BuildId)
-        $(Build.SourceBranchName)
-    enabled: true
-  - task: Docker@2
-    displayName: 'Build Ubuntu Image latest'
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-    inputs:
-      containerRegistry: 'Docker Hub'
-      repository: '$(repo)'
-      command: build
-      Dockerfile: Dockerfile.ubuntu
-      tags: |
-        ubuntu-latest
-        $(Build.BuildId)
-        ubuntu-$(Build.SourceBranchName)
+  - task: Bash@3
+    displayName: Build ubuntu docker images
+    condition: and(succeeded())
     env:
-      DEBIAN_FRONTEND: noninteractive
+      DOCKERFILE: Dockerfile.ubuntu
+      DIST: ubuntu
+    inputs:
+      targetType: inline
+      script: |
+        echo -e '\n<<< Building ubuntu docker images >>>\n'
+        docker build -f $DOCKERFILE -t $IMAGE_NAME:$DIST-$IMAGE_TAG .
+    enabled: true
+
+  - task: Bash@3
+    displayName: Inspect images
+    condition: and(succeeded())
+    inputs:
+      targetType: inline
+      script: |
+        echo -e '\n<<< Building docker images >>>\n'
+        for x in $(docker images | awk '{print $1}' | tail -n+2); do docker image inspect -f '{{json .Config.Labels}}' $x; done
+    enabled: true
+
+  - task: Bash@3
+    displayName: Pull request review
+    condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      targetType: inline
+      script: |
+        echo -e '\n<<< Do stuff because of a PR >>>\n'
     enabled: true
 
   - task: Docker@2
-    displayName: Logout
+    displayName: Docker Logout
     inputs:
       containerRegistry: 'Docker Hub'
       command: logout

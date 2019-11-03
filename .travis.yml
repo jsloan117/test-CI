@@ -9,25 +9,31 @@ env:
   global:
     - DOCKER_USER=jsloan117
     - DOCKER_PASS=
-    - DOCKER_REPO=hackmyresume
+    - DOCKER_REPO=test-ci
+    - IMAGE_NAME=$DOCKER_USER/$DOCKER_REPO
     - DOCKERFILE=Dockerfile
 
 #install: skip
 
 jobs:
   include:
+    - stage: Set image tag
+      script: |
+        echo -e '\n<<< Setting docker image tag format >>>\n'
+        if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=lastest; else IMAGE_TAG=$TRAVIS_BRANCH; fi
+
     - stage: build docker image
       script: |
         echo "<<< Building default docker images >>>"
-        if [ "$TRAVIS_BRANCH" == "master" ]; then docker build -f $DOCKERFILE -t $DOCKER_USER/$DOCKER_REPO:latest .; fi
-        if [ "$TRAVIS_BRANCH" != "master" ]; then docker build -f $DOCKERFILE -t $DOCKER_USER/$DOCKER_REPO:$TRAVIS_BRANCH .; fi
+        docker build -f $DOCKERFILE -t $IMAGE_NAME:$IMAGE_TAG .
 
     - stage: build alt docker image
-      env: DOCKERFILE=Dockerfile.ubuntu
+      env:
+        - DOCKERFILE=Dockerfile.ubuntu
+        - DIST=ubuntu
       script: |
         echo "<<< Building alternative docker images >>>"
-        if [ "$TRAVIS_BRANCH" == "master" ]; then docker build -f $DOCKERFILE -t $DOCKER_USER/$DOCKER_REPO:ubuntu-latest .; fi
-        if [ "$TRAVIS_BRANCH" != "master" ]; then docker build -f $DOCKERFILE -t $DOCKER_USER/$DOCKER_REPO:ubuntu-$TRAVIS_BRANCH .; fi
+        docker build -f $DOCKERFILE -t $IMAGE_NAME:$DIST-$IMAGE_TAG
 
 deploy:
   provider: pages

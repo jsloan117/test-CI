@@ -11,10 +11,11 @@ steps:
     DOCKER_REPO:
       from_secret: docker_repo
     DOCKERFILE: Dockerfile
+    IMAGE_NAME: $DOCKER_USER/$DOCKER_REPO
   commands:
     - echo "<<< Building docker images >>>"
-    - if [ "$DRONE_BRANCH" == "master" ]; then docker build -f $DOCKERFILE -t $DOCKER_USER/$DOCKER_REPO:ubuntu-latest .; fi
-    - if [ "$DRONE_BRANCH" != "master" ]; then docker build -f $DOCKERFILE -t $DOCKER_USER/$DOCKER_REPO:ubuntu-$DRONE_BRANCH .; fi
+    - if [ "$DRONE_BRANCH" == "master" ]; then docker build -f $DOCKERFILE -t $IMAGE_NAME:latest .; fi
+    - if [ "$DRONE_BRANCH" != "master" ]; then docker build -f $DOCKERFILE -t $IMAGE_NAME:$DRONE_BRANCH .; fi
 
 - name: build alternative docker images
   image: plugins/docker
@@ -23,7 +24,16 @@ steps:
     DOCKER_REPO:
       from_secret: docker_repo
     DOCKERFILE: Dockerfile.ubuntu
+    IMAGE_NAME: $DOCKER_USER/$DOCKER_REPO
   commands:
     - echo "<<< Building alternative docker images >>>"
-    - if [ "$DRONE_BRANCH" == "master" ]; then docker build -f $DOCKERFILE -t $DOCKER_USER/$DOCKER_REPO:ubuntu-latest .; fi
-    - if [ "$DRONE_BRANCH" != "master" ]; then docker build -f $DOCKERFILE -t $DOCKER_USER/$DOCKER_REPO:ubuntu-$DRONE_BRANCH .; fi
+    - if [ "$DRONE_BRANCH" == "master" ]; then docker build -f $DOCKERFILE -t $IMAGE_NAME:ubuntu-latest .; fi
+    - if [ "$DRONE_BRANCH" != "master" ]; then docker build -f $DOCKERFILE -t $IMAGE_NAME:ubuntu-$DRONE_BRANCH .; fi
+
+- name: publish documentation
+  image: plugins/gh-release
+  settings:
+    pages_directory: site/
+  when:
+    branch:
+    - master
