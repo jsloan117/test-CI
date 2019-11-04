@@ -11,7 +11,6 @@ pipeline {
   }
   triggers {
     cron('H 0 */15 * *')
-    pollSCM '''TZ=America/Chicago H/15 * * * *'''
   }
   parameters {
     choice(

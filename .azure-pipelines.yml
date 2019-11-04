@@ -36,12 +36,12 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-  - task: Docker@2
-    displayName: Docker Login
-    inputs:
-      containerRegistry: 'Docker Hub'
-      command: login
-    enabled: true
+ # - task: Docker@2
+ #   displayName: Docker Login
+ #   inputs:
+ #     containerRegistry: 'Docker Hub'
+ #     command: login
+ #   enabled: true
 
   - task: Bash@3
     displayName: Install requirements
@@ -128,9 +128,9 @@ steps:
         echo -e '\n<<< Do stuff because of a PR >>>\n'
     enabled: true
 
-  - task: Docker@2
-    displayName: Docker Logout
-    inputs:
-      containerRegistry: 'Docker Hub'
-      command: logout
-    enabled: true
+#  - task: Docker@2
+#    displayName: Docker Logout
+#    inputs:
+#      containerRegistry: 'Docker Hub'
+#      command: logout
+#    enabled: true
