@@ -1,15 +1,15 @@
 # Azure DevOps Build Pipeline for test-CI container
 # Trying to prevent all the docker labels ADO likes to inject into the images
 
-name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+name: $(BuildDefinitionName)-$(SourceBranchName)-$(Date:yyyyMMdd)-#$(Rev:.r)
 
 variables:
 - name: system.debug
   value: true
-- name: ADO_BRANCH
-  value: $(BUILD_SOURCEBRANCHNAME)
-- name: IMAGE_NAME
-  value: jsloan117/test-ci
+#- name: ADO_BRANCH
+#  value: $(BUILD_SOURCEBRANCHNAME)
+#- name: IMAGE_NAME
+#  value: jsloan117/test-ci
 
 schedules:
   - cron: '0 0 * * 6'
@@ -62,8 +62,12 @@ steps:
       targetType: inline
       script: |
         echo -e '\n<<< Setting docker image tag format >>>\n'
-        if [ "$BUILD_SOURCEBRANCHNAME" == "master" ]; then IMAGE_TAG=lastest; else IMAGE_TAG=$BUILD_SOURCEBRANCHNAME; fi
-        echo $IMAGE_TAG; export IMAGE_TAG
+        ADO_BRANCH=$BUILD_SOURCEBRANCHNAME
+        if [ "$ADO_BRANCH" == "master" ]; then IMAGE_TAG=lastest; else IMAGE_TAG=$ADO_BRANCH; fi
+        #echo $IMAGE_TAG; export IMAGE_TAG
+        IMAGE_NAME='jsloan117/test-ci'
+        echo -e "\n$ADO_BRANCH\nIMAGE_TAG\nIMAGE_NAME\n"
+        export IMAGE_TAG IMAGE_NAME
     enabled: true
 
   - task: Bash@3

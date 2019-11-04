@@ -65,7 +65,7 @@ pipeline {
       steps {
         script {
           dockerImage.inside() {
-            sh 'hackmyresume --version'
+            sh 'bash --version'
           }
         }
       }
