@@ -38,7 +38,7 @@ jobs:
         if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=lastest; else IMAGE_TAG=$TRAVIS_BRANCH; fi
         export IMAGE_TAG
         echo -e '\n<<< Building alternative docker images >>>\n'
-        docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:$DIST-$IMAGE_TAG
+        docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:$DIST-$IMAGE_TAG .
 
 deploy:
   provider: pages

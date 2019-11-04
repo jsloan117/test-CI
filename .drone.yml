@@ -1,14 +1,11 @@
 ---
 kind: pipeline
-type: docker
+type: exec
 name: Build Docker Images
 
 steps:
 - name: build docker images
   image: plugins/docker
-  volumes:
-    - name: docker_sock
-      path: /var/run/docker.sock
   environment:
     DOCKER_USER: jsloan117
     DOCKER_REPO:
@@ -22,9 +19,6 @@ steps:
 
 - name: build alternative docker images
   image: plugins/docker
-  volumes:
-    - name: docker_sock
-      path: /var/run/docker.sock
   environment:
     DOCKER_USER: jsloan117
     DOCKER_REPO:
@@ -43,8 +37,3 @@ steps:
   when:
     branch:
     - master
-
-volumes:
-  - name: docker_sock
-    host:
-      path: /var/run/docker.sock
