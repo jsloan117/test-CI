@@ -11,7 +11,7 @@ steps:
 
 - name: build docker images
   image: plugins/docker
-  privileged: true
+  privileged: false
   volumes:
   - name: dockersock
     path: /var/run/docker.sock
@@ -29,7 +29,7 @@ steps:
 
 - name: build alternative docker images
   image: plugins/docker
-  privileged: true
+  privileged: false
   volumes:
   - name: dockersock
     path: /var/run/docker.sock

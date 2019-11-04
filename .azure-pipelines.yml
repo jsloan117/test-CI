@@ -80,7 +80,7 @@ steps:
         if [ "$ADO_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$ADO_BRANCH; fi
         #echo $IMAGE_TAG; export IMAGE_TAG
         IMAGE_NAME='jsloan117/test-ci'
-        echo -e "\n$ADO_BRANCH\nIMAGE_TAG\nIMAGE_NAME\n"
+        echo -e "\n$ADO_BRANCH\n$IMAGE_TAG\n$IMAGE_NAME\n"
         export IMAGE_TAG IMAGE_NAME
     enabled: true
 
