@@ -1,7 +1,7 @@
 # Azure DevOps Build Pipeline for test-CI container
 # Trying to prevent all the docker labels ADO likes to inject into the images
 
-name: $(BuildDefinitionName)-$(SourceBranchName)-$(Date:yyyyMMdd)-#$(Rev:.r)
+name: $(BuildDefinitionName)-$(SourceBranchName)-$(Date:yyyyMMdd)$(Rev:.r)
 
 variables:
 - name: system.debug
@@ -41,6 +41,15 @@ steps:
     inputs:
       containerRegistry: 'Docker Hub'
       command: login
+    enabled: true
+
+  - task: Bash@3
+    displayName: Setup environment
+    condition: succeeded()
+    inputs:
+      targetType: inline
+      script: |
+        sudo apt-get update && sudo apt-get install --only-upgrade docker.io
     enabled: true
 
   - task: Bash@3

@@ -20,17 +20,17 @@ pipeline {
       choices: ['dev', 'master']
     )
   }
-  stages {
-    properties([
-      disableResume(),
-      [$class: 'GithubProjectProperty',
-        displayName: 'test-ci',
-        projectUrlStr: 'https://github.com/jsloan117/test-CI/'],
-      pipelineTriggers(
-        [cron('H 0 */15 * *'),
-        pollSCM('''TZ=America/Chicago H/15 * * * *''')
-      ])
+  properties([
+    disableResume(),
+    [$class: 'GithubProjectProperty',
+      displayName: 'test-ci',
+      projectUrlStr: 'https://github.com/jsloan117/test-CI/'],
+    pipelineTriggers(
+      [cron('H 0 */15 * *'),
+      pollSCM('''TZ=America/Chicago H/15 * * * *''')
     ])
+  ])
+  stages {
     stage('Checkout repo') {
       /* code checkout first */
       steps {
