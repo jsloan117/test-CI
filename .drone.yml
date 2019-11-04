@@ -5,7 +5,7 @@ name: Build Docker Images
 
 steps:
 - name: build docker images
-  image: plugins/docker
+#  image: plugins/docker
   environment:
     DOCKER_USER: jsloan117
     DOCKER_REPO:
@@ -18,7 +18,7 @@ steps:
     - if [ "$DRONE_BRANCH" != "master" ]; then docker build -f $DOCKERFILE -t $IMAGE_NAME:$DRONE_BRANCH .; fi
 
 - name: build alternative docker images
-  image: plugins/docker
+#  image: plugins/docker
   environment:
     DOCKER_USER: jsloan117
     DOCKER_REPO:
@@ -30,10 +30,10 @@ steps:
     - if [ "$DRONE_BRANCH" == "master" ]; then docker build -f $DOCKERFILE -t $IMAGE_NAME:ubuntu-latest .; fi
     - if [ "$DRONE_BRANCH" != "master" ]; then docker build -f $DOCKERFILE -t $IMAGE_NAME:ubuntu-$DRONE_BRANCH .; fi
 
-- name: publish documentation
-  image: plugins/gh-release
-  settings:
-    pages_directory: site/
-  when:
-    branch:
-    - master
+#- name: publish documentation
+#  image: plugins/gh-release
+#  settings:
+#    pages_directory: site/
+#  when:
+#    branch:
+#    - master

@@ -62,7 +62,7 @@ steps:
       targetType: inline
       script: |
         echo -e '\n<<< Setting docker image tag format >>>\n'
-        if [ "$ADO_BRANCH" == "master" ]; then IMAGE_TAG=lastest; else IMAGE_TAG=$ADO_BRANCH; fi
+        if [ "$BUILD_SOURCEBRANCHNAME" == "master" ]; then IMAGE_TAG=lastest; else IMAGE_TAG=$BUILD_SOURCEBRANCHNAME; fi
         echo $IMAGE_TAG; export IMAGE_TAG
     enabled: true
 
