@@ -12,6 +12,9 @@ steps:
 - name: build docker images
   image: plugins/docker
   privileged: true
+  volumes:
+  - name: dockersock
+    path: /var/run/docker.sock
   environment:
     DOCKER_USER: jsloan117
     #DOCKER_REPO:
@@ -27,6 +30,9 @@ steps:
 - name: build alternative docker images
   image: plugins/docker
   privileged: true
+  volumes:
+  - name: dockersock
+    path: /var/run/docker.sock
   environment:
     DOCKER_USER: jsloan117
     #DOCKER_REPO:
@@ -46,3 +52,8 @@ steps:
 #  when:
 #    branch:
 #    - master
+
+volumes:
+- name: dockersock
+  host:
+    path: /var/run/docker.sock

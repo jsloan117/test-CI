@@ -9,7 +9,7 @@ pipeline {
     timeout(activity: true, time: 1, unit: 'HOURS')
     warnError('An error has occurred')
   }
-  triggers {*/
+  triggers {
     cron('H 0 */15 * *')
     pollSCM '''TZ=America/Chicago H/15 * * * *'''
   }
