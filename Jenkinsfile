@@ -9,9 +9,10 @@ pipeline {
     timeout(activity: true, time: 1, unit: 'HOURS')
     warnError('An error has occurred')
   }
-  triggers {
-    cron('H 0 */15 * *')
-  }
+/*  triggers {*/
+/*    cron('H 0 *//*15 * *')
+    pollSCM '''TZ=America/Chicago H/15 * * * *'''
+  }*/
   parameters {
     choice(
       name: 'BRANCH',
@@ -20,6 +21,16 @@ pipeline {
     )
   }
   stages {
+    properties([
+      disableResume(),
+      [$class: 'GithubProjectProperty',
+        displayName: 'test-ci',
+        projectUrlStr: 'https://github.com/jsloan117/test-CI/'],
+      pipelineTriggers(
+        [cron('H 0 */15 * *'),
+        pollSCM('''TZ=America/Chicago H/15 * * * *''')
+      ])
+    ])
     stage('Checkout repo') {
       /* code checkout first */
       steps {

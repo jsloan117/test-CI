@@ -20,12 +20,12 @@ jobs:
  #   - stage: Set image tag
  #     script: |
  #       echo -e '\n<<< Setting docker image tag format >>>\n'
- #       if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=lastest; else IMAGE_TAG=$TRAVIS_BRANCH; fi
+ #       if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; fi
  #       echo $IMAGE_TAG; export IMAGE_TAG
 
     - stage: build docker image
       script: |
-        if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=lastest; else IMAGE_TAG=$TRAVIS_BRANCH; fi
+        if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; fi
         export IMAGE_TAG
         echo -e '\n<<< Building default docker images >>>\n'
         docker build -f Dockerfile -t $IMAGE_NAME:$IMAGE_TAG .
@@ -35,7 +35,7 @@ jobs:
         - DOCKERFILE=Dockerfile.ubuntu
         - DIST=ubuntu
       script: |
-        if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=lastest; else IMAGE_TAG=$TRAVIS_BRANCH; fi
+        if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; fi
         export IMAGE_TAG
         echo -e '\n<<< Building alternative docker images >>>\n'
         docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:$DIST-$IMAGE_TAG .
