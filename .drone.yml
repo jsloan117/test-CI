@@ -1,15 +1,17 @@
 ---
 kind: pipeline
-type: exec
+type: docker
 name: Build Docker Images
 
 steps:
 - name: fetch repo
+  image: alpine/git
   commands:
     - git fetch --tags
 
 - name: build docker images
-#  image: plugins/docker
+  image: plugins/docker
+  privileged: true
   environment:
     DOCKER_USER: jsloan117
     #DOCKER_REPO:
@@ -23,7 +25,8 @@ steps:
     - if [ "$DRONE_BRANCH" != "master" ]; then docker build -f $DOCKERFILE -t $IMAGE_NAME:$IMAGE_TAG .; fi
 
 - name: build alternative docker images
-#  image: plugins/docker
+  image: plugins/docker
+  privileged: true
   environment:
     DOCKER_USER: jsloan117
     #DOCKER_REPO:
