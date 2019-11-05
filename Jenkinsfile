@@ -1,6 +1,7 @@
 pipeline {
   environment {
     REGISTRY = 'jsloan117/test-ci'
+    CI_PLATFORM = 'jenkins'
   }
   agent any
   options {
@@ -48,14 +49,14 @@ pipeline {
       steps {
         script {
           if (params.BRANCH == 'dev') {
-            dockerImage = docker.build("$REGISTRY:dev", "-f Dockerfile .")
-            dockerImageAlt = docker.build("$REGISTRY:ubuntu-dev", "-f Dockerfile.ubuntu .")
+            dockerImage = docker.build("$REGISTRY:$CI_PLATFORM-dev", "-f Dockerfile .")
+            dockerImageAlt = docker.build("$REGISTRY:ubuntu-$CI_PLATFORM-dev", "-f Dockerfile.ubuntu .")
           } else if (params.BRANCH == 'master') {
-            dockerImage = docker.build("$REGISTRY:latest", "-f Dockerfile .")
-            dockerImageAlt = docker.build("$REGISTRY:ubuntu-latest", "-f Dockerfile.ubuntu .")
+            dockerImage = docker.build("$REGISTRY:$CI_PLATFORM-latest", "-f Dockerfile .")
+            dockerImageAlt = docker.build("$REGISTRY:ubuntu-$CI_PLATFORM-latest", "-f Dockerfile.ubuntu .")
           } else {
-            dockerImage = docker.build("$REGISTRY:$BRANCH_NAME", "-f Dockerfile .")
-            dockerImageAlt = docker.build("$REGISTRY:ubuntu-$BRANCH_NAME", "-f Dockerfile.ubuntu .")
+            dockerImage = docker.build("$REGISTRY:$CI_PLATFORM-$BRANCH_NAME", "-f Dockerfile .")
+            dockerImageAlt = docker.build("$REGISTRY:ubuntu-$CI_PLATFORM-$BRANCH_NAME", "-f Dockerfile.ubuntu .")
           }
         }
       }
@@ -89,14 +90,14 @@ pipeline {
       steps {
         script {
           if (params.BRANCH == 'dev') {
-            sh "docker rmi $REGISTRY:dev"
-            sh "docker rmi $REGISTRY:ubuntu-dev"
+            sh "docker rmi $REGISTRY:$CI_PLATFORM-dev"
+            sh "docker rmi $REGISTRY:ubuntu-$CI_PLATFORM-dev"
           } else if (params.BRANCH == 'master') {
-            sh "docker rmi $REGISTRY:latest"
-            sh "docker rmi $REGISTRY:ubuntu-latest"
+            sh "docker rmi $REGISTRY:$CI_PLATFORM-latest"
+            sh "docker rmi $REGISTRY:ubuntu-$CI_PLATFORM-latest"
           } else {
-            sh "docker rmi $REGISTRY:$BRANCH_NAME"
-            sh "docker rmi $REGISTRY:ubuntu-$BRANCH_NAME"
+            sh "docker rmi $REGISTRY:$CI_PLATFORM-$BRANCH_NAME"
+            sh "docker rmi $REGISTRY:ubuntu-$CI_PLATFORM-$BRANCH_NAME"
           }
         }
       }

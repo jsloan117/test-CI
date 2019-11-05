@@ -23,22 +23,25 @@ jobs:
  #       if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; fi
  #       echo $IMAGE_TAG; export IMAGE_TAG
 
-    - stage: build docker image
+    - stage: build docker images
+      env:
+        - CI_PLATFORM=travisci
       script: |
         if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; fi
         export IMAGE_TAG
         echo -e '\n<<< Building default docker images >>>\n'
-        docker build -f Dockerfile -t $IMAGE_NAME:$IMAGE_TAG .
+        docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
 
-    - stage: build alt docker image
+    - stage: build ubuntu docker images
       env:
         - DOCKERFILE=Dockerfile.ubuntu
         - DIST=ubuntu
+        - CI_PLATFORM=travisci
       script: |
         if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; fi
         export IMAGE_TAG
         echo -e '\n<<< Building alternative docker images >>>\n'
-        docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:$DIST-$IMAGE_TAG .
+        docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:$DIST-$CI_PLATFORM-$IMAGE_TAG .
 
 deploy:
   provider: pages

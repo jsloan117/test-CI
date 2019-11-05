@@ -1,10 +1,13 @@
 .git
 .cache
+# CI
 *.aes
 .travis.yml
 .drone.yml
 .azure-pipelines.yml
 Jenkinsfile
+codeship-services.yml
+codeship-steps.yml
 # mkdocs
 docs/
 mkdocs.yml

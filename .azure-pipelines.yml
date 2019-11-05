@@ -93,7 +93,9 @@ steps:
       targetType: inline
       script: |
         echo -e '\n<<< Building docker images >>>\n'
-        docker build -f $DOCKERFILE -t $IMAGE_NAME:$IMAGE_TAG .
+        set -xv
+        sudo docker build -f $DOCKERFILE -t $IMAGE_NAME:$IMAGE_TAG .
+        set +xv
     enabled: true
 
   - task: Bash@3
@@ -106,7 +108,7 @@ steps:
       targetType: inline
       script: |
         echo -e '\n<<< Building ubuntu docker images >>>\n'
-        docker build -f $DOCKERFILE -t $IMAGE_NAME:$DIST-$IMAGE_TAG .
+        sudo docker build -f $DOCKERFILE -t $IMAGE_NAME:$DIST-$IMAGE_TAG .
     enabled: true
 
   - task: Bash@3
@@ -116,7 +118,7 @@ steps:
       targetType: inline
       script: |
         echo -e '\n<<< Building docker images >>>\n'
-        for x in $(docker images | awk '{print $1}' | tail -n+2); do docker image inspect -f '{{json .Config.Labels}}' $x; done
+        for x in $(docker images | awk '{print $1}' | tail -n+2); do sudo docker image inspect -f '{{json .Config.Labels}}' $x; done
     enabled: true
 
   - task: Bash@3
