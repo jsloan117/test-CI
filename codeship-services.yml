@@ -13,6 +13,12 @@ services:
       image:  docker:stable-dind
       dockerfile: Dockerfile.ubuntu
 
+  test_build:
+    add_docker: true
+    cached: true
+    build:
+      image:  docker:stable-dind
+
   build_documentation:
     add_docker: false
     cached: true

@@ -10,3 +10,13 @@ docker run --rm -it jsloan117/test-ci
 Hello, World!
 
 ```
+
+| CI Platform       |
+|:-----------------:|
+| `Azure Pipelines` |
+| `CircleCI`        |
+| `CodeShip`        |
+| `Drone.io`        |
+| `Jenkins`         |
+| `Shippable`       |
+| `TravisCI`        |

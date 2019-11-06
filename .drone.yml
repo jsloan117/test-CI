@@ -24,8 +24,9 @@ steps:
   commands:
     - if [ "$DRONE_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; export IMAGE_TAG; fi
     - echo "<<< Building docker images >>>"
-    - if [ "$DRONE_BRANCH" == "master" ]; then docker build -f $DOCKERFILE -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .; fi
-    - if [ "$DRONE_BRANCH" != "master" ]; then docker build -f $DOCKERFILE -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .; fi
+    - docker build -f $DOCKERFILE -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
+#    - if [ "$DRONE_BRANCH" == "master" ]; then docker build -f $DOCKERFILE -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .; fi
+#    - if [ "$DRONE_BRANCH" != "master" ]; then docker build -f $DOCKERFILE -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .; fi
 
 - name: build ubuntu docker images
   image: plugins/docker
@@ -38,11 +39,22 @@ steps:
     #  from_secret: docker_repo
     DOCKERFILE: Dockerfile.ubuntu
     IMAGE_NAME: jsloan117/test-ci
+    CI_PLATFORM: droneio
   commands:
     - if [ "$DRONE_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; export IMAGE_TAG; fi
     - echo "<<< Building alternative docker images >>>"
-    - if [ "$DRONE_BRANCH" == "master" ]; then docker build -f $DOCKERFILE -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .; fi
-    - if [ "$DRONE_BRANCH" != "master" ]; then docker build -f $DOCKERFILE -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .; fi
+    - docker build -f $DOCKERFILE -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
+#    - if [ "$DRONE_BRANCH" == "master" ]; then docker build -f $DOCKERFILE -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .; fi
+#    - if [ "$DRONE_BRANCH" != "master" ]; then docker build -f $DOCKERFILE -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .; fi
+
+- name: remove created docker images
+  image: plugins/docker
+  environment:
+    CI_PLATFORM: droneio
+  commands:
+  - docker rmi $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG
+  - docker rmi $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG
+
 
 - name: publish documentation
   image: plugins/gh-release

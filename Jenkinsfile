@@ -68,6 +68,9 @@ pipeline {
           dockerImage.inside() {
             sh 'bash --version'
           }
+          dockerImageAlt.inside() {
+            sh 'bash --version'
+          }
         }
       }
     }

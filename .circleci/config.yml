@@ -1,0 +1,86 @@
+version: 2.1
+
+commands:
+  set-image-tag:
+    description: "Set docker image tag"
+    parameters:
+      dist:
+        type: string
+    steps:
+      - run:
+          name: Set docker image tag
+          command: |
+            if [ "$CIRCLE_BRANCH" = "master" ]; then TAG_VERSION=latest; else TAG_VERSION=$CIRCLE_BRANCH; fi
+            if [ "<< parameters.dist >>" = "ubuntu" ]; then TAG_DISTRO=-<< parameters.distro >>; else TAG_DISTRO=""; fi
+            echo "export IMAGE_TAG=$TAG_DISTRO$TAG_VERSION" >> $BASH_ENV
+
+executors:
+  default-executor:
+    docker:
+      - image: docker:stable-dind
+    environment:
+      IMAGE_NAME: jsloan117/test-ci
+
+jobs:
+  build-default-image:
+    executor: default-executor
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 18.09.3
+      - set-image-tag:
+          distro: alpine
+      - run:
+          name: build docker image
+          command: docker build -f Dockerfile -t $IMAGE_NAME:$IMAGE_TAG .
+
+  build-ubuntu-image:
+    executor: default-executor
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 18.09.3
+      - set-image-tag:
+          distro: ubuntu
+      - run:
+          name: build ubuntu docker image
+          command: docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:$IMAGE_TAG .
+
+#  build-and-deploy-gh-pages:
+#    docker:
+#      - image: circleci/python:3.7
+#    steps:
+#      - checkout
+#      - run:
+#          name: "Set Git name for commits"
+#          command: git config --global user.name "CircleCI"
+#      - run:
+#          name: "Install Mkdocs and Material theme"
+#          command: pip install --user mkdocs mkdocs-material
+#      - run:
+#          name: "Build and push site"
+#          command: mkdocs gh-deploy --message "Deployed {sha} with MkDocs version {version}. [skip ci]"
+
+workflows:
+  version: 2
+  build-images:
+    jobs:
+      - build-default-imag
+#          context: dockerhub
+#          filters:
+#            branches:
+#              only:
+#                - beta
+      - build-ubuntu-image
+#          context: dockerhub
+#          filters:
+#            branches:
+#              only:
+#                - master
+#                - dev
+#  documentation-update:
+#    jobs:
+#      - build-and-deploy-gh-pages:
+#          filters:
+#            branches:
+#              only: master

@@ -6,10 +6,10 @@ name: $(BuildDefinitionName)-$(SourceBranchName)-$(Date:yyyyMMdd)$(Rev:.r)
 variables:
 - name: system.debug
   value: true
-#- name: ADO_BRANCH
-#  value: $(BUILD_SOURCEBRANCHNAME)
-#- name: IMAGE_NAME
-#  value: jsloan117/test-ci
+- name: ADO_BRANCH
+  value: $(BUILD_SOURCEBRANCHNAME)
+- name: IMAGE_NAME
+  value: jsloan117/test-ci
 
 schedules:
   - cron: '0 0 * * 6'
@@ -36,15 +36,15 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
- # - task: Docker@2
- #   displayName: Docker Login
- #   inputs:
- #     containerRegistry: 'Docker Hub'
- #     command: login
- #   enabled: true
+  - task: Docker@2
+    displayName: Docker Login
+    inputs:
+      containerRegistry: 'Docker Hub'
+      command: login
+    enabled: true
 
   - task: Bash@3
-    displayName: Install requirements
+    displayName: Install latest version of Docker
     condition: succeeded()
     inputs:
       targetType: inline
@@ -67,7 +67,7 @@ steps:
         docker --version
         echo -e "\n\n\n"
         docker info
-    enabled: true
+    enabled: false
 
   - task: Bash@3
     displayName: Set image tag
@@ -76,12 +76,12 @@ steps:
       targetType: inline
       script: |
         echo -e '\n<<< Setting docker image tag format >>>\n'
-        ADO_BRANCH=$BUILD_SOURCEBRANCHNAME
-        if [ "$ADO_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$ADO_BRANCH; fi
+        #ADO_BRANCH=$BUILD_SOURCEBRANCHNAME
+        if [ "$ADO_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$ADO_BRANCH; export IMAGE_TAG fi
         #echo $IMAGE_TAG; export IMAGE_TAG
-        IMAGE_NAME='jsloan117/test-ci'
-        echo -e "\n$ADO_BRANCH\n$IMAGE_TAG\n$IMAGE_NAME\n"
-        export IMAGE_TAG IMAGE_NAME
+        #IMAGE_NAME='jsloan117/test-ci'
+        echo -e "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n"
+        #export IMAGE_TAG IMAGE_NAME
     enabled: true
 
   - task: Bash@3
@@ -93,9 +93,8 @@ steps:
       targetType: inline
       script: |
         echo -e '\n<<< Building docker images >>>\n'
-        set -xv
+        echo -e "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n"
         sudo docker build -f $DOCKERFILE -t $IMAGE_NAME:$IMAGE_TAG .
-        set +xv
     enabled: true
 
   - task: Bash@3
@@ -108,6 +107,7 @@ steps:
       targetType: inline
       script: |
         echo -e '\n<<< Building ubuntu docker images >>>\n'
+        echo -e "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n"
         sudo docker build -f $DOCKERFILE -t $IMAGE_NAME:$DIST-$IMAGE_TAG .
     enabled: true
 
@@ -130,9 +130,9 @@ steps:
         echo -e '\n<<< Do stuff because of a PR >>>\n'
     enabled: true
 
-#  - task: Docker@2
-#    displayName: Docker Logout
-#    inputs:
-#      containerRegistry: 'Docker Hub'
-#      command: logout
-#    enabled: true
+  - task: Docker@2
+    displayName: Docker Logout
+    inputs:
+      containerRegistry: 'Docker Hub'
+      command: logout
+    enabled: true
