@@ -8,6 +8,7 @@
 Jenkinsfile
 codeship-services.yml
 codeship-steps.yml
+.circleci/
 # mkdocs
 docs/
 mkdocs.yml

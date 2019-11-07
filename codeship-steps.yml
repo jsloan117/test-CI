@@ -1,20 +1,20 @@
-- name: build docker images
-  service:  build_images
-  command:  echo -e "\n<<< Building docker images >>>"
-  command:  if [ "$CI_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$CI_BRANCH; export IMAGE_TAG; fi
-  command:  docker build -f Dockerfile -t jsloan117/test-ci:$IMAGE_TAG .
-
-- name: build ubuntu docker images
-  service:  build_alt_images
-  command:  echo -e "\n<<< Building ubuntu docker images >>>"
-  command:  if [ "$CI_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$CI_BRANCH; export IMAGE_TAG; fi
-  command:  docker build -f Dockerfile.ubuntu -t jsloan117/test-ci:ubuntu-$IMAGE_TAG .
-
 - name: test build workflow
   service: test_build
-  command: echo "Hello World"
+  command: echo "Hello World"; sudo docker --version; sudo docker info
 
-- name: build documentation
-  service:  build_documentation
-  tag:  master
-  command:  docker run --rm -it -v $PWD:/docs jsloan117/docker-mkdocs mkdocs build
+#- name: build docker images
+#  service:  build_images
+#  command:  echo -e "\n<<< Building docker images >>>"
+#  command:  if [ "$CI_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$CI_BRANCH; export IMAGE_TAG; fi
+#  command:  docker build -f Dockerfile -t jsloan117/test-ci:$IMAGE_TAG .
+
+#- name: build ubuntu docker images
+#  service:  build_alt_images
+#  command:  echo -e "\n<<< Building ubuntu docker images >>>"
+#  command:  if [ "$CI_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$CI_BRANCH; export IMAGE_TAG; fi
+#  command:  docker build -f Dockerfile.ubuntu -t jsloan117/test-ci:ubuntu-$IMAGE_TAG .
+
+#- name: build documentation
+#  service:  build_documentation
+#  tag:  master
+#  command:  docker run --rm -it -v $PWD:/docs jsloan117/docker-mkdocs mkdocs build

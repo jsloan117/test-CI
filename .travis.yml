@@ -11,9 +11,6 @@ env:
     - DOCKER_PASS=
     - DOCKER_REPO=test-ci
     - IMAGE_NAME=$DOCKER_USER/$DOCKER_REPO
-#    - DOCKERFILE=Dockerfile
-
-#install: skip
 
 jobs:
   include:
@@ -27,21 +24,16 @@ jobs:
       env:
         - CI_PLATFORM=travisci
       script: |
-        if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; fi
-        export IMAGE_TAG
-        echo -e '\n<<< Building default docker images >>>\n'
+        if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
         docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
 
     - stage: build ubuntu docker images
       env:
         - DOCKERFILE=Dockerfile.ubuntu
-        - DIST=ubuntu
         - CI_PLATFORM=travisci
       script: |
-        if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; fi
-        export IMAGE_TAG
-        echo -e '\n<<< Building alternative docker images >>>\n'
-        docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:$DIST-$CI_PLATFORM-$IMAGE_TAG .
+        if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
+        docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
 
 deploy:
   provider: pages

@@ -77,7 +77,7 @@ steps:
       script: |
         echo -e '\n<<< Setting docker image tag format >>>\n'
         #ADO_BRANCH=$BUILD_SOURCEBRANCHNAME
-        if [ "$ADO_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$ADO_BRANCH; export IMAGE_TAG fi
+        if [ "$ADO_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$ADO_BRANCH; export IMAGE_TAG; fi
         #echo $IMAGE_TAG; export IMAGE_TAG
         #IMAGE_NAME='jsloan117/test-ci'
         echo -e "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n"
@@ -118,7 +118,7 @@ steps:
       targetType: inline
       script: |
         echo -e '\n<<< Building docker images >>>\n'
-        for x in $(docker images | awk '{print $1}' | tail -n+2); do sudo docker image inspect -f '{{json .Config.Labels}}' $x; done
+        for x in $(sudo docker images | awk '{print $1}' | tail -n+2); do sudo docker image inspect -f '{{json .Config.Labels}}' $x; done
     enabled: true
 
   - task: Bash@3
