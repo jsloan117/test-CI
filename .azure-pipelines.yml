@@ -7,7 +7,7 @@ variables:
 - name: system.debug
   value: true
 - name: ADO_BRANCH
-  value: $(BUILD_SOURCEBRANCHNAME)
+  value: $BUILD_SOURCEBRANCHNAME
 - name: IMAGE_NAME
   value: jsloan117/test-ci
 

@@ -1,20 +1,58 @@
-integrations:
-  hub:
-    - integrationName:  dockerhub
-      type: dockerRegistryLogin
+##integrations:
+##  hub:
+##    - integrationName:  dockerhub
+##      type: dockerRegistryLogin
 
-  notifications:
-    - integrationName:  email
-      type: email
-      #recipients:
-      sendConsoleLogs:  true
-      sendFailingSnippet: true
-      sendCoverageReports:  true
-      on_success: always
-      on_failure: always
-      on_cancel: always
-      on_start: always
-      on_pull_request: always
+##  notifications:
+##    - integrationName:  email
+##      type: email
+###      recipients:
+##      sendConsoleLogs:  true
+##      sendFailingSnippet: true
+##      sendCoverageReports:  true
+##      on_success: always
+##      on_failure: always
+##      on_cancel: always
+##      on_start: always
+##      on_pull_request: always
+
+resources:
+  - name: github
+    type: integration
+    integration: github
+
+  - name: dockerhub
+    type: integration
+    integration: dockerhub
+
+  - name: test-ci-repo
+    type: gitRepo
+    integration: github
+    versionTemplate:
+      sourceName: jsloan117/test-CI
+      buildOnCommit: true
+      buildOnPullRequest: true
+      buildOnPullRequestClose: true
+      buildOnRelease: true
+      buildOnTagPush: true
+
+  - name: notifier
+    type: notification
+    versionTemplate:
+      method: email
+      recipients:
+        - jsloan117@gmail.com
+
+  - name: build_parameters
+    type: params
+    versionTemplate:
+      params:
+        GIT_REPO: docker-test-ci
+        GIT_ACCT: jsloan117
+        DOCKER_REPO: test-ci
+        DOCKER_ACCT: jsloan117
+        DOCKER_TAG: null
+        DOCKERFILE: null
 
 #resources:
 #  - name: testci_repo
@@ -35,14 +73,74 @@ env:
     - DOCKER_REPO=test-ci
     - IMAGE_NAME=jsloan117/test-ci
 
-build:
-  cache: true
-  #always:
-  #  - DD
-  ci:
-    - if [ "$BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$BRANCH; export IMAGE_TAG; fi
-    - docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
-    - docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
-#  push:
-#    - if [ "$BRANCH" == "master" ]; then docker push $IMAGE_NAME:$IMAGE_TAG .; fi
-#    - if [ "$BRANCH" == "dev" ]; then docker push $IMAGE_NAME:$IMAGE_TAG .; fi
+##build:
+##  cache: true
+##  #always:
+##  #  - DD
+##  ci:
+##    - if [ "$BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$BRANCH; export IMAGE_TAG; fi
+##    - docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
+##    - docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
+###  push:
+###    - if [ "$BRANCH" == "master" ]; then docker push $IMAGE_NAME:$IMAGE_TAG .; fi
+###    - if [ "$BRANCH" == "dev" ]; then docker push $IMAGE_NAME:$IMAGE_TAG .; fi
+
+jobs:
+  - name: build-docker-images
+    type: runSh
+    triggerMode:  parallel
+    priority: 0
+    allowPublicAccess:  true
+    runtime:
+      nodePool: default_node_pool
+      container: true
+      timeoutMinutes: 30
+    on_start:
+      - NOTIFY: notifier
+    steps:
+      - IN: test-ci-repo
+        showBuildStatus:  true
+      - TASK:
+          name: build-docker-imgs
+          script:
+            - |
+              if [ "$BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$BRANCH; export IMAGE_TAG; fi
+              docker build -f Dockerfile -t $IMAGE_NAME:$IMAGE_TAG .
+              docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:$IMAGE_TAG .
+    on_success:
+      - NOTIFY: notifier
+    on_failure:
+      - NOTIFY: notifier
+    on_cancel:
+      - NOTIFY: notifier
+    always:
+      - NOTIFY: notifier
+
+#jobs:
+#  - name: build-docker-images
+#    type: runSh
+#    triggerMode: parallel
+#    allowPublicAccess: true
+#    runtime:
+#      container: true
+#      timeoutMinutes: 30
+#    steps:
+#      - IN: test-ci-repo
+#      - TASK:
+#          name: build-docker-imgs
+#          script:
+#            - if [ "$BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$BRANCH; export IMAGE_TAG; fi
+#            - docker build -f Dockerfile -t $IMAGE_NAME:$IMAGE_TAG .
+#            - docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:$IMAGE_TAG .
+#        showBuildStatus: true
+##      - OUT: dockerhub
+#    on_start:
+#      - NOTIFY: notifier
+#    on_success:
+#      - NOTIFY: notifier
+#    on_failure:
+#      - NOTIFY: notifier
+#    on_cancel:
+#      - NOTIFY: notifier
+#    always:
+#      - NOTIFY: notifier

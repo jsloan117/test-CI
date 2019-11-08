@@ -11,7 +11,7 @@ commands:
           name: Set docker image tag
           command: |
             if [ "$CIRCLE_BRANCH" = "master" ]; then TAG_VERSION=latest; else TAG_VERSION=$CIRCLE_BRANCH; fi
-            if [ "<< parameters.dist >>" = "ubuntu" ]; then TAG_DISTRO=-<< parameters.distro >>; else TAG_DISTRO=""; fi
+            if [ "<< parameters.dist >>" = "ubuntu" ]; then TAG_DISTRO=-<< parameters.dist >>; else TAG_DISTRO=""; fi
             echo "export IMAGE_TAG=$TAG_DISTRO$TAG_VERSION" >> $BASH_ENV
 
 executors:
@@ -29,7 +29,7 @@ jobs:
       - setup_remote_docker:
           version: 18.09.3
       - set-image-tag:
-          distro: alpine
+          dist: alpine
       - run:
           name: build docker image
           command: docker build -f Dockerfile -t $IMAGE_NAME:$IMAGE_TAG .
@@ -41,7 +41,7 @@ jobs:
       - setup_remote_docker:
           version: 18.09.3
       - set-image-tag:
-          distro: ubuntu
+          dist: ubuntu
       - run:
           name: build ubuntu docker image
           command: docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:$IMAGE_TAG .

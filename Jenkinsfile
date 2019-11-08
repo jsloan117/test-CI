@@ -35,11 +35,14 @@ pipeline {
           userRemoteConfigs:
             [[credentialsId: 'githubkey', url: 'git@github.com:jsloan117/test-CI.git']]
         ])
+        /* get git commit hash and message */
         script {
           shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
+          gitmsg = sh(returnStdout: true, script: "git log -n 1 --format='%s'").trim()
           ansiColor('xterm') {
-            echo "$shortCommit"
+            printf "\033[32m$shortCommit\033[0m \033[33m$gitmsg\033[0m\n"
           }
+          /* set build name */
           currentBuild.displayName = "${BRANCH_NAME}-${shortCommit}-#${BUILD_NUMBER}"
         }
       }
@@ -49,14 +52,14 @@ pipeline {
       steps {
         script {
           if (params.BRANCH == 'dev') {
-            dockerImage = docker.build("$REGISTRY:$CI_PLATFORM-dev", "-f Dockerfile .")
-            dockerImageAlt = docker.build("$REGISTRY:ubuntu-$CI_PLATFORM-dev", "-f Dockerfile.ubuntu .")
+            baseImage = docker.build("$REGISTRY:$CI_PLATFORM-dev", "-f Dockerfile .")
+            ubuntuImage = docker.build("$REGISTRY:ubuntu-$CI_PLATFORM-dev", "-f Dockerfile.ubuntu .")
           } else if (params.BRANCH == 'master') {
-            dockerImage = docker.build("$REGISTRY:$CI_PLATFORM-latest", "-f Dockerfile .")
-            dockerImageAlt = docker.build("$REGISTRY:ubuntu-$CI_PLATFORM-latest", "-f Dockerfile.ubuntu .")
+            baseImage = docker.build("$REGISTRY:$CI_PLATFORM-latest", "-f Dockerfile .")
+            ubuntuImage = docker.build("$REGISTRY:ubuntu-$CI_PLATFORM-latest", "-f Dockerfile.ubuntu .")
           } else {
             dockerImage = docker.build("$REGISTRY:$CI_PLATFORM-$BRANCH_NAME", "-f Dockerfile .")
-            dockerImageAlt = docker.build("$REGISTRY:ubuntu-$CI_PLATFORM-$BRANCH_NAME", "-f Dockerfile.ubuntu .")
+            ubuntuImage = docker.build("$REGISTRY:ubuntu-$CI_PLATFORM-$BRANCH_NAME", "-f Dockerfile.ubuntu .")
           }
         }
       }
@@ -65,10 +68,10 @@ pipeline {
       /* simple testing method */
       steps {
         script {
-          dockerImage.inside() {
+          baseImage.inside() {
             sh 'bash --version'
           }
-          dockerImageAlt.inside() {
+          ubuntuImage.inside() {
             sh 'bash --version'
           }
         }

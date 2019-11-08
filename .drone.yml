@@ -49,11 +49,12 @@ steps:
   - name: dockersock
     path: /var/run/docker.sock
   environment:
+    IMAGE_NAME: jsloan117/test-ci
     CI_PLATFORM: droneio
   commands:
+  - if [ "$DRONE_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; export IMAGE_TAG; fi
   - docker rmi $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG
   - docker rmi $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG
-
 
 - name: publish documentation
   image: plugins/gh-release
