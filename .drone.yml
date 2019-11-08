@@ -56,6 +56,14 @@ steps:
   - docker rmi $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG
   - docker rmi $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG
 
+- name: generate documentation
+  image:  jsloan117/docker-mkdocs:latest
+  commands:
+    - docker run --rm -it -v $PWD:/docs jsloan117/docker-mkdocs mkdocs build
+  when:
+    branch:
+    - dev
+
 - name: publish documentation
   image: plugins/gh-release
   settings:

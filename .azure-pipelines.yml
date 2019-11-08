@@ -81,7 +81,7 @@ steps:
         CI_PLATFORM='azure-pipelines'
         if [ "$ADO_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$ADO_BRANCH; fi
         IMAGE_NAME='jsloan117/test-ci'
-        printf "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\$CI_PLATFORM\n"
+        printf "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n$CI_PLATFORM\n"
         export IMAGE_TAG IMAGE_NAME CI_PLATFORM
     enabled: true
 
@@ -93,7 +93,7 @@ steps:
       script: |
         printf '\n<<< Building docker images >>>\n'
         printf "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n"
-        sudo docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
+        sudo docker build -f Dockerfile -t "$IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG" .
     enabled: true
 
   - task: Bash@3
@@ -103,8 +103,8 @@ steps:
       targetType: inline
       script: |
         printf '\n<<< Building ubuntu docker images >>>\n'
-        printf "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n"
-        sudo docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
+        printf "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n$CI_PLATFORM\n"
+        sudo docker build -f Dockerfile.ubuntu -t "$IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG" .
     enabled: true
 
   - task: Bash@3
