@@ -14,12 +14,6 @@ env:
 
 jobs:
   include:
- #   - stage: Set image tag
- #     script: |
- #       echo -e '\n<<< Setting docker image tag format >>>\n'
- #       if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; fi
- #       echo $IMAGE_TAG; export IMAGE_TAG
-
     - stage: build docker images
       env:
         - CI_PLATFORM=travisci

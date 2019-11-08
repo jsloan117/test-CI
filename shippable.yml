@@ -1,3 +1,12 @@
+language: none
+
+env:
+  global:
+    - CI_PLATFORM=shippable
+    - DOCKER_ACCT=jsloan117
+    - DOCKER_REPO=test-ci
+    - IMAGE_NAME=jsloan117/test-ci
+
 ##integrations:
 ##  hub:
 ##    - integrationName:  dockerhub
@@ -66,13 +75,6 @@ resources:
 #      sourceName: "jsloan117/test-ci"
 #      versionName:  latest
 
-env:
-  global:
-    - CI_PLATFORM=shippable
-    - DOCKER_ACCT=jsloan117
-    - DOCKER_REPO=test-ci
-    - IMAGE_NAME=jsloan117/test-ci
-
 ##build:
 ##  cache: true
 ##  #always:
@@ -105,8 +107,8 @@ jobs:
           script:
             - |
               if [ "$BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$BRANCH; export IMAGE_TAG; fi
-              docker build -f Dockerfile -t $IMAGE_NAME:$IMAGE_TAG .
-              docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:$IMAGE_TAG .
+              docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
+              docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
     on_success:
       - NOTIFY: notifier
     on_failure:

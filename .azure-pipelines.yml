@@ -1,15 +1,16 @@
 # Azure DevOps Build Pipeline for test-CI container
 # Trying to prevent all the docker labels ADO likes to inject into the images
+# DEBUG: Not sure wth its doing with vars atm....
 
 name: $(BuildDefinitionName)-$(SourceBranchName)-$(Date:yyyyMMdd)$(Rev:.r)
 
 variables:
 - name: system.debug
   value: true
-- name: ADO_BRANCH
-  value: $BUILD_SOURCEBRANCHNAME
-- name: IMAGE_NAME
-  value: jsloan117/test-ci
+#- name: ADO_BRANCH
+#  value: $BUILD_SOURCEBRANCHNAME
+#- name: IMAGE_NAME
+#  value: jsloan117/test-ci
 
 schedules:
   - cron: '0 0 * * 6'
@@ -37,14 +38,14 @@ pool:
 
 steps:
   - task: Docker@2
-    displayName: Docker Login
+    displayName: docker login
     inputs:
       containerRegistry: 'Docker Hub'
       command: login
     enabled: true
 
   - task: Bash@3
-    displayName: Install latest version of Docker
+    displayName: install latest version of docker
     condition: succeeded()
     inputs:
       targetType: inline
@@ -58,80 +59,75 @@ steps:
     enabled: true
 
   - task: Bash@3
-    displayName: Get environment info
+    displayName: get environment info
     condition: succeeded()
     inputs:
       targetType: inline
       script: |
         env
         docker --version
-        echo -e "\n\n\n"
+        printf "\n\n\n"
         docker info
     enabled: false
 
   - task: Bash@3
-    displayName: Set image tag
+    displayName: set environmental variables image tag
     condition: succeeded()
     inputs:
       targetType: inline
       script: |
-        echo -e '\n<<< Setting docker image tag format >>>\n'
-        #ADO_BRANCH=$BUILD_SOURCEBRANCHNAME
-        if [ "$ADO_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$ADO_BRANCH; export IMAGE_TAG; fi
-        #echo $IMAGE_TAG; export IMAGE_TAG
-        #IMAGE_NAME='jsloan117/test-ci'
-        echo -e "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n"
-        #export IMAGE_TAG IMAGE_NAME
+        printf '\n<<< Setting image name & tag format >>>\n'
+        ADO_BRANCH=$BUILD_SOURCEBRANCHNAME
+        CI_PLATFORM='azure-pipelines'
+        if [ "$ADO_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$ADO_BRANCH; fi
+        IMAGE_NAME='jsloan117/test-ci'
+        printf "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\$CI_PLATFORM\n"
+        export IMAGE_TAG IMAGE_NAME CI_PLATFORM
     enabled: true
 
   - task: Bash@3
-    displayName: Build docker images
-    condition: succeeded()
-    env:
-      DOCKERFILE: Dockerfile
-    inputs:
-      targetType: inline
-      script: |
-        echo -e '\n<<< Building docker images >>>\n'
-        echo -e "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n"
-        sudo docker build -f $DOCKERFILE -t $IMAGE_NAME:$IMAGE_TAG .
-    enabled: true
-
-  - task: Bash@3
-    displayName: Build ubuntu docker images
-    condition: succeeded()
-    env:
-      DOCKERFILE: Dockerfile.ubuntu
-      DIST: ubuntu
-    inputs:
-      targetType: inline
-      script: |
-        echo -e '\n<<< Building ubuntu docker images >>>\n'
-        echo -e "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n"
-        sudo docker build -f $DOCKERFILE -t $IMAGE_NAME:$DIST-$IMAGE_TAG .
-    enabled: true
-
-  - task: Bash@3
-    displayName: Inspect images
+    displayName: build docker images
     condition: succeeded()
     inputs:
       targetType: inline
       script: |
-        echo -e '\n<<< Building docker images >>>\n'
-        for x in $(sudo docker images | awk '{print $1}' | tail -n+2); do sudo docker image inspect -f '{{json .Config.Labels}}' $x; done
+        printf '\n<<< Building docker images >>>\n'
+        printf "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n"
+        sudo docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
     enabled: true
 
   - task: Bash@3
-    displayName: Pull request review
+    displayName: build ubuntu docker images
+    condition: succeeded()
+    inputs:
+      targetType: inline
+      script: |
+        printf '\n<<< Building ubuntu docker images >>>\n'
+        printf "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n"
+        sudo docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
+    enabled: true
+
+  - task: Bash@3
+    displayName: inspect images
+    condition: succeeded()
+    inputs:
+      targetType: inline
+      script: |
+        printf '\n<<< inspecting docker images >>>\n\n'
+        for x in $(sudo docker images | awk '{print $1}' | tail -n+2); do sudo docker image inspect -f '{{json .Config.Labels}}' $x; printf '\n\n\n'; done
+    enabled: true
+
+  - task: Bash@3
+    displayName: pull request review
     condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
     inputs:
       targetType: inline
       script: |
-        echo -e '\n<<< Do stuff because of a PR >>>\n'
+        printf '\n<<< Do stuff because of a PR >>>\n'
     enabled: true
 
   - task: Docker@2
-    displayName: Docker Logout
+    displayName: docker logout
     inputs:
       containerRegistry: 'Docker Hub'
       command: logout

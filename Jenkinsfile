@@ -40,7 +40,7 @@ pipeline {
           shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
           gitmsg = sh(returnStdout: true, script: "git log -n 1 --format='%s'").trim()
           ansiColor('xterm') {
-            printf "\033[32m$shortCommit\033[0m \033[33m$gitmsg\033[0m\n"
+            echo -e "\033[32m$shortCommit\033[0m \033[33m$gitmsg\033[0m\n"
           }
           /* set build name */
           currentBuild.displayName = "${BRANCH_NAME}-${shortCommit}-#${BUILD_NUMBER}"
