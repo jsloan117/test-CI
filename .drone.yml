@@ -56,10 +56,12 @@ steps:
   - docker rmi $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG
   - docker rmi $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG
 
+# may need to be ran via exec pipeline?
 - name: generate documentation
-  image:  jsloan117/docker-mkdocs:latest
+  image:  python:3.7-alpine3.10
   commands:
-    - docker run --rm -it -v $PWD:/docs jsloan117/docker-mkdocs mkdocs build
+    - pip --no-cache-dir --user install mkdocs mkdocs-material
+    - mkdocs build
   when:
     branch:
     - dev
@@ -76,3 +78,6 @@ volumes:
 - name: dockersock
   host:
     path: /var/run/docker.sock
+#- name: docs
+#  host:
+#    path: $PWD/docs

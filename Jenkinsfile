@@ -41,7 +41,7 @@ pipeline {
           gitmsg = sh(returnStdout: true, script: "git log -n 1 --format='%s'").trim()
           ansiColor('xterm') {
             script {
-              sh "echo -e "\033[32m$shortCommit\033[0m \033[33m$gitmsg\033[0m\n""
+              sh 'echo -e "\033[32m${shortCommit}\033[0m \033[33m${gitmsg}\033[0m\n"'
             }
           }
           /* set build name */

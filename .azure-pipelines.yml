@@ -78,11 +78,11 @@ steps:
       script: |
         printf '\n<<< Setting image name & tag format >>>\n'
         ADO_BRANCH=$BUILD_SOURCEBRANCHNAME
-        CI_PLATFORM='azure-pipelines'
+        CI_PLATFORM=azure-pipelines
         if [ "$ADO_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$ADO_BRANCH; fi
-        IMAGE_NAME='jsloan117/test-ci'
+        IMAGE_NAME=jsloan117/test-ci
         printf "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n$CI_PLATFORM\n"
-        export IMAGE_TAG IMAGE_NAME CI_PLATFORM
+        export ADO_BRANCH IMAGE_TAG IMAGE_NAME CI_PLATFORM
     enabled: true
 
   - task: Bash@3
