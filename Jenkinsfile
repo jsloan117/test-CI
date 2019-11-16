@@ -41,7 +41,8 @@ pipeline {
           gitmsg = sh(returnStdout: true, script: "git log -n 1 --format='%s'").trim()
           ansiColor('xterm') {
             script {
-              sh 'echo -e "\033[32m${shortCommit}\033[0m \033[33m${gitmsg}\033[0m\n"'
+              /* sh 'echo -e "\033[32m${shortCommit}\033[0m \033[33m${gitmsg}\033[0m\n"' */
+              sh 'echo -e "${shortCommit} ${gitmsg}"'
             }
           }
           /* set build name */
@@ -54,14 +55,14 @@ pipeline {
       steps {
         script {
           if (params.BRANCH == 'dev') {
-            baseImage = docker.build("$REGISTRY:$CI_PLATFORM-dev", "-f Dockerfile .")
-            ubuntuImage = docker.build("$REGISTRY:ubuntu-$CI_PLATFORM-dev", "-f Dockerfile.ubuntu .")
+            baseImage = docker.build("${REGISTRY}:${CI_PLATFORM}-dev", "-f Dockerfile .")
+            ubuntuImage = docker.build("${REGISTRY}:ubuntu-${CI_PLATFORM}-dev", "-f Dockerfile.ubuntu .")
           } else if (params.BRANCH == 'master') {
-            baseImage = docker.build("$REGISTRY:$CI_PLATFORM-latest", "-f Dockerfile .")
-            ubuntuImage = docker.build("$REGISTRY:ubuntu-$CI_PLATFORM-latest", "-f Dockerfile.ubuntu .")
+            baseImage = docker.build("${REGISTRY}:${CI_PLATFORM}-latest", "-f Dockerfile .")
+            ubuntuImage = docker.build("${REGISTRY}:ubuntu-${CI_PLATFORM}-latest", "-f Dockerfile.ubuntu .")
           } else {
-            dockerImage = docker.build("$REGISTRY:$CI_PLATFORM-$BRANCH_NAME", "-f Dockerfile .")
-            ubuntuImage = docker.build("$REGISTRY:ubuntu-$CI_PLATFORM-$BRANCH_NAME", "-f Dockerfile.ubuntu .")
+            dockerImage = docker.build("${REGISTRY}:${CI_PLATFORM}-${BRANCH_NAME}", "-f Dockerfile .")
+            ubuntuImage = docker.build("${REGISTRY}:ubuntu-${CI_PLATFORM}-${BRANCH_NAME}", "-f Dockerfile.ubuntu .")
           }
         }
       }
@@ -98,17 +99,41 @@ pipeline {
       steps {
         script {
           if (params.BRANCH == 'dev') {
-            sh "docker rmi $REGISTRY:$CI_PLATFORM-dev"
-            sh "docker rmi $REGISTRY:ubuntu-$CI_PLATFORM-dev"
+            sh "docker rmi ${REGISTRY}:${CI_PLATFORM}-dev"
+            sh "docker rmi ${REGISTRY}:ubuntu-${CI_PLATFORM}-dev"
           } else if (params.BRANCH == 'master') {
-            sh "docker rmi $REGISTRY:$CI_PLATFORM-latest"
-            sh "docker rmi $REGISTRY:ubuntu-$CI_PLATFORM-latest"
+            sh "docker rmi ${REGISTRY}:${CI_PLATFORM}-latest"
+            sh "docker rmi ${REGISTRY}:ubuntu-${CI_PLATFORM}-latest"
           } else {
-            sh "docker rmi $REGISTRY:$CI_PLATFORM-$BRANCH_NAME"
-            sh "docker rmi $REGISTRY:ubuntu-$CI_PLATFORM-$BRANCH_NAME"
+            sh "docker rmi ${REGISTRY}:${CI_PLATFORM}-${BRANCH_NAME}"
+            sh "docker rmi ${REGISTRY}:ubuntu-${CI_PLATFORM}-${BRANCH_NAME}"
           }
         }
       }
     }
+    stage('Build documentation') {
+      when {
+        branch 'dev'
+      }
+      steps {
+        docker.image('jsloan117/docker-mkdocs:latest').withRun('-v $PWD:/docs mkdocs build')
+      }
+      
+    }
+    /*stage('Build documentation') {
+      agent {
+        docker {
+          image 'jsloan117/docker-mkdocs:latest'
+          args '-v $PWD:/docs mkdocs build'
+        }
+      }
+      when {
+        beforeAgent true
+        branch 'dev'
+      }
+      steps {
+        echo 'one'
+      }
+    */}
   }
 }

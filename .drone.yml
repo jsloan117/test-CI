@@ -60,7 +60,7 @@ steps:
 - name: generate documentation
   image:  python:3.7-alpine3.10
   commands:
-    - pip --no-cache-dir --user install mkdocs mkdocs-material
+    - pip --no-cache-dir install mkdocs mkdocs-material
     - mkdocs build
   when:
     branch:
