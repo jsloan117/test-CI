@@ -20,7 +20,7 @@ resouces:
     repository: jsloan117/test-ci
 
 jobs:
-- name: build docker images
+- name: build-docker-images
   build_log_retention:
     days: 60
     builds: 1000

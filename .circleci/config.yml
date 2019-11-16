@@ -14,7 +14,7 @@ commands:
             if [ "<< parameters.dist >>" = "ubuntu" ]; then TAG_DISTRO=<< parameters.dist >>-; else TAG_DISTRO=""; fi
             echo "export IMAGE_TAG=$TAG_DISTRO$TAG_VERSION" >> $BASH_ENV
             #IMAGE_TAG=$TAG_DISTRO$TAG_VERSION
-            #echo $IMAGE_TAG
+            echo $IMAGE_TAG
             #export IMAGE_TAG
             #echo "export IMAGE_TAG=$TAG_DISTRO$TAG_VERSION" >> $BASH_ENV
 

@@ -9,6 +9,14 @@ steps:
   commands:
     - git fetch --tags
 
+- name: set environment variables
+  image: plugins/docker
+  commands:
+    - |
+      echo "IMAGE_NAME=jsloan117/test-ci" >> import.vars
+      echo "CI_PLATFORM=droneio" >> import.vars
+      ls -lh ${PWD}/import.vars
+
 - name: build docker images
   image: plugins/docker
   volumes:
@@ -42,6 +50,19 @@ steps:
     - if [ "$DRONE_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; export IMAGE_TAG; fi
     - echo "<<< Building alternative docker images >>>"
     - docker build -f $DOCKERFILE -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
+
+- name: test images
+  image: plugins/docker
+  volumes:
+  - name: dockersock
+    path: /var/run/docker.sock
+  environment:
+    IMAGE_NAME: jsloan117/test-ci
+    CI_PLATFORM: droneio
+  commands:
+  - if [ "$DRONE_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; export IMAGE_TAG; fi
+  - docker run --rm -it $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG
+  - docker run --rm -it $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG
 
 - name: remove created docker images
   image: plugins/docker

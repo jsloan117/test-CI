@@ -134,6 +134,6 @@ pipeline {
       steps {
         echo 'one'
       }
-    */}
+    }*/
   }
 }

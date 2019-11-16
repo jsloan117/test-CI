@@ -83,7 +83,7 @@ steps:
         IMAGE_NAME=jsloan117/test-ci
         printf "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n$CI_PLATFORM\n"
         export ADO_BRANCH IMAGE_TAG IMAGE_NAME CI_PLATFORM DOCKER_ACCT DOCKER_IMAGE
-    enabled: false
+    enabled: true
 
   - task: Bash@3
     displayName: build docker images
@@ -111,7 +111,7 @@ steps:
       script: |
         printf '\n<<< Building ubuntu docker images >>>\n'
         if [ "$BUILD_SOURCEBRANCHNAME" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$BUILD_SOURCEBRANCHNAME; fi
-        printf "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n$CI_PLATFORM\n$BUILD_SOURCEBRANCHNAME\n
+        printf "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n$CI_PLATFORM\n$BUILD_SOURCEBRANCHNAME\n"
         sudo docker build -f Dockerfile.ubuntu -t "$IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG" .
     enabled: true
 
