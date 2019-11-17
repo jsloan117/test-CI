@@ -9,6 +9,9 @@ Jenkinsfile
 codeship-services.yml
 codeship-steps.yml
 .circleci/
+shippable.yml
+shippable.resources.yml
+concourse.yml
 # mkdocs
 docs/
 mkdocs.yml

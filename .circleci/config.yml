@@ -11,11 +11,8 @@ commands:
           name: Set docker image tag
           command: |
             if [ "$CIRCLE_BRANCH" = "master" ]; then TAG_VERSION=latest; else TAG_VERSION=$CIRCLE_BRANCH; fi
-            if [ "<< parameters.dist >>" = "ubuntu" ]; then TAG_DISTRO=<< parameters.dist >>-circleci; else TAG_DISTRO="circleci"; fi
+            if [ "<< parameters.dist >>" = "ubuntu" ]; then TAG_DISTRO=<< parameters.dist >>-circleci-; else TAG_DISTRO="circleci-"; fi
             echo "export IMAGE_TAG=$TAG_DISTRO$TAG_VERSION" >> $BASH_ENV
-            #IMAGE_TAG=$TAG_DISTRO$TAG_VERSION
-            echo $IMAGE_TAG
-            #export IMAGE_TAG
 
 executors:
   default-executor:

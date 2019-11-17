@@ -7,6 +7,11 @@ env:
     - DOCKER_REPO=test-ci
     - IMAGE_NAME=jsloan117/test-ci
 
+runtime:
+  nodePool: default_node_pool
+  container: true
+  timeoutMinutes: 30
+
 ##integrations:
 ##  hub:
 ##    - integrationName:  dockerhub
@@ -24,56 +29,6 @@ env:
 ##      on_cancel: always
 ##      on_start: always
 ##      on_pull_request: always
-
-##resources:
-##  - name: github
-##    type: integration
-##    integration: github
-
-##  - name: dockerhub
-##    type: integration
-##    integration: dockerhub
-
-##  - name: test-ci-repo
-##    type: gitRepo
-##    integration: github
-##    versionTemplate:
-##      sourceName: jsloan117/test-CI
-##      buildOnCommit: true
-##      buildOnPullRequest: true
-##      buildOnPullRequestClose: true
-##      buildOnRelease: true
-##      buildOnTagPush: true
-
-##  - name: notifier
-##    type: notification
-##    versionTemplate:
-##      method: email
-##      recipients:
-##        - jsloan117@gmail.com
-
-##  - name: build_parameters
-##    type: params
-##    versionTemplate:
-##      params:
-##        GIT_REPO: docker-test-ci
-##        GIT_ACCT: jsloan117
-##        DOCKER_REPO: test-ci
-##        DOCKER_ACCT: jsloan117
-##        DOCKER_TAG: null
-##        DOCKERFILE: null
-
-#resources:
-#  - name: testci_repo
-#    type: gitRepo
-#    integration:  github
-
-#  - name: dockerhub
-#    type: image
-#    integration:  dockerhub
-#    versionTemplate:
-#      sourceName: "jsloan117/test-ci"
-#      versionName:  latest
 
 build:
   cache: true
@@ -93,22 +48,15 @@ jobs:
     triggerMode:  parallel
     priority: 0
     allowPublicAccess:  true
-    runtime:
-      nodePool: default_node_pool
-      container: true
-      timeoutMinutes: 30
+    #runtime:
+    #  nodePool: default_node_pool
+    #  container: true
+    #  timeoutMinutes: 30
     on_start:
       - NOTIFY: notifier
     steps:
       - IN: test-ci-repo
         showBuildStatus:  true
-#      - TASK:
-#          name: build-docker-imgs
-#          script:
-#            - |
-#              if [ "$BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$BRANCH; export IMAGE_TAG; fi
-#              docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
-#              docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
     on_success:
       - NOTIFY: notifier
     on_failure:

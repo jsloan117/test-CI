@@ -7,6 +7,8 @@ name: $(BuildDefinitionName)-$(SourceBranchName)-$(Date:yyyyMMdd)$(Rev:.r)
 variables:
 - name: system.debug
   value: true
+- name: SYSTEM_DONOTMASKMULTILINESECRETS
+  value: true
 #- name: ADO_BRANCH
 #  value: $BUILD_SOURCEBRANCHNAME
 #- name: IMAGE_NAME

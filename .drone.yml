@@ -13,70 +13,82 @@ steps:
   image: plugins/docker
   commands:
     - |
+      echo "CI_PLATFORM=droneio" > import.vars
       echo "IMAGE_NAME=jsloan117/test-ci" >> import.vars
-      echo "CI_PLATFORM=droneio" >> import.vars
-      pwd
-      ls -lh import.vars
+      if [ "$DRONE_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; fi
+      echo "IMAGE_TAG=$IMAGE_TAG" >> import.vars
+      #if [ "$DRONE_BRANCH" == "master" ]; then
+      #  echo "IMAGE_TAG=latest" >> import.vars
+      #else
+      #  echo "IMAGE_TAG=$DRONE_BRANCH" >> import.vars
+      #fi
 
 - name: build docker images
   image: plugins/docker
   volumes:
   - name: dockersock
     path: /var/run/docker.sock
-  environment:
-    DOCKER_USER: jsloan117
+  #environment:
+    #DOCKER_USER: jsloan117
     #DOCKER_REPO:
     #  from_secret: docker_repo
-    DOCKERFILE: Dockerfile
-    IMAGE_NAME: jsloan117/test-ci
-    CI_PLATFORM: droneio
+    #DOCKERFILE: Dockerfile
+    #IMAGE_NAME: jsloan117/test-ci
+    #CI_PLATFORM: droneio
   commands:
-    - if [ "$DRONE_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; export IMAGE_TAG; fi
-    - echo "<<< Building docker images >>>"
-    - docker build -f $DOCKERFILE -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
+    - |
+      #if [ "$DRONE_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; export IMAGE_TAG; fi
+      echo "<<< building images >>>"
+      source import.vars
+      docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
 
 - name: build ubuntu docker images
   image: plugins/docker
   volumes:
   - name: dockersock
     path: /var/run/docker.sock
-  environment:
-    DOCKER_USER: jsloan117
+  #environment:
+    #DOCKER_USER: jsloan117
     #DOCKER_REPO:
     #  from_secret: docker_repo
-    DOCKERFILE: Dockerfile.ubuntu
-    IMAGE_NAME: jsloan117/test-ci
-    CI_PLATFORM: droneio
+    #DOCKERFILE: Dockerfile.ubuntu
+    #IMAGE_NAME: jsloan117/test-ci
+    #CI_PLATFORM: droneio
   commands:
-    - if [ "$DRONE_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; export IMAGE_TAG; fi
-    - echo "<<< Building alternative docker images >>>"
-    - docker build -f $DOCKERFILE -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
+    - |
+      #if [ "$DRONE_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; export IMAGE_TAG; fi
+      echo "<<< building ubuntu images >>>"
+      source import.vars
+      docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
 
 - name: test images
   image: plugins/docker
   volumes:
   - name: dockersock
     path: /var/run/docker.sock
-  environment:
-    IMAGE_NAME: jsloan117/test-ci
-    CI_PLATFORM: droneio
+  #environment:
+    #IMAGE_NAME: jsloan117/test-ci
+    #CI_PLATFORM: droneio
   commands:
-  - if [ "$DRONE_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; export IMAGE_TAG; fi
-  - docker run --rm -it $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG
-  - docker run --rm -it $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG
+  - |
+    source import.vars
+    docker run --rm $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG
+    docker run --rm $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG
 
 - name: remove created docker images
   image: plugins/docker
   volumes:
   - name: dockersock
     path: /var/run/docker.sock
-  environment:
-    IMAGE_NAME: jsloan117/test-ci
-    CI_PLATFORM: droneio
+  #environment:
+    #IMAGE_NAME: jsloan117/test-ci
+    #CI_PLATFORM: droneio
   commands:
-  - if [ "$DRONE_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; export IMAGE_TAG; fi
-  - docker rmi $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG
-  - docker rmi $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG
+  - |
+    #if [ "$DRONE_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; export IMAGE_TAG; fi
+    source import.vars
+    docker rmi $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG
+    docker rmi $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG
 
 # may need to be ran via exec pipeline?
 - name: generate documentation
@@ -84,6 +96,7 @@ steps:
   commands:
     - pip --no-cache-dir install mkdocs mkdocs-material
     - mkdocs build
+    - ls -lh && cd site/ && ls -lh
   when:
     branch:
     - dev
