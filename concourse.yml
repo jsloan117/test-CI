@@ -27,8 +27,8 @@ jobs:
   max_in_flight:  2
   public: true
   plan:
-  - get:  test-ci
-    trigger:  true
+  - get: test-ci
+    trigger: true
 
 #  - put: test-ci-image
 #    params:

@@ -15,7 +15,8 @@ steps:
     - |
       echo "IMAGE_NAME=jsloan117/test-ci" >> import.vars
       echo "CI_PLATFORM=droneio" >> import.vars
-      ls -lh ${PWD}/import.vars
+      pwd
+      ls -lh import.vars
 
 - name: build docker images
   image: plugins/docker

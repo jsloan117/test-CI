@@ -11,12 +11,11 @@ commands:
           name: Set docker image tag
           command: |
             if [ "$CIRCLE_BRANCH" = "master" ]; then TAG_VERSION=latest; else TAG_VERSION=$CIRCLE_BRANCH; fi
-            if [ "<< parameters.dist >>" = "ubuntu" ]; then TAG_DISTRO=<< parameters.dist >>-; else TAG_DISTRO=""; fi
+            if [ "<< parameters.dist >>" = "ubuntu" ]; then TAG_DISTRO=<< parameters.dist >>-circleci; else TAG_DISTRO="circleci"; fi
             echo "export IMAGE_TAG=$TAG_DISTRO$TAG_VERSION" >> $BASH_ENV
             #IMAGE_TAG=$TAG_DISTRO$TAG_VERSION
             echo $IMAGE_TAG
             #export IMAGE_TAG
-            #echo "export IMAGE_TAG=$TAG_DISTRO$TAG_VERSION" >> $BASH_ENV
 
 executors:
   default-executor:
@@ -36,7 +35,9 @@ jobs:
           dist: alpine
       - run:
           name: build docker image
-          command: docker build -f Dockerfile -t $IMAGE_NAME:$IMAGE_TAG .
+          command: |
+            source $BASH_ENV
+            docker build -f Dockerfile -t $IMAGE_NAME:$IMAGE_TAG .
 
   build-ubuntu-image:
     executor: default-executor
@@ -48,7 +49,9 @@ jobs:
           dist: ubuntu
       - run:
           name: build ubuntu docker image
-          command: docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:$IMAGE_TAG .
+          command: |
+            source $BASH_ENV
+            docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:$IMAGE_TAG .
 
 #  build-and-deploy-gh-pages:
 #    docker:

@@ -116,9 +116,10 @@ pipeline {
         branch 'dev'
       }
       steps {
-        docker.image('jsloan117/docker-mkdocs:latest').withRun('-v $PWD:/docs mkdocs build')
+        set -xv
+        docker.image('jsloan117/docker-mkdocs:latest').withRun("-v ${PWD}:/docs mkdocs build")
+        set +xv
       }
-      
     }
     /*stage('Build documentation') {
       agent {
