@@ -112,6 +112,7 @@ pipeline {
       }
     }
     stage('Build documentation') {
+      /* build documentation using mkdocs */
       when {
         branch 'dev'
       }

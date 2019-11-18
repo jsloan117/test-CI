@@ -17,11 +17,6 @@ steps:
       echo "IMAGE_NAME=jsloan117/test-ci" >> import.vars
       if [ "$DRONE_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; fi
       echo "IMAGE_TAG=$IMAGE_TAG" >> import.vars
-      #if [ "$DRONE_BRANCH" == "master" ]; then
-      #  echo "IMAGE_TAG=latest" >> import.vars
-      #else
-      #  echo "IMAGE_TAG=$DRONE_BRANCH" >> import.vars
-      #fi
 
 - name: build docker images
   image: plugins/docker
@@ -29,16 +24,11 @@ steps:
   - name: dockersock
     path: /var/run/docker.sock
   #environment:
-    #DOCKER_USER: jsloan117
     #DOCKER_REPO:
     #  from_secret: docker_repo
-    #DOCKERFILE: Dockerfile
-    #IMAGE_NAME: jsloan117/test-ci
-    #CI_PLATFORM: droneio
   commands:
     - |
-      #if [ "$DRONE_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; export IMAGE_TAG; fi
-      echo "<<< building images >>>"
+      echo -e "\n<<< building images >>>\n"
       source import.vars
       docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
 
@@ -47,17 +37,9 @@ steps:
   volumes:
   - name: dockersock
     path: /var/run/docker.sock
-  #environment:
-    #DOCKER_USER: jsloan117
-    #DOCKER_REPO:
-    #  from_secret: docker_repo
-    #DOCKERFILE: Dockerfile.ubuntu
-    #IMAGE_NAME: jsloan117/test-ci
-    #CI_PLATFORM: droneio
   commands:
     - |
-      #if [ "$DRONE_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; export IMAGE_TAG; fi
-      echo "<<< building ubuntu images >>>"
+      echo -e "\n<<< building ubuntu images >>>\n"
       source import.vars
       docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
 
@@ -66,31 +48,23 @@ steps:
   volumes:
   - name: dockersock
     path: /var/run/docker.sock
-  #environment:
-    #IMAGE_NAME: jsloan117/test-ci
-    #CI_PLATFORM: droneio
   commands:
   - |
     source import.vars
-    docker run --rm $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG
-    docker run --rm $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG
+    docker run --rm $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG bash --version
+    docker run --rm $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG bash --version
 
 - name: remove created docker images
   image: plugins/docker
   volumes:
   - name: dockersock
     path: /var/run/docker.sock
-  #environment:
-    #IMAGE_NAME: jsloan117/test-ci
-    #CI_PLATFORM: droneio
   commands:
   - |
-    #if [ "$DRONE_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; export IMAGE_TAG; fi
     source import.vars
     docker rmi $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG
     docker rmi $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG
 
-# may need to be ran via exec pipeline?
 - name: generate documentation
   image:  python:3.7-alpine3.10
   commands:

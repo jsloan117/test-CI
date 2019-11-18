@@ -16,7 +16,6 @@
 | `Azure Pipelines` |
 | `CircleCI`        |
 | `CodeShip`        |
-| `ConcourseCI`     |
 | `Drone.io`        |
 | `Jenkins`         |
 | `Shippable`       |
