@@ -125,8 +125,9 @@ steps:
       script: |
         printf '\n<<< inspecting images >>>\n\n'
         set -xv
-        sudo docker images
-        for img in $(sudo docker images | awk '{print $1}' | tail -n+2); do sudo docker image inspect -f '{{json .Config.Labels}}' "${img}"; printf '\n\n'; done
+        for img in $(sudo docker images | awk '{OFS = ":";} {print $1,$2}' | tail -n+2 | head -n2); do 
+          sudo docker image inspect -f '{{json .Config.Labels}}' "${img}"; printf '\n\n'; 
+        done
     enabled: true
 
   - task: Bash@3

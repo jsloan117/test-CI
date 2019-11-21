@@ -8,7 +8,7 @@ Testing multiple CIs
 [![Build Status](https://dev.azure.com/jsloan117/docker-containers/_apis/build/status/test-CI?branchName=dev)](https://dev.azure.com/jsloan117/docker-containers/_build/latest?definitionId=7&branchName=dev)
 [![Run Status](https://api.shippable.com/projects/5dc0e6b169077d0006243753/badge?branch=dev)](https://app.shippable.com/github/jsloan117/test-CI/dashboard)
 
-This repo and docker image(s) are simple used for testing out docker builds on multiple CI platforms.
+This repo and docker image(s) are simply used for testing out docker builds on multiple CI platforms.
 
 ```bash
 docker run --rm -it jsloan117/test-ci
@@ -17,12 +17,21 @@ Hello, World!
 
 ```
 
-| CI Platform       |
-|:-----------------:|
-| `Azure Pipelines` |
-| `CircleCI`        |
-| `CodeShip`        |
-| `Drone.io`        |
-| `Jenkins`         |
-| `Shippable`       |
-| `TravisCI`        |
+| CI Platforms       |
+|:------------------:|
+| `Azure Pipelines`  |
+| `CircleCI`         |
+|<s> `CodeShip`</s>  |
+|<s> `Concourse`</s> |
+| `Drone.io`         |
+| `Jenkins`          |
+|<s> `Shippable`</s> |
+| `TravisCI`         |
+
+## Platforms no longer being tested
+
+`Concourse`: While great because it's self hosted and feature rich, I don't have time to continue to try and figure out how to set this up.
+
+`Codeship`: I liked the idea of, but unfortunately on their basic/free tier Docker is not support and is a shame.
+
+`Shippable`: Is a very powerful platform but due to it being so powerful its some what complex and overkill for my needs.
