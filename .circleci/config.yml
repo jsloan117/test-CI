@@ -50,19 +50,20 @@ jobs:
             source $BASH_ENV
             docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:$IMAGE_TAG .
 
-#  build-and-deploy-gh-pages:
-#    docker:
-#      - image: circleci/python:3.7
-#    steps:
-#      - checkout
-#      - run:
-#          name: "Set Git name for commits"
-#          command: git config --global user.name "CircleCI"
-#      - run:
-#          name: "Install Mkdocs and Material theme"
-#          command: pip install --user mkdocs mkdocs-material
-#      - run:
-#          name: "Build and push site"
+  build-and-deploy-gh-pages:
+    docker:
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - run:
+          name: "Set Git name for commits"
+          command: git config --global user.name "CircleCI"
+      - run:
+          name: "Install Mkdocs and Material theme"
+          command: pip install --user mkdocs mkdocs-material
+      - run:
+          name: "Build and push site"
+          command: mkdocs build
 #          command: mkdocs gh-deploy --message "Deployed {sha} with MkDocs version {version}. [skip ci]"
 
 workflows:
@@ -82,9 +83,9 @@ workflows:
 #              only:
 #                - master
 #                - dev
-#  documentation-update:
-#    jobs:
-#      - build-and-deploy-gh-pages:
-#          filters:
-#            branches:
-#              only: master
+  documentation-update:
+    jobs:
+      - build-and-deploy-gh-pages:
+          filters:
+            branches:
+              only: dev
