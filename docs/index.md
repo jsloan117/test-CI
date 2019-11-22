@@ -15,7 +15,6 @@
 [![CircleCI](https://circleci.com/gh/jsloan117/test-CI/tree/dev.svg?style=svg)](https://circleci.com/gh/jsloan117/test-CI/tree/dev)
 [![Build Status](https://travis-ci.org/jsloan117/test-CI.svg?branch=dev)](https://travis-ci.org/jsloan117/test-CI)
 [![Build Status](https://dev.azure.com/jsloan117/docker-containers/_apis/build/status/test-CI?branchName=dev)](https://dev.azure.com/jsloan117/docker-containers/_build/latest?definitionId=7&branchName=dev)
-[![Run Status](https://api.shippable.com/projects/5dc0e6b169077d0006243753/badge?branch=dev)](https://app.shippable.com/github/jsloan117/test-CI/dashboard)
 
 | CI Platforms       |
 |:------------------:|

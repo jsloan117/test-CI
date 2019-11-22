@@ -1,4 +1,3 @@
----
 kind: pipeline
 type: docker
 name: Build Docker Images
@@ -75,13 +74,25 @@ steps:
     branch:
     - dev
 
+kind: pipeline
+type: exec
+name: Documentation Builder
+
 - name: publish documentation
-  image: plugins/gh-release
-  settings:
-    pages_directory: site/
+  image: jsloan117/docker-mkdocs
+  commands:
+    - docker run --rm -it -v ${PWD}:/docs jsloan117/docker-mkdocs mkdocs build
   when:
     branch:
     - master
+
+#- name: publish documentation
+#  image: plugins/gh-release
+#  settings:
+#    pages_directory: site/
+#  when:
+#    branch:
+#    - master
 
 volumes:
 - name: dockersock

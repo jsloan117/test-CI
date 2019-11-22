@@ -5,8 +5,12 @@
 name: $(BuildDefinitionName)-$(SourceBranchName)-$(Date:yyyyMMdd)$(Rev:.r)
 
 variables:
-- name: system.debug
-  value: true
+  system.debug: true
+  CI_PLATFORM: azure-pipelines
+  IMAGE_NAME: jsloan117/test-ci
+  ADO_BRANCH: $BUILD_SOURCEBRANCHNAME
+#- name: system.debug
+#  value: true
 #- name: SYSTEM_DONOTMASKMULTILINESECRETS
 #  value: true
 #- name: ADO_BRANCH
@@ -90,30 +94,30 @@ steps:
   - task: Bash@3
     displayName: build docker images
     condition: succeeded()
-    env:
-      IMAGE_NAME: jsloan117/test-ci
-      CI_PLATFORM: azure-pipelines
+    #env:
+      #IMAGE_NAME: jsloan117/test-ci
+      #CI_PLATFORM: azure-pipelines
     inputs:
       targetType: inline
       script: |
-        printf '\n<<< building images >>>\n'
+        printf '\n<<< building images >>>\n\n'
         if [ "$BUILD_SOURCEBRANCHNAME" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$BUILD_SOURCEBRANCHNAME; fi
-        #printf "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n$CI_PLATFORM\n$BUILD_SOURCEBRANCHNAME\n"
+        printf "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n$CI_PLATFORM\n$BUILD_SOURCEBRANCHNAME\n"
         sudo docker build -f Dockerfile -t "$IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG" .
     enabled: true
 
   - task: Bash@3
     displayName: build ubuntu docker images
     condition: succeeded()
-    env:
-      IMAGE_NAME: jsloan117/test-ci
-      CI_PLATFORM: azure-pipelines
+    #env:
+      #IMAGE_NAME: jsloan117/test-ci
+      #CI_PLATFORM: azure-pipelines
     inputs:
       targetType: inline
       script: |
-        printf '\n<<< building ubuntu images >>>\n'
+        printf '\n<<< building ubuntu images >>>\n\n'
         if [ "$BUILD_SOURCEBRANCHNAME" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$BUILD_SOURCEBRANCHNAME; fi
-        #printf "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n$CI_PLATFORM\n$BUILD_SOURCEBRANCHNAME\n"
+        printf "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n$CI_PLATFORM\n$BUILD_SOURCEBRANCHNAME\n"
         sudo docker build -f Dockerfile.ubuntu -t "$IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG" .
     enabled: true
 
@@ -124,7 +128,6 @@ steps:
       targetType: inline
       script: |
         printf '\n<<< inspecting images >>>\n\n'
-        set -xv
         for img in $(sudo docker images | awk '{OFS = ":";} {print $1,$2}' | tail -n+2 | head -n2); do 
           sudo docker image inspect -f '{{json .Config.Labels}}' "${img}"; printf '\n\n'; 
         done
@@ -136,7 +139,7 @@ steps:
     inputs:
       targetType: inline
       script: |
-        printf '\n<<< Do stuff because of a PR >>>\n'
+        printf '\n<<< Do stuff because of a PR >>>\n\n'
     enabled: true
 
   - task: Docker@2
