@@ -74,17 +74,19 @@ steps:
     branch:
     - dev
 
+---
 kind: pipeline
 type: exec
 name: Documentation Builder
 
-- name: publish documentation
+steps:
+- name: generate documentation
   image: jsloan117/docker-mkdocs
   commands:
     - docker run --rm -it -v ${PWD}:/docs jsloan117/docker-mkdocs mkdocs build
   when:
     branch:
-    - master
+    - dev
 
 #- name: publish documentation
 #  image: plugins/gh-release
