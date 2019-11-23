@@ -90,7 +90,7 @@ steps:
       targetType: inline
       script: |
         printf '\n<<< building images >>>\n\n'
-        if [ "$BUILD_SOURCEBRANCHNAME" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$BUILD_SOURCEBRANCHNAME; fi
+        ##if [ "$BUILD_SOURCEBRANCHNAME" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$BUILD_SOURCEBRANCHNAME; fi
         printf "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n$CI_PLATFORM\n$BUILD_SOURCEBRANCHNAME\n"
         sudo docker build -f Dockerfile -t "$IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG" .
     enabled: true
@@ -102,7 +102,7 @@ steps:
       targetType: inline
       script: |
         printf '\n<<< building ubuntu images >>>\n\n'
-        if [ "$BUILD_SOURCEBRANCHNAME" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$BUILD_SOURCEBRANCHNAME; fi
+        ##if [ "$BUILD_SOURCEBRANCHNAME" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$BUILD_SOURCEBRANCHNAME; fi
         printf "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n$CI_PLATFORM\n$BUILD_SOURCEBRANCHNAME\n"
         sudo docker build -f Dockerfile.ubuntu -t "$IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG" .
     enabled: true

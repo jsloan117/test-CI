@@ -1,6 +1,6 @@
 pipeline {
   environment {
-    REGISTRY = 'jsloan117/test-ci'
+    IMAGE_NAME = 'jsloan117/test-ci'
     CI_PLATFORM = 'jenkins'
   }
   agent any
@@ -55,14 +55,14 @@ pipeline {
       steps {
         script {
           if (params.BRANCH == 'dev') {
-            baseImage = docker.build("${REGISTRY}:${CI_PLATFORM}-dev", "-f Dockerfile .")
-            ubuntuImage = docker.build("${REGISTRY}:ubuntu-${CI_PLATFORM}-dev", "-f Dockerfile.ubuntu .")
+            baseImage = docker.build("${IMAGE_NAME}:${CI_PLATFORM}-dev", "-f Dockerfile .")
+            ubuntuImage = docker.build("${IMAGE_NAME}:ubuntu-${CI_PLATFORM}-dev", "-f Dockerfile.ubuntu .")
           } else if (params.BRANCH == 'master') {
-            baseImage = docker.build("${REGISTRY}:${CI_PLATFORM}-latest", "-f Dockerfile .")
-            ubuntuImage = docker.build("${REGISTRY}:ubuntu-${CI_PLATFORM}-latest", "-f Dockerfile.ubuntu .")
+            baseImage = docker.build("${IMAGE_NAME}:${CI_PLATFORM}-latest", "-f Dockerfile .")
+            ubuntuImage = docker.build("${IMAGE_NAME}:ubuntu-${CI_PLATFORM}-latest", "-f Dockerfile.ubuntu .")
           } else {
-            dockerImage = docker.build("${REGISTRY}:${CI_PLATFORM}-${BRANCH_NAME}", "-f Dockerfile .")
-            ubuntuImage = docker.build("${REGISTRY}:ubuntu-${CI_PLATFORM}-${BRANCH_NAME}", "-f Dockerfile.ubuntu .")
+            dockerImage = docker.build("${IMAGE_NAME}:${CI_PLATFORM}-${BRANCH_NAME}", "-f Dockerfile .")
+            ubuntuImage = docker.build("${IMAGE_NAME}:ubuntu-${CI_PLATFORM}-${BRANCH_NAME}", "-f Dockerfile.ubuntu .")
           }
         }
       }
@@ -99,14 +99,14 @@ pipeline {
       steps {
         script {
           if (params.BRANCH == 'dev') {
-            sh "docker rmi ${REGISTRY}:${CI_PLATFORM}-dev"
-            sh "docker rmi ${REGISTRY}:ubuntu-${CI_PLATFORM}-dev"
+            sh "docker rmi ${IMAGE_NAME}:${CI_PLATFORM}-dev"
+            sh "docker rmi ${IMAGE_NAME}:ubuntu-${CI_PLATFORM}-dev"
           } else if (params.BRANCH == 'master') {
-            sh "docker rmi ${REGISTRY}:${CI_PLATFORM}-latest"
-            sh "docker rmi ${REGISTRY}:ubuntu-${CI_PLATFORM}-latest"
+            sh "docker rmi ${IMAGE_NAME}:${CI_PLATFORM}-latest"
+            sh "docker rmi ${IMAGE_NAME}:ubuntu-${CI_PLATFORM}-latest"
           } else {
-            sh "docker rmi ${REGISTRY}:${CI_PLATFORM}-${BRANCH_NAME}"
-            sh "docker rmi ${REGISTRY}:ubuntu-${CI_PLATFORM}-${BRANCH_NAME}"
+            sh "docker rmi ${IMAGE_NAME}:${CI_PLATFORM}-${BRANCH_NAME}"
+            sh "docker rmi ${IMAGE_NAME}:ubuntu-${CI_PLATFORM}-${BRANCH_NAME}"
           }
         }
       }
@@ -118,7 +118,7 @@ pipeline {
       }
       steps {
         script {
-          docker.image('jsloan117/docker-mkdocs:latest').withRun("-v ${WORKSPACE}:/docs", "mkdocs build") /*{
+          docker.image('jsloan117/docker-mkdocs:latest').withRun("-v ${WORKSPACE}:/docs"[, "mkdocs build"]) /*{
             sh 'mkdocs build'
           }*/
         }

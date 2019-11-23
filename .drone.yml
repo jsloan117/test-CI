@@ -86,7 +86,7 @@ name: Documentation Builder
 
 steps:
 - name: generate documentation
-  image: jsloan117/docker-mkdocs
+  #image: jsloan117/docker-mkdocs
   commands:
     - docker run --rm -it -v ${PWD}:/docs jsloan117/docker-mkdocs mkdocs build
   when:
