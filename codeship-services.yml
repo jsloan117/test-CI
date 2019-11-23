@@ -1,18 +1,16 @@
 services:
   build_images:
-    build:
-      image:  jsloan117/test-ci
-      dockerfile: Dockerfile
+    add_docker: true
+    cached: true
+    image:  docker:stable-dind
 
   build_alt_images:
-    build:
-      image:  jsloan117/test-ci
-      dockerfile: Dockerfile.ubuntu
+    add_docker: true
+    cached: true
+    image:  docker:stable-dind
 
 ##  build_documentation:
 ##    image:  jsloan117/docker-mkdocs:latest
-
-
 
 #services:
 #  build_images:

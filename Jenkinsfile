@@ -118,7 +118,9 @@ pipeline {
       }
       steps {
         script {
-          docker.image('jsloan117/docker-mkdocs:latest').withRun("-v ${WORKSPACE}:/docs", "mkdocs build") /*{
+          sh "docker run --rm -v ${PWD}:/docs jsloan117/docker-mkdocs mkdocs build"
+          /*
+          docker.image('jsloan117/docker-mkdocs:latest').withRun("-v ${WORKSPACE}:/docs", "mkdocs build") {
             sh 'mkdocs build'
           }*/
         }

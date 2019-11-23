@@ -8,24 +8,32 @@ env:
     - DOCKER_USER=jsloan117
     - DOCKER_PASS=
     - DOCKER_REPO=test-ci
-    - IMAGE_NAME=$DOCKER_USER/$DOCKER_REPO
+    - IMAGE_NAME=jsloan117/test-ci
+    - CI_PLATFORM=travisci
 
 jobs:
   include:
     - stage: build docker images
-      env:
-        - CI_PLATFORM=travisci
       script: |
         if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
         docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
+        if [ "${TRAVIS_BRANCH}" == 'master' ] || [ "${TRAVIS_BRANCH}" == 'dev' ]; then
+          echo "I would be logging in and pushing stuff................"
+        else
+          echo "Not pushing PR's"
+          exit 0
+        fi
 
     - stage: build ubuntu docker images
-      env:
-        - DOCKERFILE=Dockerfile.ubuntu
-        - CI_PLATFORM=travisci
       script: |
         if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
         docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
+        if [ "${TRAVIS_BRANCH}" == 'master' ] || [ "${TRAVIS_BRANCH}" == 'dev' ]; then
+          echo "I would be logging in and pushing stuff................"
+        else
+          echo "Not pushing PR's"
+          exit 0
+        fi
 
 deploy:
   provider: pages

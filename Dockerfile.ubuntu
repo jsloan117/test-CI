@@ -2,15 +2,6 @@ FROM ubuntu:18.04
 LABEL Name=test-CI Version=0.3
 LABEL maintainer="Jonathan Sloan"
 
-ENV DEBIAN_FRONTEND=noninteractive
-
-#RUN echo "*** updating system ***" \
-#    && apt-get update \
-#    && echo "*** installing packages ***" \
-#    && apt-get -y install wkhtmltopdf nodejs npm \
-#    && echo "*** cleanup ***" \
-#    && apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/* /tmp/* /var/tmp/*
-
 ADD hello-world.sh /
 RUN chmod +x /hello-world.sh
 
