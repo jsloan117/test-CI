@@ -20,7 +20,7 @@ Hello, World!
 |:------------------:|
 | `Azure Pipelines`  |
 | `CircleCI`         |
-|<s> `CodeShip`</s>  |
+| `CodeShip`         |
 |<s> `Concourse`</s> |
 | `Drone.io`         |
 | `Jenkins`          |
@@ -30,7 +30,5 @@ Hello, World!
 ## Platforms no longer being tested
 
 `Concourse`: While great because it's self hosted and feature rich, I don't have time to continue to try and figure out how to set this up.
-
-`Codeship`: I liked the idea of, but unfortunately on their basic/free tier Docker is not support and is a shame.
 
 `Shippable`: Is a very powerful platform but due to it being so powerful its some what complex and overkill for my needs.

@@ -74,6 +74,11 @@ steps:
     branch:
     - dev
 
+volumes:
+- name: dockersock
+  host:
+    path: /var/run/docker.sock
+
 ---
 kind: pipeline
 type: exec
@@ -96,10 +101,10 @@ steps:
 #    branch:
 #    - master
 
-volumes:
-- name: dockersock
-  host:
-    path: /var/run/docker.sock
+#volumes:
+#- name: dockersock
+#  host:
+#    path: /var/run/docker.sock
 #- name: docs
 #  host:
 #    path: $PWD/docs

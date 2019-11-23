@@ -35,6 +35,24 @@ jobs:
           command: |
             source $BASH_ENV
             docker build -f Dockerfile -t $IMAGE_NAME:$IMAGE_TAG .
+      - run:
+          name: push image
+          command: |
+            if [ "${CIRCLE_BRANCH}" == 'master' ] || [ "${CIRCLE_BRANCH}" == 'dev' ]; then
+              echo "I would be logging in and pushing stuff................"
+            else
+              echo "Not pushing PR's"
+              exit 0
+            fi
+#      - run:
+#          name: login to docker
+#          command: echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+#      - run:
+#          name: push image
+#          command: docker push $IMAGE_NAME:$IMAGE_TAG
+#      - run:
+#          name: logout to docker
+#          command: docker logout
 
   build-ubuntu-image:
     executor: default-executor
@@ -49,6 +67,15 @@ jobs:
           command: |
             source $BASH_ENV
             docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:$IMAGE_TAG .
+      - run:
+          name: push image
+          command: |
+            if [ "${CIRCLE_BRANCH}" == 'master' ] || [ "${CIRCLE_BRANCH}" == 'dev' ]; then
+              echo "I would be logging in and pushing stuff................"
+            else
+              echo "Not pushing PR's"
+              exit 0
+            fi
 
   build-and-deploy-gh-pages:
     docker:
@@ -63,8 +90,8 @@ jobs:
           command: pip install --user mkdocs mkdocs-material
       - run:
           name: "Build and push site"
-          command: mkdocs build
-#          command: mkdocs gh-deploy --message "Deployed {sha} with MkDocs version {version}. [skip ci]"
+#          command: mkdocs build
+          command: mkdocs gh-deploy --message "Deployed {sha} with MkDocs version {version}. [skip ci]"
 
 workflows:
   version: 2
