@@ -10,7 +10,7 @@
   command:  if [ "$CI_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$CI_BRANCH; export IMAGE_TAG; fi
   command:  docker build -f Dockerfile.ubuntu -t jsloan117/test-ci:ubuntu-$IMAGE_TAG .
 
-- name: build documentation
-  service:  build_documentation
-  tag:  dev
-  command:  docker run --rm -it -v $PWD:/docs jsloan117/docker-mkdocs mkdocs build
+#- name: build documentation
+#  service:  build_documentation
+#  tag:  dev
+#  command:  docker run --rm -it -v $PWD:/docs jsloan117/docker-mkdocs mkdocs build

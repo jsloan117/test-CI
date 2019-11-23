@@ -17,7 +17,7 @@ commands:
 executors:
   default-executor:
     docker:
-      - image: docker:stable-dind
+      - image: circleci/buildpack-deps:bionic
     environment:
       IMAGE_NAME: jsloan117/test-ci
 
@@ -38,6 +38,7 @@ jobs:
       - run:
           name: push image
           command: |
+            source $BASH_ENV
             if [ "${CIRCLE_BRANCH}" == 'master' ] || [ "${CIRCLE_BRANCH}" == 'dev' ]; then
               echo "I would be logging in and pushing stuff................"
             else
@@ -70,6 +71,7 @@ jobs:
       - run:
           name: push image
           command: |
+            source $BASH_ENV
             if [ "${CIRCLE_BRANCH}" == 'master' ] || [ "${CIRCLE_BRANCH}" == 'dev' ]; then
               echo "I would be logging in and pushing stuff................"
             else
@@ -88,6 +90,9 @@ jobs:
       - run:
           name: "Install Mkdocs and Material theme"
           command: pip install --user mkdocs mkdocs-material
+      - add_ssh_keys:
+          fingerprints:
+            - a8:ce:61:1e:75:9c:50:ba:28:da:47:f7:ac:bf:8a:d4
       - run:
           name: "Build and push site"
 #          command: mkdocs build
