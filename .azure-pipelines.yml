@@ -119,7 +119,11 @@ steps:
       targetType: inline
       script: |
         printf '\n<<< Building documentation >>>\n\n'
-        sudo docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs mkdocs build
+        python --version
+        python3 --version
+        pip --version
+        pip3 --version
+        sudo docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs mkdocs build --clean --strict
     enabled: true
 
   - task: Bash@3

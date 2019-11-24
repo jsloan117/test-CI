@@ -86,10 +86,8 @@ name: Documentation Builder
 
 steps:
 - name: generate documentation
-  #image: jsloan117/docker-mkdocs
   commands:
-    - docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs mkdocs build
-    - ls -lh && cd site/ && ls -lh
+    - docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs mkdocs build --clean --strict
   when:
     branch:
     - dev

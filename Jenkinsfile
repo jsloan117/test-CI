@@ -123,8 +123,8 @@ pipeline {
              #ls -lh
              #docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs ls -lh /docs
              docker run --rm --volumes-from jenkins jsloan117/docker-mkdocs bash -c \
-             "useradd -M -u 1000 -U jenkins; su jenkins -c \
-             \"cd $(pwd) && mkdocs build\""
+             "sed -i 's/^CREATE_MAIL_SPOOL=yes/CREATE_MAIL_SPOOL=no/' /etc/default/useradd;useradd -M -u 1000 -U jenkins; su jenkins -c \
+             "cd $(pwd) && mkdocs build""
              #docker run --rm -v /var/lib/docker/volumes/jenkins_home/_data/$(pwd):/docs jsloan117/docker-mkdocs ls -lh /docs
              '''
           /*
