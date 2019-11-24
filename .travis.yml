@@ -45,17 +45,19 @@ jobs:
       script: |
         docker images
 
-#    - stage: build documentation
-#      if: branch = dev
-#      script: |
-#        pip install mkdocs mkdocs-material
-#        mkdocs build --verbose --clean --strict
+    - stage: build documentation
+      if: branch = dev
+      script: |
+        python --version
+        pip3 install mkdocs mkdocs-material
+        mkdocs gh-deploy --message "Deployed {sha} with MkDocs version {version}. [skip ci]"
+#        mkdocs build -vcs
 
-before_deploy:
-#  - pyenv global 3.7.5
-  - python --version
-  - pip3 install mkdocs mkdocs-material
-  - mkdocs build --verbose --clean --strict
+#before_deploy:
+##  - pyenv global 3.7.5
+#  - python --version
+#  - pip3 install mkdocs mkdocs-material
+#  - mkdocs build -vcs
 
 deploy:
   provider: pages
@@ -65,4 +67,4 @@ deploy:
   local_dir: site
   committer_from_gh: true
   on:
-    branch: dev
+    branch: master
