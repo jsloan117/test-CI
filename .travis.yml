@@ -38,12 +38,22 @@ jobs:
       script: |
         docker images
 
+#    - stage: build documentation
+#      if: branch = dev
+#      script: |
+#        pip install mkdocs mkdocs-material
+#        mkdocs build --verbose --clean --strict
+
+before_deploy:
+  - pip install mkdocs mkdocs-material
+  - mkdocs build --verbose --clean --strict
+
 deploy:
   provider: pages
   cleanup: true
   github_token: "$GITHUB_TOKEN"
   keep_history: false
-  local_dir: site/
+  local_dir: site
   committer_from_gh: true
   on:
     branch: dev
