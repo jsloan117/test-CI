@@ -1,14 +1,14 @@
 build-images:
   image:  docker:stable-dind
-#    add_docker: true
-#    cached: true
+  add_docker: true
+  cached: true
 #    build:
 #      dockerfile: Dockerfile
 
 build-alt-images:
   image:  docker:stable-dind
-#    add_docker: true
-#    cached: true
+  add_docker: true
+  cached: true
  #   build:
  #     dockerfile: Dockerfile.ubuntu
 

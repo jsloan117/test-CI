@@ -54,7 +54,7 @@ jobs:
 before_deploy:
 #  - pyenv global 3.7.5
   - python --version
-  - pip3 install --user mkdocs mkdocs-material
+  - pip3 install mkdocs mkdocs-material
   - mkdocs build --verbose --clean --strict
 
 deploy:

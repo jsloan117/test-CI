@@ -5,7 +5,7 @@
 name: $(BuildDefinitionName)-$(SourceBranchName)-$(Date:yyyyMMdd)$(Rev:.r)
 
 variables:
-  system.debug: true
+  system.debug: false
   CI_PLATFORM: azure-pipelines
   IMAGE_NAME: jsloan117/test-ci
   ADO_BRANCH: $(Build.SourceBranchName)
@@ -76,8 +76,8 @@ steps:
       script: |
         printf '\n<<< Setting image tag >>>\n\n'
         if [ "$ADO_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$ADO_BRANCH; fi
+        printf "\nimage tag is $(IMAGE_TAG)\n"
         echo "##vso[task.setvariable variable=IMAGE_TAG]$IMAGE_TAG"
-#        export IMAGE_TAG #ADO_BRANCH
     enabled: true
 
   - task: Bash@3
@@ -108,7 +108,7 @@ steps:
       script: |
         printf '\n<<< inspecting images >>>\n\n'
         for img in $(sudo docker images | awk '{OFS = ":";} {print $1,$2}' | tail -n+2 | head -n2); do 
-          sudo docker image inspect -f '{{json .Config.Labels}}' "${img}"; printf '\n\n'; 
+          sudo docker image inspect -f '{{json .Config.Labels}}' "${img}"; printf '\n'; 
         done
     enabled: true
 
