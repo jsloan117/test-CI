@@ -79,7 +79,8 @@ steps:
         #ADO_BRANCH=$(BUILD_SOURCEBRANCHNAME)
         #echo "##vso[task.setvariable variable=ADO_BRANCH]$ADO_BRANCH"
         #if [ "$ADO_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$ADO_BRANCH; fi
-        if [ "$BUILD_SOURCEBRANCHNAME" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$BUILD_SOURCEBRANCHNAME; fi
+        #if [ "$BUILD_SOURCEBRANCHNAME" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$BUILD_SOURCEBRANCHNAME; fi
+        if [ "$ADO_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$ADO_BRANCH; fi
         echo "##vso[task.setvariable variable=IMAGE_TAG]$IMAGE_TAG"
         printf "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n$CI_PLATFORM\n"
         export IMAGE_TAG #ADO_BRANCH

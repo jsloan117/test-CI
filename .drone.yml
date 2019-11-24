@@ -64,15 +64,15 @@ steps:
     docker rmi $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG
     docker rmi $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG
 
-- name: generate documentation
-  image:  python:3.7-alpine3.10
-  commands:
-    - pip --no-cache-dir install mkdocs mkdocs-material
-    - mkdocs build
-    - ls -lh && cd site/ && ls -lh
-  when:
-    branch:
-    - dev
+#- name: generate documentation
+#  image:  python:3.7-alpine3.10
+#  commands:
+#    - pip --no-cache-dir install mkdocs mkdocs-material
+#    - mkdocs build
+#    - ls -lh && cd site/ && ls -lh
+#  when:
+#    branch:
+#    - dev
 
 volumes:
 - name: dockersock
