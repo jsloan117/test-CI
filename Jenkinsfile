@@ -113,12 +113,20 @@ pipeline {
     }
     stage('Build documentation') {
       /* build documentation using mkdocs */
+      /* Jenkins running in a container is causing issues for mounting volumes */
       when {
         branch 'dev'
       }
       steps {
         script {
-          sh 'docker run --rm -v /var/lib/docker/volumes/jenkins_home/_data/$(pwd):/docs jsloan117/docker-mkdocs mkdocs build'
+          sh '''
+             #ls -lh
+             #docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs ls -lh /docs
+             docker run --rm --volumes-from jenkins jsloan117/docker-mkdocs bash -c \
+             "useradd -M -u 1000 -U jenkins; su jenkins -c \
+             \"cd $(pwd) && mkdocs build\""
+             #docker run --rm -v /var/lib/docker/volumes/jenkins_home/_data/$(pwd):/docs jsloan117/docker-mkdocs ls -lh /docs
+             '''
           /*
           docker.image('jsloan117/docker-mkdocs:latest').withRun("-v ${WORKSPACE}:/docs", "mkdocs build") {
             sh 'mkdocs build'

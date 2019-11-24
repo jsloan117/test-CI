@@ -1,14 +1,23 @@
-- name: build docker images
-  service:  build-images
-  command:  echo -e "\n<<< Building docker images >>>"
-  command:  if [ "$CI_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$CI_BRANCH; export IMAGE_TAG; fi
-  command:  docker build -f Dockerfile -t jsloan117/test-ci:$IMAGE_TAG .
+- type: parallel
+  services:
+  - build-images
+#  - build-alt-images
+  steps:
+  - command: if [ "$CI_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$CI_BRANCH; export IMAGE_TAG; fi
+  - command: docker build -f Dockerfile -t jsloan117/test-ci:$IMAGE_TAG .
+  - command: docker build -f Dockerfile.ubuntu -t jsloan117/test-ci:$IMAGE_TAG .
 
-- name: build ubuntu docker images
-  service:  build-alt-images
-  command:  echo -e "\n<<< Building ubuntu docker images >>>"
-  command:  if [ "$CI_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$CI_BRANCH; export IMAGE_TAG; fi
-  command:  docker build -f Dockerfile.ubuntu -t jsloan117/test-ci:ubuntu-$IMAGE_TAG .
+#- name: build docker images
+#  service:  build-images
+#  command:  echo -e "\n<<< Building docker images >>>"
+#  command:  if [ "$CI_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$CI_BRANCH; export IMAGE_TAG; fi
+#  command:  docker build -f Dockerfile -t jsloan117/test-ci:$IMAGE_TAG .
+
+#- name: build ubuntu docker images
+#  service:  build-alt-images
+#  command:  echo -e "\n<<< Building ubuntu docker images >>>"
+#  command:  if [ "$CI_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$CI_BRANCH; export IMAGE_TAG; fi
+#  command:  docker build -f Dockerfile.ubuntu -t jsloan117/test-ci:ubuntu-$IMAGE_TAG .
 
 #- name: build documentation
 #  service:  build_documentation

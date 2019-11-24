@@ -36,14 +36,14 @@ pool:
 
 steps:
   - task: Docker@2
-    displayName: docker login
+    displayName: Docker login
     inputs:
       containerRegistry: 'Docker Hub'
       command: login
     enabled: false
 
   - task: Bash@3
-    displayName: install latest version of docker
+    displayName: Install latest version of docker
     condition: succeeded()
     inputs:
       targetType: inline
@@ -57,7 +57,7 @@ steps:
     enabled: true
 
   - task: Bash@3
-    displayName: get environment info
+    displayName: Get environment info
     condition: succeeded()
     inputs:
       targetType: inline
@@ -69,51 +69,61 @@ steps:
     enabled: false
 
   - task: Bash@3
-    displayName: set image tag
+    displayName: Set image tag
     condition: succeeded()
     inputs:
       targetType: inline
       script: |
         printf '\n<<< Setting image tag >>>\n\n'
         if [ "$ADO_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$ADO_BRANCH; fi
-        printf "\nimage tag is $(IMAGE_TAG)\n"
+        printf "\nImage tag is $IMAGE_TAG\n"
         echo "##vso[task.setvariable variable=IMAGE_TAG]$IMAGE_TAG"
     enabled: true
 
   - task: Bash@3
-    displayName: build docker images
+    displayName: Build docker images
     condition: succeeded()
     inputs:
       targetType: inline
       script: |
-        printf '\n<<< building image >>>\n\n'
+        printf '\n<<< Building image >>>\n\n'
         sudo docker build -f Dockerfile -t "$IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG" .
     enabled: true
 
   - task: Bash@3
-    displayName: build ubuntu docker images
+    displayName: Build ubuntu docker images
     condition: succeeded()
     inputs:
       targetType: inline
       script: |
-        printf '\n<<< building ubuntu image >>>\n\n'
+        printf '\n<<< Building ubuntu image >>>\n\n'
         sudo docker build -f Dockerfile.ubuntu -t "$IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG" .
     enabled: true
 
   - task: Bash@3
-    displayName: inspect image labels
+    displayName: Inspect image labels
     condition: succeeded()
     inputs:
       targetType: inline
       script: |
-        printf '\n<<< inspecting images >>>\n\n'
+        printf '\n<<< Inspecting images >>>\n\n'
         for img in $(sudo docker images | awk '{OFS = ":";} {print $1,$2}' | tail -n+2 | head -n2); do 
           sudo docker image inspect -f '{{json .Config.Labels}}' "${img}"; printf '\n'; 
         done
     enabled: true
 
   - task: Bash@3
-    displayName: pull request review
+    displayName: Build documentation
+    condition: succeeded()
+    inputs:
+      targetType: inline
+      script: |
+        printf '\n<<< Building documentation >>>\n\n'
+        sudo docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs mkdocs build
+    enabled: true
+
+  - task: Bash@3
+    displayName: Pull request review
     condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
     inputs:
       targetType: inline
@@ -122,7 +132,7 @@ steps:
     enabled: true
 
   - task: Docker@2
-    displayName: docker logout
+    displayName: Docker logout
     inputs:
       containerRegistry: 'Docker Hub'
       command: logout
