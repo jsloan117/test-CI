@@ -67,7 +67,7 @@ steps:
         docker --version
         printf "\n\n\n"
         docker info
-    enabled: false
+    enabled: true
 
   - task: Bash@3
     displayName: set environmental variables image tag

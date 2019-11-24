@@ -1,10 +1,10 @@
 language: minimal
 services: docker
 dist: bionic
-#addons:
-#  apt:
-#    packages:
-#      - python3-pip
+addons:
+  apt:
+    packages:
+      - python3-pip
 
 env:
   global:
@@ -50,6 +50,7 @@ jobs:
 
 before_deploy:
 #  - pyenv global 3.7.5
+  - python --version
   - pip3 install --user mkdocs mkdocs-material
   - mkdocs build --verbose --clean --strict
 

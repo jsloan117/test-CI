@@ -1,15 +1,15 @@
 services:
   build_images:
-    add_docker: true
-    cached: true
     image:  docker:stable-dind
+#    add_docker: true
+#    cached: true
 #    build:
 #      dockerfile: Dockerfile
 
   build_alt_images:
-    add_docker: true
-    cached: true
     image:  docker:stable-dind
+#    add_docker: true
+#    cached: true
  #   build:
  #     dockerfile: Dockerfile.ubuntu
 
