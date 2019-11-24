@@ -50,8 +50,8 @@ jobs:
       script: |
         python --version
         pip3 install mkdocs mkdocs-material
-        mkdocs gh-deploy --message "Deployed {sha} with MkDocs version {version}. [skip ci]"
-#        mkdocs build -vcs
+#        mkdocs gh-deploy --message "Deployed {sha} with MkDocs version {version}. [skip ci]"
+        mkdocs build -vcs
 
 #before_deploy:
 ##  - pyenv global 3.7.5
