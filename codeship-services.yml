@@ -1,13 +1,12 @@
-services:
-  build_images:
-    image:  docker:stable-dind
+build-images:
+  image:  docker:stable-dind
 #    add_docker: true
 #    cached: true
 #    build:
 #      dockerfile: Dockerfile
 
-  build_alt_images:
-    image:  docker:stable-dind
+build-alt-images:
+  image:  docker:stable-dind
 #    add_docker: true
 #    cached: true
  #   build:

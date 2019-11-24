@@ -9,7 +9,6 @@ variables:
   CI_PLATFORM: azure-pipelines
   IMAGE_NAME: jsloan117/test-ci
   ADO_BRANCH: $(Build.SourceBranchName)
-#  ADO_BRANCH: $(BUILD_SOURCEBRANCHNAME)
 
 schedules:
   - cron: '0 0 * * 6'
@@ -67,23 +66,18 @@ steps:
         docker --version
         printf "\n\n\n"
         docker info
-    enabled: true
+    enabled: false
 
   - task: Bash@3
-    displayName: set environmental variables image tag
+    displayName: set image tag
     condition: succeeded()
     inputs:
       targetType: inline
       script: |
-        printf '\n<<< Setting image name & tag format >>>\n'
-        #ADO_BRANCH=$(BUILD_SOURCEBRANCHNAME)
-        #echo "##vso[task.setvariable variable=ADO_BRANCH]$ADO_BRANCH"
-        #if [ "$ADO_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$ADO_BRANCH; fi
-        #if [ "$BUILD_SOURCEBRANCHNAME" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$BUILD_SOURCEBRANCHNAME; fi
+        printf '\n<<< Setting image tag >>>\n\n'
         if [ "$ADO_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$ADO_BRANCH; fi
         echo "##vso[task.setvariable variable=IMAGE_TAG]$IMAGE_TAG"
-        printf "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n$CI_PLATFORM\n"
-        export IMAGE_TAG #ADO_BRANCH
+#        export IMAGE_TAG #ADO_BRANCH
     enabled: true
 
   - task: Bash@3
@@ -92,10 +86,7 @@ steps:
     inputs:
       targetType: inline
       script: |
-        printf '\n<<< building images >>>\n\n'
-        ##if [ "$BUILD_SOURCEBRANCHNAME" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$BUILD_SOURCEBRANCHNAME; fi
-        #if [ "$ADO_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$ADO_BRANCH; fi
-        printf "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n$CI_PLATFORM\n$BUILD_SOURCEBRANCHNAME\n"
+        printf '\n<<< building image >>>\n\n'
         sudo docker build -f Dockerfile -t "$IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG" .
     enabled: true
 
@@ -105,10 +96,7 @@ steps:
     inputs:
       targetType: inline
       script: |
-        printf '\n<<< building ubuntu images >>>\n\n'
-        ##if [ "$BUILD_SOURCEBRANCHNAME" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$BUILD_SOURCEBRANCHNAME; fi
-        #if [ "$ADO_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$ADO_BRANCH; fi
-        printf "\n$ADO_BRANCH\n$IMAGE_NAME\n$IMAGE_TAG\n$CI_PLATFORM\n$BUILD_SOURCEBRANCHNAME\n"
+        printf '\n<<< building ubuntu image >>>\n\n'
         sudo docker build -f Dockerfile.ubuntu -t "$IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG" .
     enabled: true
 
