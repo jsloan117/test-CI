@@ -17,7 +17,8 @@ commands:
 executors:
   default-executor:
     docker:
-      - image: circleci/buildpack-deps:bionic
+      - image: docker:stable-dind
+      #- image: circleci/buildpack-deps:bionic
     environment:
       IMAGE_NAME: jsloan117/test-ci
 
@@ -120,4 +121,4 @@ workflows:
       - build-and-deploy-gh-pages:
           filters:
             branches:
-              only: dev
+              only: master

@@ -1,7 +1,6 @@
 language: minimal
 services: docker
 dist: bionic
-sudo: required
 
 env:
   global:
@@ -17,7 +16,7 @@ jobs:
       script: |
         if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
         docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
-        if [ "${TRAVIS_BRANCH}" == 'master' ] || [ "${TRAVIS_BRANCH}" == 'dev' ]; then
+        if [ "${TRAVIS_PULL_REQUEST}" != "true" ]; then
           echo "I would be logging in and pushing stuff................"
         else
           echo "Not pushing PR's"
@@ -28,19 +27,23 @@ jobs:
       script: |
         if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
         docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
-        if [ "${TRAVIS_BRANCH}" == 'master' ] || [ "${TRAVIS_BRANCH}" == 'dev' ]; then
+        if [ "${TRAVIS_PULL_REQUEST}" != "true" ]; then
           echo "I would be logging in and pushing stuff................"
         else
           echo "Not pushing PR's"
           exit 0
         fi
 
+    - stage: push images
+      script: |
+        docker images
+
 deploy:
   provider: pages
-  skip_cleanup: true
-  github_token: $TOKEN
-  keep_history: true
-  #local_dir: site
+  cleanup: true
+  github_token: "$GITHUB_TOKEN"
+  keep_history: false
+  local_dir: site/
   committer_from_gh: true
   on:
-    branch: master
+    branch: dev
