@@ -9,7 +9,7 @@
 
 - name: build docker images
   service:  build-images
-  command:  echo "base command one"
+  command:  if [ "$CI_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$CI_BRANCH; export IMAGE_TAG; fi
 
 - name: build ubuntu docker images
   service:  build-alt-images
