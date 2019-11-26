@@ -120,11 +120,11 @@ pipeline {
       steps {
         script {
           sh '''
+             pip3 install --user mkdocs mkdocs-material
+             mkdocs build -vcs
              #ls -lh
              #docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs ls -lh /docs
-             docker run --rm --volumes-from jenkins jsloan117/docker-mkdocs bash -c \
-             "useradd -r -M -u 1000 -U jenkins; su jenkins -c \
-             "cd /var/jenkins_home/workspace/docker_containers_test-CI_dev && mkdocs build""
+             #docker run --rm --volumes-from jenkins jsloan117/docker-mkdocs bash -c "useradd -r -M -u 1000 -U jenkins; su jenkins -c "cd /var/jenkins_home/workspace/docker_containers_test-CI_dev && mkdocs build""
              #docker run --rm -v /var/lib/docker/volumes/jenkins_home/_data/$(pwd):/docs jsloan117/docker-mkdocs ls -lh /docs
              '''
           /*

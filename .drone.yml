@@ -3,12 +3,12 @@ type: docker
 name: Build Docker Images
 
 steps:
-- name: fetch repo
+- name: Fetch repo
   image: alpine/git
   commands:
     - git fetch --tags
 
-- name: set environment variables
+- name: Set environment variables
   image: plugins/docker
   commands:
     - |
@@ -17,7 +17,7 @@ steps:
       if [ "$DRONE_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; fi
       echo "IMAGE_TAG=$IMAGE_TAG" >> import.vars
 
-- name: build docker images
+- name: Build docker images
   image: plugins/docker
   volumes:
   - name: dockersock
@@ -31,7 +31,7 @@ steps:
       source import.vars
       docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
 
-- name: build ubuntu docker images
+- name: Build ubuntu docker images
   image: plugins/docker
   volumes:
   - name: dockersock
@@ -42,7 +42,7 @@ steps:
       source import.vars
       docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
 
-- name: test images
+- name: Test images
   image: plugins/docker
   volumes:
   - name: dockersock
@@ -53,7 +53,21 @@ steps:
     docker run --rm $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG bash --version
     docker run --rm $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG bash --version
 
-- name: remove created docker images
+- name: Push images
+  image: plugins/docker
+  volumes:
+  - name: dockersock
+    path: /var/run/docker.sock
+  commands:
+  - |
+    source import.vars
+    echo "I would be logging in and pushing stuff................"
+  trigger:
+    event:
+      exclude:
+        - pull_request
+
+- name: Remove created docker images
   image: plugins/docker
   volumes:
   - name: dockersock
@@ -85,7 +99,7 @@ type: exec
 name: Documentation Builder
 
 steps:
-- name: generate documentation
+- name: Generate documentation
   commands:
     - docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs mkdocs build --clean --strict
   when:

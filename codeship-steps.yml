@@ -9,13 +9,22 @@
 
 - name: build docker images
   service:  build-images
-  command:  if [ "$CI_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$CI_BRANCH; export IMAGE_TAG; fi
-  command:  /bin/sh -c 'docker build -f Dockerfile -t jsloan117/test-ci:$IMAGE_TAG .'
+  command:  echo "base command one"
 
 - name: build ubuntu docker images
   service:  build-alt-images
-  command:  if [ "$CI_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$CI_BRANCH; export IMAGE_TAG; fi
-  command:  /bin/sh -c 'docker build -f Dockerfile.ubuntu -t jsloan117/test-ci:ubuntu-$IMAGE_TAG .'
+  command:  echo "ubuntu command number two"
+
+
+#- name: build docker images
+#  service:  build-images
+#  command:  if [ "$CI_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$CI_BRANCH; export IMAGE_TAG; fi
+#  command:  /bin/sh -c 'docker build -f Dockerfile -t jsloan117/test-ci:$IMAGE_TAG .'
+
+#- name: build ubuntu docker images
+#  service:  build-alt-images
+#  command:  if [ "$CI_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$CI_BRANCH; export IMAGE_TAG; fi
+#  command:  /bin/sh -c 'docker build -f Dockerfile.ubuntu -t jsloan117/test-ci:ubuntu-$IMAGE_TAG .'
 
 #- name: build documentation
 #  service:  build_documentation

@@ -123,7 +123,7 @@ steps:
         python3 --version
         pip --version
         pip3 --version
-        sudo docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs mkdocs build -vcs
+        sudo docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs mkdocs gh-deploy -m "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
     enabled: true
 
   - task: Bash@3

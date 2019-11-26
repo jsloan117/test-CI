@@ -50,7 +50,7 @@ jobs:
       script: |
         python --version
         pip3 install mkdocs mkdocs-material
-#        mkdocs gh-deploy --message "Deployed {sha} with MkDocs version {version}. [skip ci]"
+        #mkdocs gh-deploy --message "Deployed {sha} with MkDocs version {version}. [skip ci]"
         mkdocs build -vcs
 
 #before_deploy:
