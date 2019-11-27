@@ -33,6 +33,7 @@ executors:
     docker:
       #- image: docker:stable-dind
       - image: circleci/buildpack-deps:bionic
+    working_directory: /home/circleci/project
     environment:
       IMAGE_NAME: jsloan117/test-ci
 
@@ -62,7 +63,10 @@ jobs:
             docker images
             pwd
             ls -lh $(pwd)
-            time docker save -o /tmp/docker-mkdocs.tar $IMAGE_NAME:$IMAGE_TAG
+            echo -e "\n\n\"
+            ls -lh /home/circleci/project
+            echo -e "\n\n"
+            docker save -o docker-mkdocs.tar $IMAGE_NAME:$IMAGE_TAG
             if [ "${CIRCLE_BRANCH}" == 'master' ] || [ "${CIRCLE_BRANCH}" == 'dev' ]; then
               echo "I would be logging in and pushing stuff................"
             else
@@ -70,7 +74,7 @@ jobs:
               exit 0
             fi
       - persist_to_workspace:
-          root: /tmp
+          root: /home/circleci/project
           paths:
             - docker-mkdocs.tar
 #      - run:
@@ -110,8 +114,11 @@ jobs:
             docker images
             pwd
             ls -lh $(pwd)
+            echo -e "\n\n\"
+            ls -lh /home/circleci/project
+            echo -e "\n\n"
             ls -lh /tmp
-            time docker save -o /tmp/docker-mkdocs-ubuntu.tar $IMAGE_NAME:$IMAGE_TAG
+            docker save -o docker-mkdocs-ubuntu.tar $IMAGE_NAME:$IMAGE_TAG
             if [ "${CIRCLE_BRANCH}" == 'master' ] || [ "${CIRCLE_BRANCH}" == 'dev' ]; then
               echo "I would be logging in and pushing stuff................"
             else
@@ -120,7 +127,7 @@ jobs:
             fi
             ls -lh /tmp
       - persist_to_workspace:
-          root: /tmp
+          root: /home/circleci/project
           paths:
             - docker-mkdocs-ubuntu.tar
 
@@ -128,7 +135,7 @@ jobs:
     executor: default-executor
     steps:
       - attach_workspace:
-          at: /tmp
+          at: /home/circleci/project
       - setup_remote_docker:
           version: 18.09.3
       - run:
@@ -136,6 +143,9 @@ jobs:
           command: |
             pwd
             ls -lh $(pwd)
+            echo -e "\n\n\"
+            ls -lh /home/circleci/project
+            echo -e "\n\n"
             ls -lh /tmp
 
   build-and-deploy-gh-pages:
