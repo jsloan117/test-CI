@@ -134,9 +134,9 @@ jobs:
       - run:
           name: push images
           command: |
-            source $BASH_ENV
             pwd
             ls -lh $(pwd)
+            ls -lh /tmp
 
   build-and-deploy-gh-pages:
     docker:
