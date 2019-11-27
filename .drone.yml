@@ -62,10 +62,10 @@ steps:
   - |
     source import.vars
     echo "I would be logging in and pushing stuff................"
-  trigger:
-    event:
-      exclude:
-        - pull_request
+    trigger:
+      event:
+        exclude:
+          - pull_request
 
 - name: Remove created docker images
   image: plugins/docker
@@ -101,7 +101,7 @@ name: Documentation Builder
 steps:
 - name: Generate documentation
   commands:
-    - docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs mkdocs build -vcs
+    - docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs mkdocs build -cs
   when:
     branch:
     - dev

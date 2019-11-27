@@ -122,7 +122,7 @@ pipeline {
           sh  '''
               export PATH=$PATH:$HOME/.local/bin
               pip3 install --user mkdocs mkdocs-material
-              mkdocs build -vcs
+              mkdocs build -cs
               ''' 
           /* sh '''
              pip3 install --user mkdocs mkdocs-material

@@ -9,7 +9,7 @@ RUN echo "*** updating system ***" \
     && echo "*** cleanup ***" \
     && rm -rf /tmp/* /var/tmp/*
 
-ADD hello-world.sh /
+ADD scripts/hello-world.sh /
 RUN chmod +x /hello-world.sh
 
 CMD [ "bash", "/hello-world.sh" ]

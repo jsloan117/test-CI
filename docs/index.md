@@ -20,7 +20,7 @@
 |:------------------:|
 | `Azure Pipelines`  |
 | `CircleCI`         |
-| `CodeShip`         |
+|<s> `CodeShip`</s>  |
 |<s> `Concourse`</s> |
 | `Drone.io`         |
 | `Jenkins`          |
@@ -30,5 +30,7 @@
 ## Platforms no longer being tested
 
 `Concourse`: While great because it's self hosted and feature rich, I don't have time to continue to try and figure out how to set this up.
+
+`Codeship`: I liked the idea of it, but don't have time to figure out why I can't perform conditional execution for building containers.
 
 `Shippable`: Is a very powerful platform but due to it being so powerful its some what complex and overkill for my needs.

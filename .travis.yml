@@ -22,10 +22,10 @@ jobs:
         printf '\n<<< building image >>>\n\n'
         if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
         docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
-        if [ "${TRAVIS_PULL_REQUEST}" != "true" ]; then
-          echo "I would be logging in and pushing stuff................"
-        else
+        if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
           echo "Not pushing PR's"
+        else
+          echo "I would be logging in and pushing stuff................"
           exit 0
         fi
 
@@ -34,10 +34,10 @@ jobs:
         printf '\n<<< building ubuntu image >>>\n\n'
         if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
         docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
-        if [ "${TRAVIS_PULL_REQUEST}" != "true" ]; then
-          echo "I would be logging in and pushing stuff................"
-        else
+        if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
           echo "Not pushing PR's"
+        else
+          echo "I would be logging in and pushing stuff................"
           exit 0
         fi
 
@@ -51,13 +51,13 @@ jobs:
         python --version
         pip3 install mkdocs mkdocs-material
         #mkdocs gh-deploy --message "Deployed {sha} with MkDocs version {version}. [skip ci]"
-        mkdocs build -vcs
+        mkdocs build -cs
 
 #before_deploy:
 ##  - pyenv global 3.7.5
 #  - python --version
 #  - pip3 install mkdocs mkdocs-material
-#  - mkdocs build -vcs
+#  - mkdocs build -cs
 
 deploy:
   provider: pages

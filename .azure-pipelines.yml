@@ -123,8 +123,9 @@ steps:
         python3 --version
         pip --version
         pip3 --version
-        sudo pip install mkdocs mkdocs-material
-        mkdocs gh-deploy -m "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
+        pip install mkdocs mkdocs-material
+        mkdocs build -cs
+        #mkdocs gh-deploy -m "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
         #sudo docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs mkdocs gh-deploy -m "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
     enabled: true
 

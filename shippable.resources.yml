@@ -23,7 +23,7 @@ resources:
     versionTemplate:
       method: email
       recipients:
-        - jsloan117@gmail.com
+        - 
 
   - name: build_parameters
     type: params
