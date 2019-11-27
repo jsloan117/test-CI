@@ -137,7 +137,7 @@ jobs:
     executor: default-executor
     steps:
       - attach_workspace:
-          at: /home/circleci/project
+          at: /tmp/project
       - setup_remote_docker:
           version: 18.09.3
       - run:
@@ -149,6 +149,7 @@ jobs:
             ls -lh /home/circleci/project
             echo -e '\n\n'
             ls -lh /tmp
+            ls -lh /tmp/project
 
   build-and-deploy-gh-pages:
     docker:
