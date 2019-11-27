@@ -63,9 +63,9 @@ jobs:
             docker images
             pwd
             ls -lh $(pwd)
-            echo -e "\n\n\"
+            echo -e '\n\n'
             ls -lh /home/circleci/project
-            echo -e "\n\n"
+            echo -e '\n\n'
             docker save -o docker-mkdocs.tar $IMAGE_NAME:$IMAGE_TAG
             if [ "${CIRCLE_BRANCH}" == 'master' ] || [ "${CIRCLE_BRANCH}" == 'dev' ]; then
               echo "I would be logging in and pushing stuff................"
@@ -114,9 +114,9 @@ jobs:
             docker images
             pwd
             ls -lh $(pwd)
-            echo -e "\n\n\"
+            echo -e '\n\n'
             ls -lh /home/circleci/project
-            echo -e "\n\n"
+            echo -e '\n\n'
             ls -lh /tmp
             docker save -o docker-mkdocs-ubuntu.tar $IMAGE_NAME:$IMAGE_TAG
             if [ "${CIRCLE_BRANCH}" == 'master' ] || [ "${CIRCLE_BRANCH}" == 'dev' ]; then
@@ -143,9 +143,9 @@ jobs:
           command: |
             pwd
             ls -lh $(pwd)
-            echo -e "\n\n\"
+            echo -e '\n\n'
             ls -lh /home/circleci/project
-            echo -e "\n\n"
+            echo -e '\n\n'
             ls -lh /tmp
 
   build-and-deploy-gh-pages:
