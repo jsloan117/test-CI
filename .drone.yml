@@ -63,6 +63,10 @@ steps:
     source import.vars
     echo "I would be logging in and pushing stuff................"
   when:
+    branch:
+      include:
+      - master
+      - dev
     event:
       exclude:
       - pull_request
