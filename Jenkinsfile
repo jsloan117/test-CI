@@ -119,9 +119,11 @@ pipeline {
       }
       steps {
         script {
-          sh 'export PATH=$PATH:$HOME/.local/bin'
-          sh 'pip3 install --user mkdocs mkdocs-material'
-          sh 'mkdocs build -vcs'
+          sh  '''
+              export PATH=$PATH:$HOME/.local/bin
+              pip3 install --user mkdocs mkdocs-material
+              mkdocs build -vcs
+              ''' 
           /* sh '''
              pip3 install --user mkdocs mkdocs-material
              mkdocs build -vcs
