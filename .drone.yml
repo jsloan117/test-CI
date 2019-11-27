@@ -62,10 +62,10 @@ steps:
   - |
     source import.vars
     echo "I would be logging in and pushing stuff................"
-    trigger:
-      event:
-        exclude:
-          - pull_request
+  when:
+    event:
+      exclude:
+      - pull_request
 
 - name: Remove created docker images
   image: plugins/docker

@@ -119,15 +119,22 @@ pipeline {
       }
       steps {
         script {
-          sh  '''
-              export PATH=$PATH:$HOME/.local/bin
-              pip3 install --user mkdocs mkdocs-material
-              mkdocs build -cs
-              ''' 
-          /* sh '''
-             pip3 install --user mkdocs mkdocs-material
-             mkdocs build -vcs
-             #ls -lh
+          sh '''
+            export PATH=${PATH}:${HOME}/.local/bin
+            pip3 install --user mkdocs mkdocs-material
+            mkdocs build -cs
+          '''
+        }
+      }
+    }
+  }
+}
+
+/*
+The below is multiple attempts at getting jenkins container to pass its volume
+into the mkdocs container (unsuccessfully). Leaving for notes/progress 4 now.
+*/
+/* sh '''
              #docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs ls -lh /docs
              #docker run --rm --volumes-from jenkins jsloan117/docker-mkdocs bash -c "useradd -r -M -u 1000 -U jenkins; su jenkins -c "cd /var/jenkins_home/workspace/docker_containers_test-CI_dev && mkdocs build""
              #docker run --rm -v /var/lib/docker/volumes/jenkins_home/_data/$(pwd):/docs jsloan117/docker-mkdocs ls -lh /docs
@@ -136,10 +143,8 @@ pipeline {
           docker.image('jsloan117/docker-mkdocs:latest').withRun("-v ${WORKSPACE}:/docs", "mkdocs build") {
             sh 'mkdocs build'
           }*/
-        }
-      }
-    }
-    /*stage('Build documentation') {
+
+/*stage('Build documentation') {
       agent {
         docker {
           image 'jsloan117/docker-mkdocs:latest'
@@ -154,5 +159,3 @@ pipeline {
         echo 'one'
       }
     }*/
-  }
-}

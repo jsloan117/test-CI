@@ -23,9 +23,9 @@ jobs:
         if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
         docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
         if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
-          echo "Not pushing PR's"
+          printf "\nNot pushing PR's\n\n"
         else
-          echo "I would be logging in and pushing stuff................"
+          printf "\nI would be logging in and pushing stuff................\n\n"
           exit 0
         fi
 
@@ -35,9 +35,9 @@ jobs:
         if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
         docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
         if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
-          echo "Not pushing PR's"
+          printf "\nNot pushing PR's\n\n"
         else
-          echo "I would be logging in and pushing stuff................"
+          printf "\nI would be logging in and pushing stuff................\n\n"
           exit 0
         fi
 
