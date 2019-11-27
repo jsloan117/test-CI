@@ -1,5 +1,5 @@
 FROM ubuntu:18.04
-LABEL Name=test-CI Version=0.3
+LABEL Name=test-CI Version=0.4
 LABEL maintainer="Jonathan Sloan"
 
 ADD hello-world.sh /
