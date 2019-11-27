@@ -54,7 +54,7 @@ jobs:
           name: test image
           command: |
             source $BASH_ENV
-            docker run --rm $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG bash --version
+            docker run --rm $IMAGE_NAME:$IMAGE_TAG bash --version
       - run:
           name: push image
           command: |
@@ -92,7 +92,7 @@ jobs:
           name: test image
           command: |
             source $BASH_ENV
-            docker run --rm $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG bash --version
+            docker run --rm $IMAGE_NAME:$IMAGE_TAG bash --version
       - run:
           name: push image
           command: |
