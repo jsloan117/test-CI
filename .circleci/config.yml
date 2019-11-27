@@ -61,8 +61,8 @@ jobs:
             source $BASH_ENV
             docker images
             pwd
-            ls -lh $CIRCLE_WORKING_DIRECTORY/
-            time docker save -o docker-mkdocs.tar $IMAGE_NAME:$IMAGE_TAG
+            ls -lh $(pwd)
+            time docker save -o /tmp/docker-mkdocs.tar $IMAGE_NAME:$IMAGE_TAG
             if [ "${CIRCLE_BRANCH}" == 'master' ] || [ "${CIRCLE_BRANCH}" == 'dev' ]; then
               echo "I would be logging in and pushing stuff................"
             else
@@ -70,7 +70,7 @@ jobs:
               exit 0
             fi
       - persist_to_workspace:
-          root: $CIRCLE_WORKING_DIRECTORY
+          root: /tmp
           paths:
             - docker-mkdocs.tar
 #      - run:
@@ -87,7 +87,7 @@ jobs:
     executor: default-executor
     steps:
       - attach_workspace:
-          at: $CIRCLE_WORKING_DIRECTORY
+          at: /tmp
       - checkout
       - setup_remote_docker:
           version: 18.09.3
@@ -109,8 +109,8 @@ jobs:
             source $BASH_ENV
             docker images
             pwd
-            ls -lh $CIRCLE_WORKING_DIRECTORY/
-            time docker save -o docker-mkdocs-ubuntu.tar $IMAGE_NAME:$IMAGE_TAG
+            ls -lh $(pwd)
+            time docker save -o /tmp/docker-mkdocs-ubuntu.tar $IMAGE_NAME:$IMAGE_TAG
             if [ "${CIRCLE_BRANCH}" == 'master' ] || [ "${CIRCLE_BRANCH}" == 'dev' ]; then
               echo "I would be logging in and pushing stuff................"
             else
@@ -118,7 +118,7 @@ jobs:
               exit 0
             fi
       - persist_to_workspace:
-          root: $CIRCLE_WORKING_DIRECTORY
+          root: /tmp
           paths:
             - docker-mkdocs-ubuntu.tar
 
@@ -126,7 +126,7 @@ jobs:
     executor: default-executor
     steps:
       - attach_workspace:
-          at: $CIRCLE_WORKING_DIRECTORY
+          at: /tmp
       - setup_remote_docker:
           version: 18.09.3
       - run:
@@ -135,7 +135,6 @@ jobs:
             source $BASH_ENV
             pwd
             ls -lh $(pwd)
-            ls -lh $CIRCLE_WORKING_DIRECTORY
 
   build-and-deploy-gh-pages:
     docker:
