@@ -64,7 +64,7 @@ jobs:
             pwd
             ls -lh $(pwd)
             set -xv
-            docker save -o docker-mkdocs.tar $IMAGE_NAME:$IMAGE_TAG
+            docker save -o /home/circleci/project/docker-mkdocs.tar $IMAGE_NAME:$IMAGE_TAG
             set +xv
             echo -e '\n\n'
             ls -lh /home/circleci/project
@@ -117,7 +117,7 @@ jobs:
             pwd
             ls -lh $(pwd)
             ls -lh /tmp
-            docker save -o docker-mkdocs-ubuntu.tar $IMAGE_NAME:$IMAGE_TAG
+            docker save -o /home/circleci/project/docker-mkdocs-ubuntu.tar $IMAGE_NAME:$IMAGE_TAG
             echo -e '\n\n'
             ls -lh /home/circleci/project
             echo -e '\n\n'
