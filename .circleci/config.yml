@@ -19,6 +19,14 @@ commands:
             fi
             if [ "<< parameters.dist >>" = "ubuntu" ]; then TAG_DISTRO=<< parameters.dist >>-circleci-; else TAG_DISTRO="circleci-"; fi
             echo "export IMAGE_TAG=$TAG_DISTRO$TAG_VERSION" >> $BASH_ENV
+      - run:
+          name: vars
+          command: |
+            echo ${CIRCLE_PR_NUMBER}
+            echo ${CIRCLE_PR_REPONAME}
+            echo ${CIRCLE_PR_USERNAME}
+            echo ${CIRCLE_PULL_REQUEST}
+            echo ${CIRCLE_PULL_REQUESTS}
 
 executors:
   default-executor:
@@ -42,6 +50,11 @@ jobs:
           command: |
             source $BASH_ENV
             docker build -f Dockerfile -t $IMAGE_NAME:$IMAGE_TAG .
+      - run:
+          name: test image
+          command: |
+            source $BASH_ENV
+            docker run --rm $IMAGE_NAME:$IMAGE_TAG bash --version
       - run:
           name: push image
           command: |
@@ -71,10 +84,15 @@ jobs:
       - set-image-tag:
           dist: ubuntu
       - run:
-          name: build ubuntu docker image
+          name: build docker image
           command: |
             source $BASH_ENV
             docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:$IMAGE_TAG .
+      - run:
+          name: test image
+          command: |
+            source $BASH_ENV
+            docker run --rm $IMAGE_NAME:$IMAGE_TAG bash --version
       - run:
           name: push image
           command: |
@@ -121,7 +139,8 @@ workflows:
 #          filters:
 #            branches:
 #              only:
-#                - beta
+#                - master
+#                - dev
       - build-ubuntu-image
 #          context: dockerhub
 #          filters:
