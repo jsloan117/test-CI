@@ -47,9 +47,11 @@ jobs:
       script: |
         whereis python
         which python3
-        ls -lh /opt
+        ls -lh /opt/pyenv
+        ls -lh /opt/python
         pyenv global 3.7
         python --version
+        python3 --version
         pip3 install mkdocs mkdocs-material
         #mkdocs gh-deploy --message "Deployed {sha} with MkDocs version {version}. [skip ci]"
         mkdocs build -cs

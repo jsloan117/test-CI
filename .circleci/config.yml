@@ -94,7 +94,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ~/images
+          at: ~/
       - setup_remote_docker:
           version: 18.09.3
       - set-image-tag:
@@ -136,7 +136,7 @@ jobs:
     executor: default-executor
     steps:
       - attach_workspace:
-          at: ~/images
+          at: ~/
       - setup_remote_docker:
           version: 18.09.3
       - run:

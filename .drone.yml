@@ -84,8 +84,19 @@ steps:
       from_secret: ssh_key
   commands:
     - |
+      whoami
+      echo $HOME
+      pwd
       [[ ! -d "$HOME/.ssh" ]] && mkdir -p "$HOME/.ssh"
       echo "$SSH_KEY" > $HOME/.ssh/id_rsa
+      cat <<'EOF' > $HOME/.ssh/config
+        host github.com
+        HostName github.com
+        #IdentityFile ~/.ssh/id_rsa
+        User git
+      EOF
+      ls -lhAR "$HOME/.ssh"
+      cat $HOME/.ssh/config
       apk update && apk --no-cache add git git-fast-import openssh-client
       pip --no-cache-dir install mkdocs mkdocs-material
       git config --global user.name "DroneIO"
