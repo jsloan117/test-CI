@@ -84,6 +84,7 @@ steps:
       from_secret: ssh_key
   commands:
     - |
+      [[ ! -d "$HOME/.ssh" ]] && mkdir -p "$HOME/.ssh"
       echo "$SSH_KEY" > $HOME/.ssh/id_rsa
       pip --no-cache-dir install mkdocs mkdocs-material
       git config --global user.name "DroneIO"

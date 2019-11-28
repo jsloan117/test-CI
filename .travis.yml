@@ -43,7 +43,7 @@ jobs:
         docker images
 
     - stage: build documentation
-      if: branch = dev
+      if: branch = fixme
       script: |
         pyenv global 3.7.5
         python --version

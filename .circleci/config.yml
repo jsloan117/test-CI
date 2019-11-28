@@ -186,7 +186,9 @@ workflows:
 #              only:
 #                - master
 #                - dev
-      - build-ubuntu-image
+      - build-ubuntu-image:
+          requires:
+            - build-default-image
 #          context: dockerhub
 #          filters:
 #            branches:
@@ -195,7 +197,9 @@ workflows:
 #                - dev
   push-docker-images:
     jobs:
-      - push-images
+      - push-images:
+          requires:
+            - build-ubuntu-image
   documentation-update:
     jobs:
       - build-and-deploy-gh-pages:
