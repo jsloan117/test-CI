@@ -62,13 +62,11 @@ jobs:
             source $BASH_ENV
             docker images
             pwd
+            echo $HOME
             ls -lh $(pwd)
-            set -xv
-            docker save -o /home/circleci/project/docker-mkdocs.tar $IMAGE_NAME:$IMAGE_TAG
-            set +xv
-            echo -e '\n\n'
-            ls -lh /home/circleci/project
-            echo -e '\n\n'
+            mkdir -p images
+            docker save -o images/docker-mkdocs.tar $IMAGE_NAME:$IMAGE_TAG
+            ls -lhAR images
             if [ "${CIRCLE_BRANCH}" == 'master' ] || [ "${CIRCLE_BRANCH}" == 'dev' ]; then
               echo "I would be logging in and pushing stuff................"
             else
@@ -76,7 +74,7 @@ jobs:
               exit 0
             fi
       - persist_to_workspace:
-          root: /home/circleci/project
+          root: images
           paths:
             - docker-mkdocs.tar
 #      - run:
@@ -93,7 +91,7 @@ jobs:
     executor: default-executor
     steps:
       - attach_workspace:
-          at: /tmp
+          at: /tmp/images
       - checkout
       - setup_remote_docker:
           version: 18.09.3
@@ -115,41 +113,36 @@ jobs:
             source $BASH_ENV
             docker images
             pwd
+            echo $HOME
             ls -lh $(pwd)
-            ls -lh /tmp
-            docker save -o /home/circleci/project/docker-mkdocs-ubuntu.tar $IMAGE_NAME:$IMAGE_TAG
-            echo -e '\n\n'
-            ls -lh /home/circleci/project
-            echo -e '\n\n'
+            ls -lhAR /tmp/images
+            docker save -o /tmp/images/docker-mkdocs-ubuntu.tar $IMAGE_NAME:$IMAGE_TAG
+            ls -lhAR /tmp/images
             if [ "${CIRCLE_BRANCH}" == 'master' ] || [ "${CIRCLE_BRANCH}" == 'dev' ]; then
               echo "I would be logging in and pushing stuff................"
             else
               echo "Not pushing PR's"
               exit 0
             fi
-            ls -lh /tmp
       - persist_to_workspace:
-          root: /home/circleci/project
+          root: /tmp
           paths:
-            - docker-mkdocs-ubuntu.tar
+            - images/docker-mkdocs-ubuntu.tar
 
   push-images:
     executor: default-executor
     steps:
       - attach_workspace:
-          at: /tmp/project
+          at: /tmp/images
       - setup_remote_docker:
           version: 18.09.3
       - run:
           name: push images
           command: |
             pwd
+            echo $HOME
             ls -lh $(pwd)
-            echo -e '\n\n'
-            ls -lh /home/circleci/project
-            echo -e '\n\n'
-            ls -lh /tmp
-            ls -lh /tmp/project
+            ls -lhAR /tmp/images
 
   build-and-deploy-gh-pages:
     docker:

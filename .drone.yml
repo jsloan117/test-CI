@@ -73,9 +73,6 @@ steps:
 
 - name: Remove created docker images
   image: plugins/docker
-  environment:
-    SSH_KEY:
-      from_secret: ssh_key
   volumes:
   - name: dockersock
     path: /var/run/docker.sock
@@ -84,28 +81,21 @@ steps:
     source import.vars
     docker rmi $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG
     docker rmi $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG
-    echo "$SSH_KEY"
 
-- name: publish documentation
-  image: plugins/gh-pages
-  volumes:
-  - name: dockersock
-    path: /var/run/docker.sock
-  settings:
-    pages_directory: site/
+- name: generate documentation
+  image:  python:3.7-alpine3.10
+  environment:
+    SSH_KEY:
+      from_secret: ssh_key
+  commands:
+    - |
+      echo "$SSH_KEY" > $HOME/.ssh/id_rsa
+      pip --no-cache-dir install mkdocs mkdocs-material
+      git config --global user.name "DroneIO"
+      mkdocs gh-deploy -m "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
   when:
     branch:
-    - master
-
-#- name: generate documentation
-#  image:  python:3.7-alpine3.10
-#  commands:
-#    - pip --no-cache-dir install mkdocs mkdocs-material
-#    - mkdocs build
-#    - ls -lh && cd site/ && ls -lh
-#  when:
-#    branch:
-#    - dev
+    - dev
 
 volumes:
 - name: dockersock
@@ -120,23 +110,9 @@ name: Documentation Builder
 steps:
 - name: Generate documentation
   commands:
+    - pwd
+    - echo $HOME
     - docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs mkdocs build -cs
   when:
     branch:
     - dev
-
-#- name: publish documentation
-#  image: plugins/gh-pages
-#  settings:
-#    pages_directory: site/
-#  when:
-#    branch:
-#    - master
-
-#volumes:
-#- name: dockersock
-#  host:
-#    path: /var/run/docker.sock
-#- name: docs
-#  host:
-#    path: $PWD/docs
