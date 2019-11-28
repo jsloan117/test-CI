@@ -45,7 +45,7 @@ jobs:
     - stage: build documentation
       if: branch = fixme
       script: |
-        pyenv global 3.7.5
+        pyenv global 3.7
         python --version
         pip3 install mkdocs mkdocs-material
         #mkdocs gh-deploy --message "Deployed {sha} with MkDocs version {version}. [skip ci]"

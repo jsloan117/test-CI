@@ -195,11 +195,15 @@ workflows:
 #              only:
 #                - master
 #                - dev
-  push-docker-images:
-    jobs:
       - push-images:
           requires:
+            - build-default-image
             - build-ubuntu-image
+#  push-docker-images:
+#    jobs:
+#      - push-images:
+#          requires:
+#            - build-ubuntu-image
   documentation-update:
     jobs:
       - build-and-deploy-gh-pages:
