@@ -90,7 +90,7 @@ steps:
       mkdocs gh-deploy -m "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
   when:
     branch:
-    - dev
+    - fixme
 
 volumes:
 - name: dockersock

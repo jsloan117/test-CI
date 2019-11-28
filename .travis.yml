@@ -1,5 +1,5 @@
-language: python
-python: 3.7
+language: minimal
+#python: 3.7
 services: docker
 dist: bionic
 #addons:
@@ -9,9 +9,6 @@ dist: bionic
 
 env:
   global:
-    - DOCKER_USER=jsloan117
-    - DOCKER_PASS=
-    - DOCKER_REPO=test-ci
     - IMAGE_NAME=jsloan117/test-ci
     - CI_PLATFORM=travisci
 
@@ -48,6 +45,7 @@ jobs:
     - stage: build documentation
       if: branch = dev
       script: |
+        pyenv global 3.7.5
         python --version
         pip3 install mkdocs mkdocs-material
         #mkdocs gh-deploy --message "Deployed {sha} with MkDocs version {version}. [skip ci]"

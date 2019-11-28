@@ -42,6 +42,8 @@ jobs:
     executor: default-executor
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/test-CI
       - setup_remote_docker:
           version: 18.09.3
       - set-image-tag:
@@ -74,7 +76,7 @@ jobs:
               exit 0
             fi
       - persist_to_workspace:
-          root: /home/circleci/test-CI
+          root: .
           paths:
             - images
 #      - run:
@@ -127,7 +129,7 @@ jobs:
               exit 0
             fi
       - persist_to_workspace:
-          root: /home/circleci/test-CI
+          root: .
           paths:
             - images
 
