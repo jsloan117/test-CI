@@ -2,7 +2,7 @@
 # mkdocs deployer (untested -- saving for know until I have more time to test)
 # https://gist.github.com/domenic/ec8b0fc8ab45f39403dd
 
-set -e -o pipefail
+set -eo pipefail
 
 SOURCE_BRANCH='master'
 TARGET_BRANCH='gh-pages'

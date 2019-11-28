@@ -1,11 +1,6 @@
 language: minimal
-#python: 3.7
 services: docker
 dist: bionic
-#addons:
-#  apt:
-#    packages:
-#      - python3-pip
 
 env:
   global:
@@ -47,38 +42,23 @@ jobs:
       language: python
       python: 3.7.5
       script: |
-        whereis python
-        echo ""
-        which python3
-        echo ""
-        ls -lh /opt/pyenv
-        echo ""
-        ls -lh /opt/python
-        echo ""
-        #pyenv install -v 3.7.5
-        echo ""
-        #pyenv global 3.7.5
-        echo ""
-        python --version
-        echo ""
-        python3 --version
-        echo ""
         pip3 install mkdocs mkdocs-material
         #mkdocs gh-deploy --message "Deployed {sha} with MkDocs version {version}. [skip ci]"
         mkdocs build -cs
 
 #before_deploy:
-##  - pyenv global 3.7.5
+#  - pyenv install -v 3.7.5
+#  - pyenv global 3.7.5
 #  - python --version
 #  - pip3 install mkdocs mkdocs-material
 #  - mkdocs build -cs
 
-deploy:
-  provider: pages
-  skip_cleanup: true
-  github_token: "$GITHUB_TOKEN"
-  keep_history: false
-  local_dir: site
-  committer_from_gh: true
-  on:
-    branch: master
+#deploy:
+#  provider: pages
+#  skip_cleanup: true
+#  github_token: "$GITHUB_TOKEN"
+#  keep_history: false
+#  local_dir: site
+#  committer_from_gh: true
+#  on:
+#    branch: master

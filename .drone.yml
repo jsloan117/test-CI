@@ -82,6 +82,10 @@ steps:
   environment:
     SSH_KEY:
       from_secret: ssh_key
+    GIT_KEY:
+      from_secret: github_hostkey
+    SSH_CONF:
+      from_secret: ssh_settings
   commands:
     - |
       whoami
@@ -89,13 +93,9 @@ steps:
       pwd
       [[ ! -d "$HOME/.ssh" ]] && mkdir -p "$HOME/.ssh"
       echo "$SSH_KEY" > $HOME/.ssh/id_rsa
-      chmod 600 $HOME/.ssh/id_rsa
-      cat <<'EOF' > $HOME/.ssh/config
-      host github.com
-        HostName github.com
-        #IdentityFile ~/.ssh/id_rsa
-        User git
-      EOF
+      echo "$SSH_CONF" > $HOME/.ssh/config
+      chmod -c 600 $HOME/.ssh/*
+      echo "$GIT_KEY" > $HOME/.ssh/known_hosts
       ls -lhAR "$HOME/.ssh"
       cat $HOME/.ssh/config
       apk update && apk --no-cache add git git-fast-import openssh-client
