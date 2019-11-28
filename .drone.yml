@@ -102,6 +102,7 @@ steps:
       #echo ""
       #ssh -T github.com
       #echo ""
+      git remote set-url origin git@github.com:jsloan117/test-CI.git
       pip --no-cache-dir install mkdocs mkdocs-material
       git config --global user.name "DroneIO"
       mkdocs gh-deploy -m "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
