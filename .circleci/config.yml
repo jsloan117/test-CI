@@ -33,7 +33,7 @@ executors:
     docker:
       #- image: docker:stable-dind
       - image: circleci/buildpack-deps:bionic
-    working_directory: /home/circleci/project
+    working_directory: ~/test-CI
     environment:
       IMAGE_NAME: jsloan117/test-ci
 
@@ -64,9 +64,9 @@ jobs:
             pwd
             echo $HOME
             ls -lh $(pwd)
-            mkdir -p images
-            docker save -o images/docker-mkdocs.tar $IMAGE_NAME:$IMAGE_TAG
-            ls -lhAR images
+            mkdir -p ~/test-CI/images
+            docker save -o ~/test-CI/images/docker-mkdocs.tar $IMAGE_NAME:$IMAGE_TAG
+            ls -lhAR ~/test-CI/images
             if [ "${CIRCLE_BRANCH}" == 'master' ] || [ "${CIRCLE_BRANCH}" == 'dev' ]; then
               echo "I would be logging in and pushing stuff................"
             else
@@ -74,9 +74,9 @@ jobs:
               exit 0
             fi
       - persist_to_workspace:
-          root: images
+          root: /home/circleci/test-CI
           paths:
-            - docker-mkdocs.tar
+            - images
 #      - run:
 #          name: login to docker
 #          command: echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
@@ -90,9 +90,9 @@ jobs:
   build-ubuntu-image:
     executor: default-executor
     steps:
-      - attach_workspace:
-          at: /tmp/images
       - checkout
+      - attach_workspace:
+          at: ~/test-CI
       - setup_remote_docker:
           version: 18.09.3
       - set-image-tag:
@@ -115,9 +115,11 @@ jobs:
             pwd
             echo $HOME
             ls -lh $(pwd)
-            ls -lhAR /tmp/images
-            docker save -o /tmp/images/docker-mkdocs-ubuntu.tar $IMAGE_NAME:$IMAGE_TAG
-            ls -lhAR /tmp/images
+            ls -lhA ~/test-CI
+            mkdir -pv ~/test-CI/images
+            ls -lhAR ~/test-CI/images
+            docker save -o ~/test-CI/images/docker-mkdocs-ubuntu.tar $IMAGE_NAME:$IMAGE_TAG
+            ls -lhAR ~/test-CI/images
             if [ "${CIRCLE_BRANCH}" == 'master' ] || [ "${CIRCLE_BRANCH}" == 'dev' ]; then
               echo "I would be logging in and pushing stuff................"
             else
@@ -125,15 +127,15 @@ jobs:
               exit 0
             fi
       - persist_to_workspace:
-          root: /tmp
+          root: /home/circleci/test-CI
           paths:
-            - images/docker-mkdocs-ubuntu.tar
+            - images
 
   push-images:
     executor: default-executor
     steps:
       - attach_workspace:
-          at: /tmp/images
+          at: ~/test-CI
       - setup_remote_docker:
           version: 18.09.3
       - run:
@@ -142,7 +144,8 @@ jobs:
             pwd
             echo $HOME
             ls -lh $(pwd)
-            ls -lhAR /tmp/images
+            ls -lhA ~/test-CI
+            ls -lhAR ~/test-CI/images
 
   build-and-deploy-gh-pages:
     docker:

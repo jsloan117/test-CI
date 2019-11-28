@@ -8,7 +8,7 @@ steps:
   commands:
     - git fetch --tags
 
-- name: Set environment variables
+- name: Set image tag
   image: plugins/docker
   commands:
     - |
@@ -17,28 +17,23 @@ steps:
       if [ "$DRONE_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; fi
       echo "IMAGE_TAG=$IMAGE_TAG" >> import.vars
 
-- name: Build docker images
+- name: Build image
   image: plugins/docker
   volumes:
   - name: dockersock
     path: /var/run/docker.sock
-  #environment:
-    #DOCKER_REPO:
-    #  from_secret: docker_repo
   commands:
     - |
-      echo -e "\n<<< building images >>>\n"
       source import.vars
       docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
 
-- name: Build ubuntu docker images
+- name: Build ubuntu image
   image: plugins/docker
   volumes:
   - name: dockersock
     path: /var/run/docker.sock
   commands:
     - |
-      echo -e "\n<<< building ubuntu images >>>\n"
       source import.vars
       docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
 
@@ -71,7 +66,7 @@ steps:
       exclude:
       - pull_request
 
-- name: Remove created docker images
+- name: Remove images
   image: plugins/docker
   volumes:
   - name: dockersock
@@ -82,7 +77,7 @@ steps:
     docker rmi $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG
     docker rmi $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG
 
-- name: generate documentation
+- name: Generate documentation
   image:  python:3.7-alpine3.10
   environment:
     SSH_KEY:
