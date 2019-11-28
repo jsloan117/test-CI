@@ -42,8 +42,8 @@ jobs:
     executor: default-executor
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/test-CI
+      #- attach_workspace:
+      #    at: ~/test-CI
       - setup_remote_docker:
           version: 18.09.3
       - set-image-tag:
@@ -66,9 +66,9 @@ jobs:
             pwd
             echo $HOME
             ls -lh $(pwd)
-            mkdir -p ~/test-CI/images
-            docker save -o ~/test-CI/images/docker-mkdocs.tar $IMAGE_NAME:$IMAGE_TAG
-            ls -lhAR ~/test-CI/images
+            mkdir -p ~/images
+            docker save -o ~/images/docker-mkdocs.tar $IMAGE_NAME:$IMAGE_TAG
+            ls -lhAR ~/images
             if [ "${CIRCLE_BRANCH}" == 'master' ] || [ "${CIRCLE_BRANCH}" == 'dev' ]; then
               echo "I would be logging in and pushing stuff................"
             else
@@ -76,7 +76,7 @@ jobs:
               exit 0
             fi
       - persist_to_workspace:
-          root: .
+          root: ~/
           paths:
             - images
 #      - run:
@@ -94,7 +94,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ~/test-CI
+          at: ~/images
       - setup_remote_docker:
           version: 18.09.3
       - set-image-tag:
@@ -117,11 +117,10 @@ jobs:
             pwd
             echo $HOME
             ls -lh $(pwd)
-            ls -lhA ~/test-CI
-            mkdir -pv ~/test-CI/images
-            ls -lhAR ~/test-CI/images
-            docker save -o ~/test-CI/images/docker-mkdocs-ubuntu.tar $IMAGE_NAME:$IMAGE_TAG
-            ls -lhAR ~/test-CI/images
+            ls -lhA ~/
+            ls -lhAR ~/images
+            docker save -o ~/images/docker-mkdocs-ubuntu.tar $IMAGE_NAME:$IMAGE_TAG
+            ls -lhAR ~/images
             if [ "${CIRCLE_BRANCH}" == 'master' ] || [ "${CIRCLE_BRANCH}" == 'dev' ]; then
               echo "I would be logging in and pushing stuff................"
             else
@@ -129,7 +128,7 @@ jobs:
               exit 0
             fi
       - persist_to_workspace:
-          root: .
+          root: ~/
           paths:
             - images
 
@@ -137,7 +136,7 @@ jobs:
     executor: default-executor
     steps:
       - attach_workspace:
-          at: ~/test-CI
+          at: ~/images
       - setup_remote_docker:
           version: 18.09.3
       - run:
@@ -146,8 +145,8 @@ jobs:
             pwd
             echo $HOME
             ls -lh $(pwd)
-            ls -lhA ~/test-CI
-            ls -lhAR ~/test-CI/images
+            ls -lhA ~/
+            ls -lhAR ~/images
 
   build-and-deploy-gh-pages:
     docker:

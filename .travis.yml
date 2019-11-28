@@ -45,6 +45,9 @@ jobs:
     - stage: build documentation
       if: branch = fixme
       script: |
+        whereis python
+        which python3
+        ls -lh /opt
         pyenv global 3.7
         python --version
         pip3 install mkdocs mkdocs-material
