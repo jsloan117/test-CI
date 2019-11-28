@@ -84,7 +84,7 @@ steps:
     source import.vars
     docker rmi $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG
     docker rmi $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG
-    echo ${SSH_KEY}
+    echo "$SSH_KEY"
 
 - name: publish documentation
   image: plugins/gh-pages
