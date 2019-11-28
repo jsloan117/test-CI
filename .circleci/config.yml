@@ -42,8 +42,6 @@ jobs:
     executor: default-executor
     steps:
       - checkout
-      #- attach_workspace:
-      #    at: ~/test-CI
       - setup_remote_docker:
           version: 18.09.3
       - set-image-tag:
@@ -62,13 +60,8 @@ jobs:
           name: push image
           command: |
             source $BASH_ENV
-            docker images
-            pwd
-            echo $HOME
-            ls -lh $(pwd)
             mkdir -p ~/images
-            time docker save -o ~/images/docker-mkdocs.tar $IMAGE_NAME:$IMAGE_TAG
-            ls -lhAR ~/images
+            docker save -o ~/images/docker-mkdocs.tar $IMAGE_NAME:$IMAGE_TAG
             if [ "${CIRCLE_BRANCH}" == 'master' ] || [ "${CIRCLE_BRANCH}" == 'dev' ]; then
               echo "I would be logging in and pushing stuff................"
             else
@@ -79,15 +72,6 @@ jobs:
           root: ~/
           paths:
             - images
-#      - run:
-#          name: login to docker
-#          command: echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-#      - run:
-#          name: push image
-#          command: docker push $IMAGE_NAME:$IMAGE_TAG
-#      - run:
-#          name: logout to docker
-#          command: docker logout
 
   build-ubuntu-image:
     executor: default-executor
@@ -113,14 +97,7 @@ jobs:
           name: push image
           command: |
             source $BASH_ENV
-            docker images
-            pwd
-            echo $HOME
-            ls -lh $(pwd)
-            ls -lhA ~/
-            ls -lhAR ~/images
-            time docker save -o ~/images/docker-mkdocs-ubuntu.tar $IMAGE_NAME:$IMAGE_TAG
-            ls -lhAR ~/images
+            docker save -o ~/images/docker-mkdocs-ubuntu.tar $IMAGE_NAME:$IMAGE_TAG
             if [ "${CIRCLE_BRANCH}" == 'master' ] || [ "${CIRCLE_BRANCH}" == 'dev' ]; then
               echo "I would be logging in and pushing stuff................"
             else
@@ -142,13 +119,10 @@ jobs:
       - run:
           name: push images
           command: |
-            pwd
-            echo $HOME
-            ls -lh $(pwd)
-            ls -lhA ~/
-            ls -lhAR ~/images
-            time docker load -i ~/images/docker-mkdocs.tar
-            time docker load -i ~/images/docker-mkdocs-ubuntu.tar
+            docker images
+            docker load -i ~/images/docker-mkdocs.tar
+            docker load -i ~/images/docker-mkdocs-ubuntu.tar
+            docker images
 
   build-and-deploy-gh-pages:
     docker:
@@ -200,11 +174,6 @@ workflows:
           requires:
             - build-default-image
             - build-ubuntu-image
-#  push-docker-images:
-#    jobs:
-#      - push-images:
-#          requires:
-#            - build-ubuntu-image
   documentation-update:
     jobs:
       - build-and-deploy-gh-pages:

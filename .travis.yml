@@ -44,7 +44,8 @@ jobs:
 
     - stage: build documentation
       if: branch = fixme
-      python: 3.7
+      language: python
+      python: 3.7.5
       script: |
         whereis python
         echo ""
@@ -54,7 +55,9 @@ jobs:
         echo ""
         ls -lh /opt/python
         echo ""
-        pyenv global 3.7
+        pyenv install -v 3.7.5
+        echo ""
+        pyenv global 3.7.5
         echo ""
         python --version
         echo ""
