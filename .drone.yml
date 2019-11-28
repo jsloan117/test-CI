@@ -90,7 +90,7 @@ steps:
       [[ ! -d "$HOME/.ssh" ]] && mkdir -p "$HOME/.ssh"
       echo "$SSH_KEY" > $HOME/.ssh/id_rsa
       cat <<'EOF' > $HOME/.ssh/config
-        host github.com
+      host github.com
         HostName github.com
         #IdentityFile ~/.ssh/id_rsa
         User git

@@ -67,7 +67,7 @@ jobs:
             echo $HOME
             ls -lh $(pwd)
             mkdir -p ~/images
-            docker save -o ~/images/docker-mkdocs.tar $IMAGE_NAME:$IMAGE_TAG
+            time docker save -o ~/images/docker-mkdocs.tar $IMAGE_NAME:$IMAGE_TAG
             ls -lhAR ~/images
             if [ "${CIRCLE_BRANCH}" == 'master' ] || [ "${CIRCLE_BRANCH}" == 'dev' ]; then
               echo "I would be logging in and pushing stuff................"
@@ -119,7 +119,7 @@ jobs:
             ls -lh $(pwd)
             ls -lhA ~/
             ls -lhAR ~/images
-            docker save -o ~/images/docker-mkdocs-ubuntu.tar $IMAGE_NAME:$IMAGE_TAG
+            time docker save -o ~/images/docker-mkdocs-ubuntu.tar $IMAGE_NAME:$IMAGE_TAG
             ls -lhAR ~/images
             if [ "${CIRCLE_BRANCH}" == 'master' ] || [ "${CIRCLE_BRANCH}" == 'dev' ]; then
               echo "I would be logging in and pushing stuff................"
@@ -147,6 +147,8 @@ jobs:
             ls -lh $(pwd)
             ls -lhA ~/
             ls -lhAR ~/images
+            time docker load -i ~/images/docker-mkdocs.tar
+            time docker load -i ~/images/docker-mkdocs-ubuntu.tar
 
   build-and-deploy-gh-pages:
     docker:

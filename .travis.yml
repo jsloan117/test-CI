@@ -38,20 +38,28 @@ jobs:
           exit 0
         fi
 
-    - stage: push images
-      script: |
-        docker images
+    #- stage: push images
+    #  script: |
+    #    docker images
 
     - stage: build documentation
       if: branch = fixme
+      python: 3.7
       script: |
         whereis python
+        echo ""
         which python3
+        echo ""
         ls -lh /opt/pyenv
+        echo ""
         ls -lh /opt/python
+        echo ""
         pyenv global 3.7
+        echo ""
         python --version
+        echo ""
         python3 --version
+        echo ""
         pip3 install mkdocs mkdocs-material
         #mkdocs gh-deploy --message "Deployed {sha} with MkDocs version {version}. [skip ci]"
         mkdocs build -cs
