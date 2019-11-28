@@ -55,9 +55,9 @@ jobs:
         echo ""
         ls -lh /opt/python
         echo ""
-        pyenv install -v 3.7.5
+        #pyenv install -v 3.7.5
         echo ""
-        pyenv global 3.7.5
+        #pyenv global 3.7.5
         echo ""
         python --version
         echo ""

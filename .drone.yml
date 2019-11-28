@@ -89,6 +89,7 @@ steps:
       pwd
       [[ ! -d "$HOME/.ssh" ]] && mkdir -p "$HOME/.ssh"
       echo "$SSH_KEY" > $HOME/.ssh/id_rsa
+      chmod 600 $HOME/.ssh/id_rsa
       cat <<'EOF' > $HOME/.ssh/config
       host github.com
         HostName github.com

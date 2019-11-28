@@ -119,10 +119,8 @@ jobs:
       - run:
           name: push images
           command: |
-            docker images
             docker load -i ~/images/docker-mkdocs.tar
             docker load -i ~/images/docker-mkdocs-ubuntu.tar
-            docker images
 
   build-and-deploy-gh-pages:
     docker:
@@ -174,6 +172,12 @@ workflows:
           requires:
             - build-default-image
             - build-ubuntu-image
+          filters:
+            branches:
+              only:
+                - master
+                - dev
+                - fixme
   documentation-update:
     jobs:
       - build-and-deploy-gh-pages:
