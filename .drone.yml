@@ -73,6 +73,9 @@ steps:
 
 - name: Remove created docker images
   image: plugins/docker
+  environment:
+    SSH_KEY:
+      from_secret: ssh_key
   volumes:
   - name: dockersock
     path: /var/run/docker.sock
@@ -81,6 +84,18 @@ steps:
     source import.vars
     docker rmi $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG
     docker rmi $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG
+    echo ${SSH_KEY}
+
+- name: publish documentation
+  image: plugins/gh-pages
+  volumes:
+  - name: dockersock
+    path: /var/run/docker.sock
+  settings:
+    pages_directory: site/
+  when:
+    branch:
+    - master
 
 #- name: generate documentation
 #  image:  python:3.7-alpine3.10
@@ -111,7 +126,7 @@ steps:
     - dev
 
 #- name: publish documentation
-#  image: plugins/gh-release
+#  image: plugins/gh-pages
 #  settings:
 #    pages_directory: site/
 #  when:
