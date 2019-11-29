@@ -11,54 +11,25 @@ jobs:
   include:
     - stage: build docker images
       script: |
-        printf '\n<<< building image >>>\n\n'
-        if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
+        if [ $TRAVIS_BRANCH = master ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
         docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
-        # push images when branch = (dev|master) && ! PR
-        if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "dev" -o "$TRAVIS_BRANCH" = "master" ]; then
+        if [ $TRAVIS_PULL_REQUEST = false ] && [ $TRAVIS_BRANCH = dev -o $TRAVIS_BRANCH = master ]; then
           printf "\nI would be logging in and pushing stuff................\n\n"
-        else
-          printf "\nNot pushing PR's\n\n"
         fi
 
     - stage: build ubuntu docker images
       script: |
-        printf '\n<<< building ubuntu image >>>\n\n'
-        if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
+        if [ $TRAVIS_BRANCH = master ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
         docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
-        # push images when branch = (dev|master) && ! PR
-        if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "dev" -o "$TRAVIS_BRANCH" = "master" ]; then
+        if [ $TRAVIS_PULL_REQUEST = false ] && [ $TRAVIS_BRANCH = dev -o $TRAVIS_BRANCH = master ]; then
           printf "\nI would be logging in and pushing stuff................\n\n"
-        else
-          printf "\nNot pushing PR's\n\n"
         fi
 
-    #- stage: push images
-    #  script: |
-    #    docker images
-
     - stage: build documentation
-      if: branch = fixme
+      if: branch = dev
       language: python
       python: 3.7.5
       script: |
         pip3 install mkdocs mkdocs-material
         #mkdocs gh-deploy --message "Deployed {sha} with MkDocs version {version}. [skip ci]"
         mkdocs build -cs
-
-#before_deploy:
-#  - pyenv install -v 3.7.5
-#  - pyenv global 3.7.5
-#  - python --version
-#  - pip3 install mkdocs mkdocs-material
-#  - mkdocs build -cs
-
-#deploy:
-#  provider: pages
-#  skip_cleanup: true
-#  github_token: "$GITHUB_TOKEN"
-#  keep_history: false
-#  local_dir: site
-#  committer_from_gh: true
-#  on:
-#    branch: master
