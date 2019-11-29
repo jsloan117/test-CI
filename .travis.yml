@@ -14,11 +14,11 @@ jobs:
         printf '\n<<< building image >>>\n\n'
         if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
         docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
-        if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
-          printf "\nNot pushing PR's\n\n"
-        else
+        # push images when branch = (dev|master) && ! PR
+        if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "dev" -o "$TRAVIS_BRANCH" = "master" ]; then
           printf "\nI would be logging in and pushing stuff................\n\n"
-          exit 0
+        else
+          printf "\nNot pushing PR's\n\n"
         fi
 
     - stage: build ubuntu docker images
@@ -26,11 +26,11 @@ jobs:
         printf '\n<<< building ubuntu image >>>\n\n'
         if [ "$TRAVIS_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
         docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
-        if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
-          printf "\nNot pushing PR's\n\n"
-        else
+        # push images when branch = (dev|master) && ! PR
+        if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "dev" -o "$TRAVIS_BRANCH" = "master" ]; then
           printf "\nI would be logging in and pushing stuff................\n\n"
-          exit 0
+        else
+          printf "\nNot pushing PR's\n\n"
         fi
 
     #- stage: push images

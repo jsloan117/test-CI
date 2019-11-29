@@ -121,6 +121,14 @@ jobs:
           command: |
             docker load -i ~/images/docker-mkdocs.tar
             docker load -i ~/images/docker-mkdocs-ubuntu.tar
+      - run:
+          name: vars
+          command: |
+            echo ${CIRCLE_PR_NUMBER}
+            echo ${CIRCLE_PR_REPONAME}
+            echo ${CIRCLE_PR_USERNAME}
+            echo ${CIRCLE_PULL_REQUEST}
+            echo ${CIRCLE_PULL_REQUESTS}
 
   build-and-deploy-gh-pages:
     docker:
@@ -153,25 +161,13 @@ workflows:
   build-images:
     jobs:
       - build-default-image
-#          context: dockerhub
-#          filters:
-#            branches:
-#              only:
-#                - master
-#                - dev
       - build-ubuntu-image:
           requires:
             - build-default-image
-#          context: dockerhub
-#          filters:
-#            branches:
-#              only:
-#                - master
-#                - dev
       - push-images:
           requires:
-            - build-default-image
             - build-ubuntu-image
+          #context: dockerhub
           filters:
             branches:
               only:

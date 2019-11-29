@@ -88,20 +88,12 @@ steps:
       from_secret: ssh_settings
   commands:
     - |
-      whoami
-      echo $HOME
-      pwd
-      [[ ! -d "$HOME/.ssh" ]] && mkdir -p "$HOME/.ssh"
+      mkdir -p "$HOME/.ssh"
       echo "$SSH_KEY" > $HOME/.ssh/id_rsa
       echo "$SSH_CONF" > $HOME/.ssh/config
-      chmod -c 600 $HOME/.ssh/*
+      chmod 600 $HOME/.ssh/*
       echo "$GIT_KEY" > $HOME/.ssh/known_hosts
-      ls -lhAR "$HOME/.ssh"
-      cat $HOME/.ssh/config
       apk update && apk --no-cache add git git-fast-import openssh-client
-      #echo ""
-      #ssh -T github.com
-      #echo ""
       git remote set-url origin git@github.com:jsloan117/test-CI.git
       pip --no-cache-dir install mkdocs mkdocs-material
       git config --global user.name "DroneIO"
@@ -128,4 +120,4 @@ steps:
     - docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs mkdocs build -cs
   when:
     branch:
-    - dev
+    - fixme
