@@ -10,14 +10,14 @@ commands:
       - run:
           name: Set docker image tag
           command: |
-            if [ "$CIRCLE_BRANCH" = "master" ]; then
+            if [ $CIRCLE_BRANCH = master ]; then
               TAG_VERSION=latest
-            elif [ -n "CIRCLE_PR_NUMBER" ]; then
+            elif [ -n $CIRCLE_PR_NUMBER ]; then
               TAG_VERSION=${CIRCLE_BRANCH/\//-}
             else
               TAG_VERSION=$CIRCLE_BRANCH
             fi
-            if [ "<< parameters.dist >>" = "ubuntu" ]; then TAG_DISTRO=<< parameters.dist >>-circleci-; else TAG_DISTRO="circleci-"; fi
+            if [ << parameters.dist >> = ubuntu ]; then TAG_DISTRO=<< parameters.dist >>-circleci-; else TAG_DISTRO=circleci-; fi
             echo "export IMAGE_TAG=$TAG_DISTRO$TAG_VERSION" >> $BASH_ENV
       - run:
           name: vars
@@ -33,6 +33,7 @@ executors:
     docker:
       #- image: docker:stable-dind
       - image: circleci/buildpack-deps:bionic
+    working_directory: ~/test-CI
     environment:
       IMAGE_NAME: jsloan117/test-ci
 
@@ -59,26 +60,25 @@ jobs:
           name: push image
           command: |
             source $BASH_ENV
-            if [ "${CIRCLE_BRANCH}" == 'master' ] || [ "${CIRCLE_BRANCH}" == 'dev' ]; then
+            mkdir -p ~/images
+            docker save -o ~/images/docker-mkdocs.tar $IMAGE_NAME:$IMAGE_TAG
+            if [ $CIRCLE_BRANCH = master -o $CIRCLE_BRANCH = dev ]; then
               echo "I would be logging in and pushing stuff................"
             else
               echo "Not pushing PR's"
               exit 0
             fi
-#      - run:
-#          name: login to docker
-#          command: echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-#      - run:
-#          name: push image
-#          command: docker push $IMAGE_NAME:$IMAGE_TAG
-#      - run:
-#          name: logout to docker
-#          command: docker logout
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - images
 
   build-ubuntu-image:
     executor: default-executor
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/
       - setup_remote_docker:
           version: 18.09.3
       - set-image-tag:
@@ -97,12 +97,38 @@ jobs:
           name: push image
           command: |
             source $BASH_ENV
-            if [ "${CIRCLE_BRANCH}" == 'master' ] || [ "${CIRCLE_BRANCH}" == 'dev' ]; then
+            docker save -o ~/images/docker-mkdocs-ubuntu.tar $IMAGE_NAME:$IMAGE_TAG
+            if [ $CIRCLE_BRANCH = master -o $CIRCLE_BRANCH = dev ]; then
               echo "I would be logging in and pushing stuff................"
             else
               echo "Not pushing PR's"
               exit 0
             fi
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - images
+
+  push-images:
+    executor: default-executor
+    steps:
+      - attach_workspace:
+          at: ~/
+      - setup_remote_docker:
+          version: 18.09.3
+      - run:
+          name: push images
+          command: |
+            docker load -qi ~/images/docker-mkdocs.tar
+            docker load -qi ~/images/docker-mkdocs-ubuntu.tar
+      - run:
+          name: vars
+          command: |
+            echo ${CIRCLE_PR_NUMBER}
+            echo ${CIRCLE_PR_REPONAME}
+            echo ${CIRCLE_PR_USERNAME}
+            echo ${CIRCLE_PULL_REQUEST}
+            echo ${CIRCLE_PULL_REQUESTS}
 
   build-and-deploy-gh-pages:
     docker:
@@ -135,19 +161,18 @@ workflows:
   build-images:
     jobs:
       - build-default-image
-#          context: dockerhub
-#          filters:
-#            branches:
-#              only:
-#                - master
-#                - dev
-      - build-ubuntu-image
-#          context: dockerhub
-#          filters:
-#            branches:
-#              only:
-#                - master
-#                - dev
+      - build-ubuntu-image:
+          requires:
+            - build-default-image
+      - push-images:
+          requires:
+            - build-ubuntu-image
+          #context: dockerhub
+          filters:
+            branches:
+              only:
+                - master
+                - dev
   documentation-update:
     jobs:
       - build-and-deploy-gh-pages:
