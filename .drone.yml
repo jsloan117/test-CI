@@ -100,7 +100,7 @@ steps:
       mkdocs gh-deploy -m "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
   when:
     branch:
-    - fixme
+    - master
 
 volumes:
 - name: dockersock
@@ -120,4 +120,4 @@ steps:
     - docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs mkdocs build -cs
   when:
     branch:
-    - fixme
+    - master
