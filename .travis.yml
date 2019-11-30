@@ -11,16 +11,22 @@ jobs:
   include:
     - stage: build docker images
       script: |
+        printf "\nBuilding docker image\n\n"
         if [ $TRAVIS_BRANCH = master ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
         docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
+        printf "\nTesting image\n\n"
+        docker run --rm $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG bash --version
         if [ $TRAVIS_PULL_REQUEST = false ] && [ $TRAVIS_BRANCH = dev -o $TRAVIS_BRANCH = master ]; then
           printf "\nI would be logging in and pushing stuff................\n\n"
         fi
 
     - stage: build ubuntu docker images
       script: |
+        printf "\nBuilding docker image\n\n"
         if [ $TRAVIS_BRANCH = master ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
         docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
+        printf "\nTesting image\n\n"
+        docker run --rm $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG bash --version
         if [ $TRAVIS_PULL_REQUEST = false ] && [ $TRAVIS_BRANCH = dev -o $TRAVIS_BRANCH = master ]; then
           printf "\nI would be logging in and pushing stuff................\n\n"
         fi
@@ -30,6 +36,11 @@ jobs:
       language: python
       python: 3.7.5
       script: |
+        mkdir -pv "$HOME/.ssh"
+        echo "$SSH_KEY" | base64 --decode > "$HOME/.ssh/id_rsa"
+        chmod 600 "$HOME/.ssh/id_rsa"
+        git remote set-url origin git@github.com:jsloan117/test-CI.git
+        git config --global user.name "TravisCI"
         pip3 install mkdocs mkdocs-material
-        #mkdocs gh-deploy --message "Deployed {sha} with MkDocs version {version}. [skip ci]"
-        mkdocs build -cs
+        mkdocs gh-deploy --message "Deployed {sha} with MkDocs version {version}. [skip ci]"
+        #mkdocs build -cs

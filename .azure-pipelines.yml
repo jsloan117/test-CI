@@ -12,7 +12,7 @@ variables:
 
 schedules:
   - cron: '0 0 * * 6'
-    displayName: 'Weekly build at midnight'
+    displayName: Weekly build at midnight
     branches:
       include:
         - '*'
@@ -32,7 +32,7 @@ pr:
       - '*'
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: ubuntu-18.04
 
 steps:
   - task: Docker@2
@@ -81,7 +81,7 @@ steps:
     enabled: true
 
   - task: Bash@3
-    displayName: Build docker images
+    displayName: Build docker image
     condition: succeeded()
     inputs:
       targetType: inline
@@ -91,13 +91,23 @@ steps:
     enabled: true
 
   - task: Bash@3
-    displayName: Build ubuntu docker images
+    displayName: Build ubuntu docker image
     condition: succeeded()
     inputs:
       targetType: inline
       script: |
         printf '\n<<< Building ubuntu image >>>\n\n'
         sudo docker build -f Dockerfile.ubuntu -t "$IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG" .
+    enabled: true
+
+  - task: Bash@3
+    displayName: Test images
+    condition: succeeded()
+    inputs:
+      targetType: inline
+      script: |
+        docker run --rm $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG bash --version
+        docker run --rm $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG bash --version
     enabled: true
 
   - task: Bash@3
@@ -130,12 +140,14 @@ steps:
     enabled: true
 
   - task: Bash@3
-    displayName: Pull request review
-    condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
+    displayName: Push images
+    #if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "dev" -o "$TRAVIS_BRANCH" = "master" ]; then
+    #condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), and(or(eq(variables['Source.BranchName'], 'master'), eq(variables['Source.BranchName'], 'dev'))))
     inputs:
       targetType: inline
       script: |
-        printf '\n<<< Do stuff because of a PR >>>\n\n'
+        printf '\n<<< Push images if not PR & Branch master or dev. >>>\n\n'
     enabled: true
 
   - task: Docker@2

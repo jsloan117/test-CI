@@ -7,7 +7,7 @@ Testing multiple CIs
 [![Build Status](https://travis-ci.org/jsloan117/test-CI.svg?branch=dev)](https://travis-ci.org/jsloan117/test-CI)
 [![Build Status](https://dev.azure.com/jsloan117/docker-containers/_apis/build/status/test-CI?branchName=dev)](https://dev.azure.com/jsloan117/docker-containers/_build/latest?definitionId=7&branchName=dev)
 
-This repo and docker image(s) are simply used for testing out docker builds on multiple CI platforms. Comparing each ones pros vs cons first hand.
+This repo and docker image(s) are used for testing out docker builds on multiple CI platforms. Comparing each ones pros vs cons first hand.
 
 ```bash
 docker run --rm -it jsloan117/test-ci
@@ -15,6 +15,15 @@ docker run --rm -it jsloan117/test-ci
 Hello, World!
 
 ```
+
+## Requirements of a CI/CD platform
+
+* Build multiple docker images conditionally
+* Test multiple docker images
+* Push multiple docker images
+* Build documentation & push using mkdocs
+
+## Platforms still being tested
 
 | CI Platforms       |
 |:------------------:|
