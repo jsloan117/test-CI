@@ -42,5 +42,5 @@ jobs:
         git remote set-url origin git@github.com:jsloan117/test-CI.git
         git config --global user.name "TravisCI"
         pip3 install mkdocs mkdocs-material
-        mkdocs gh-deploy --message "Deployed {sha} with MkDocs version {version}. [skip ci]"
+        mkdocs gh-deploy --message "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
         #mkdocs build -cs

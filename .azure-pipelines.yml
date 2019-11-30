@@ -141,9 +141,8 @@ steps:
 
   - task: Bash@3
     displayName: Push images
-    #if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "dev" -o "$TRAVIS_BRANCH" = "master" ]; then
-    #condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), and(or(eq(variables['Source.BranchName'], 'master'), eq(variables['Source.BranchName'], 'dev'))))
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    #condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), and(or(eq(variables['Source.BranchName'], 'master'), eq(variables['Source.BranchName'], 'dev'))))
     inputs:
       targetType: inline
       script: |

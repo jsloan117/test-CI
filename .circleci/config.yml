@@ -144,6 +144,10 @@ jobs:
       - run:
           name: vars
           command: |
+            python --version
+            python3 --version
+            pip --version
+            pip3 --version
             echo ${CIRCLE_PR_NUMBER}
             echo ${CIRCLE_PR_REPONAME}
             echo ${CIRCLE_PR_USERNAME}
