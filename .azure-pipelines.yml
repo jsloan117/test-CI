@@ -122,6 +122,14 @@ steps:
         done
     enabled: true
 
+  - task: UsePythonVersion@0
+    displayName: Add python 3.7.5
+    condition: succeeded()
+    inputs:
+      versionSpec: 3.7.5
+      addToPath: true
+    enabled: true
+
   - task: Bash@3
     displayName: Build documentation
     condition: succeeded()
@@ -133,7 +141,7 @@ steps:
         python3 --version
         pip --version
         pip3 --version
-        sudo -H pip install mkdocs mkdocs-material
+        sudo -H pip install mkdocs mkdocs-material pygments
         mkdocs build -cs
         #mkdocs gh-deploy -m "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
         #sudo docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs mkdocs gh-deploy -m "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
@@ -146,7 +154,11 @@ steps:
     inputs:
       targetType: inline
       script: |
-        printf '\n<<< Push images if not PR & Branch master or dev. >>>\n\n'
+        if [ $ADO_BRANCH = master -o $ADO_BRANCH = dev ]; then
+          printf '\n<<< Push images if not PR & Branch master or dev. >>>\n\n'
+        else
+          printf '\n<<< No push >>>\n\n'
+        fi
     enabled: true
 
   - task: Docker@2

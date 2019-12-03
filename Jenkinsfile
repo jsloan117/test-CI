@@ -115,13 +115,13 @@ pipeline {
       /* build documentation using mkdocs */
       /* Jenkins running in a container is causing issues for mounting volumes */
       when {
-        branch 'dev'
+        branch 'master'
       }
       steps {
         script {
           sh '''
             export PATH=${PATH}:${HOME}/.local/bin
-            pip3 install --user mkdocs mkdocs-material
+            pip3 install --user mkdocs mkdocs-material pygments
             mkdocs build -cs
           '''
         }

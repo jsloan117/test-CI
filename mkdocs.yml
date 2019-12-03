@@ -4,8 +4,10 @@ repo_url: https://github.com/jsloan117/test-CI
 theme:
   name: 'material'
 markdown_extensions:
+  - codehilite:
+      linenums: true
   - toc:
-      permalink: True
+      permalink: true
       separator: "_"
 nav:
   - 'Home': 'index.md'

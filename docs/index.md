@@ -23,6 +23,13 @@
   </a>
 </p>
 
+``` bash
+docker run --rm -it jsloan117/test-ci
+
+Hello, World!
+
+```
+
 ## Requirements of a CI/CD platform
 
 * Build multiple docker images conditionally

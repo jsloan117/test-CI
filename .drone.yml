@@ -12,9 +12,9 @@ steps:
   image: plugins/docker
   commands:
     - |
-      echo "CI_PLATFORM=droneio" > import.vars
-      echo "IMAGE_NAME=jsloan117/test-ci" >> import.vars
-      if [ "$DRONE_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; fi
+      echo 'CI_PLATFORM=droneio' > import.vars
+      echo 'IMAGE_NAME=jsloan117/test-ci' >> import.vars
+      if [ $DRONE_BRANCH = master ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; fi
       echo "IMAGE_TAG=$IMAGE_TAG" >> import.vars
 
 - name: Build image
@@ -56,7 +56,7 @@ steps:
   commands:
   - |
     source import.vars
-    echo "I would be logging in and pushing stuff................"
+    echo 'I would be logging in and pushing stuff................'
   when:
     branch:
       include:
@@ -90,18 +90,18 @@ steps:
     - |
       mkdir -p "$HOME/.ssh"
       echo "$SSH_KEY" > $HOME/.ssh/id_rsa
-      echo "$SSH_CONF" > $HOME/.ssh/config
-      chmod 600 $HOME/.ssh/*
-      echo "$GIT_KEY" > $HOME/.ssh/known_hosts
-      echo ""
+      #echo "$SSH_CONF" > $HOME/.ssh/config
+      chmod -v 600 $HOME/.ssh/*
+      #echo "$GIT_KEY" > $HOME/.ssh/known_hosts
+      echo ''
       apk update && apk --no-cache add git git-fast-import openssh-client
       git remote set-url origin git@github.com:jsloan117/test-CI.git
-      echo ""
-      pip install mkdocs mkdocs-material
-      git config --global user.name "DroneIO"
-      echo ""
-      mkdocs build -cs
-      #mkdocs gh-deploy -m "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
+      echo ''
+      pip install mkdocs mkdocs-material pygments
+      git config --global user.name 'drone.io'
+      echo ''
+      #mkdocs build -cs
+      mkdocs gh-deploy -cs -m "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
   when:
     branch:
     - dev
