@@ -21,10 +21,8 @@ jobs:
           #echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
           #docker push $IMAGE_NAME:$IMAGE_TAG
         fi
-
-    - stage: build ubuntu docker images
       script: |
-        printf '\n<<< Building docker image >>>\n\n'
+        printf '\n<<< Building ubuntu docker image >>>\n\n'
         if [ $TRAVIS_BRANCH = master ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
         docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
         printf '\n<<< Testing image >>>\n\n'
@@ -34,6 +32,19 @@ jobs:
           #echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
           #docker push $IMAGE_NAME:$IMAGE_TAG
         fi
+
+    #- stage: build ubuntu docker images
+    #  script: |
+    #    printf '\n<<< Building docker image >>>\n\n'
+    #    if [ $TRAVIS_BRANCH = master ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
+    #    docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
+    #    printf '\n<<< Testing image >>>\n\n'
+    #    docker run --rm $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG bash --version
+    #    if [ $TRAVIS_PULL_REQUEST = false ] && [ $TRAVIS_BRANCH = master -o $TRAVIS_BRANCH = dev ]; then
+    #      printf '\nI would be logging in and pushing stuff................\n\n'
+    #      #echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+    #      #docker push $IMAGE_NAME:$IMAGE_TAG
+    #    fi
 
     - stage: build documentation
       if: branch = master
