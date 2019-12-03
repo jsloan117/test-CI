@@ -101,7 +101,7 @@ steps:
       git config --global user.name 'drone.io'
       echo ''
       #mkdocs build -cs
-      mkdocs gh-deploy -cs -m "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
+      mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
   when:
     branch:
     - dev

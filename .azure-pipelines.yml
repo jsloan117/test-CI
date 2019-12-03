@@ -143,7 +143,7 @@ steps:
         pip3 --version
         sudo -H pip install mkdocs mkdocs-material pygments
         mkdocs build -cs
-        #mkdocs gh-deploy -m "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
+        #mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
         #sudo docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs mkdocs gh-deploy -m "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
     enabled: true
 
