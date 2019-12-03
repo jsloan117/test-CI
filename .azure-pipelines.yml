@@ -105,7 +105,7 @@ steps:
         echo $PATH
         whereis pip
         whereis pip3
-        sudo -H pip install mkdocs mkdocs-material pygments
+        sudo -H /opt/hostedtoolcache/Python/3.7.5/x64/bin/pip3 install mkdocs mkdocs-material pygments
         mkdocs build -cs
         #mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
     enabled: true
