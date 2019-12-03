@@ -75,7 +75,7 @@ steps:
       targetType: inline
       script: |
         printf '\n<<< Setting image tag >>>\n\n'
-        if [ "$ADO_BRANCH" == "master" ]; then IMAGE_TAG=latest; else IMAGE_TAG=$ADO_BRANCH; fi
+        if [ $ADO_BRANCH = master ]; then IMAGE_TAG=latest; else IMAGE_TAG=$ADO_BRANCH; fi
         printf "\nImage tag is $IMAGE_TAG\n"
         echo "##vso[task.setvariable variable=IMAGE_TAG]$IMAGE_TAG"
     enabled: true
@@ -87,7 +87,7 @@ steps:
       targetType: inline
       script: |
         printf '\n<<< Building image >>>\n\n'
-        sudo docker build -f Dockerfile -t "$IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG" .
+        sudo docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
     enabled: true
 
   - task: Bash@3
@@ -97,7 +97,7 @@ steps:
       targetType: inline
       script: |
         printf '\n<<< Building ubuntu image >>>\n\n'
-        sudo docker build -f Dockerfile.ubuntu -t "$IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG" .
+        sudo docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
     enabled: true
 
   - task: Bash@3
@@ -132,13 +132,14 @@ steps:
 
   - task: Bash@3
     displayName: Build documentation
-    condition: succeeded()
+    condition: and(succeeded(), eq(variables['Source.BranchName'], 'dev')
     inputs:
       targetType: inline
       script: |
         printf '\n<<< Building documentation >>>\n\n'
         python --version
         python3 --version
+        /usr/bin/python --version
         pip --version
         pip3 --version
         sudo -H pip install mkdocs mkdocs-material pygments

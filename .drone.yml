@@ -92,7 +92,7 @@ steps:
       echo "$SSH_KEY" > $HOME/.ssh/id_rsa
       #echo "$SSH_CONF" > $HOME/.ssh/config
       chmod -v 600 $HOME/.ssh/*
-      #echo "$GIT_KEY" > $HOME/.ssh/known_hosts
+      echo "$GIT_KEY" > $HOME/.ssh/known_hosts
       echo ''
       apk update && apk --no-cache add git git-fast-import openssh-client
       git remote set-url origin git@github.com:jsloan117/test-CI.git

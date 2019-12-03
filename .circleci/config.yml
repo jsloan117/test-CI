@@ -178,4 +178,4 @@ workflows:
       - build-and-deploy-gh-pages:
           filters:
             branches:
-              only: dev
+              only: master

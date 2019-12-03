@@ -115,7 +115,7 @@ pipeline {
       /* build documentation using mkdocs */
       /* Jenkins running in a container is causing issues for mounting volumes */
       when {
-        branch 'master'
+        branch 'dev'
       }
       steps {
         script {
