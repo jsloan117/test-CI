@@ -102,14 +102,9 @@ steps:
       targetType: inline
       script: |
         printf '\n<<< Building documentation >>>\n\n'
-        python --version
-        python3 --version
-        /usr/bin/python --version
-        pip --version
-        pip3 --version
-        sudo -H pip install mkdocs mkdocs-material pygments
-        #mkdocs build -cs
-        mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
+        sudo -H pip3 install mkdocs mkdocs-material pygments
+        mkdocs build -cs
+        #mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
     enabled: true
 
   - task: Bash@3
@@ -120,6 +115,8 @@ steps:
       script: |
         if [ $ADO_BRANCH = master -o $ADO_BRANCH = dev ]; then
           printf '\n<<< Push images if not PR & Branch master or dev. >>>\n\n'
+          #echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+          #docker push $IMAGE_NAME:$IMAGE_TAG
         fi
     enabled: true
 

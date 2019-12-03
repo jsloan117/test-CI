@@ -60,6 +60,8 @@ steps:
   - |
     source import.vars
     echo 'I would be logging in and pushing stuff................'
+    #echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+    #docker push $IMAGE_NAME:$IMAGE_TAG
   when:
     branch:
       include:

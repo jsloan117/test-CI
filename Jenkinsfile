@@ -61,7 +61,7 @@ pipeline {
             baseImage = docker.build("${IMAGE_NAME}:${CI_PLATFORM}-latest", "-f Dockerfile .")
             ubuntuImage = docker.build("${IMAGE_NAME}:ubuntu-${CI_PLATFORM}-latest", "-f Dockerfile.ubuntu .")
           } else {
-            dockerImage = docker.build("${IMAGE_NAME}:${CI_PLATFORM}-${BRANCH_NAME}", "-f Dockerfile .")
+            baseImage = docker.build("${IMAGE_NAME}:${CI_PLATFORM}-${BRANCH_NAME}", "-f Dockerfile .")
             ubuntuImage = docker.build("${IMAGE_NAME}:ubuntu-${CI_PLATFORM}-${BRANCH_NAME}", "-f Dockerfile.ubuntu .")
           }
         }
@@ -84,12 +84,12 @@ pipeline {
       /* push images to Docker Hub */
       /*steps {
         script {
-          if (params.BRANCH == 'dev') {
-            dockerImage.push('dev')
-            dockerImage.push('ubuntu-dev')
-          } else if (params.BRANCH == 'master') {
-            dockerImage.push('latest')
-            dockerImage.push('ubuntu-latest')
+          if (BRANCH_NAME == 'dev') {
+            baseImage.push('dev')
+            ubuntuImage.push('ubuntu-dev')
+          } else if (BRANCH_NAME == 'master') {
+            baseImage.push('latest')
+            ubuntuImage.push('ubuntu-latest')
           }
         }
       }
