@@ -58,9 +58,9 @@ jobs:
       - run:
           name: save image
           command: |
+            mkdir -p ~/images
             if [ $CIRCLE_BRANCH = master -o $CIRCLE_BRANCH = dev ]; then
               source $BASH_ENV
-              mkdir -p ~/images
               docker save -o ~/images/test-ci.tar $IMAGE_NAME:$IMAGE_TAG
             fi
       - persist_to_workspace:
