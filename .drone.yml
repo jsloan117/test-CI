@@ -1,29 +1,125 @@
-pipeline:
-  set-image-tag:
-    image:  plugins/docker
-    commands:
-      - |
-        echo 'CI_PLATFORM=droneio' > import.vars
-        echo 'IMAGE_NAME=jsloan117/test-ci' >> import.vars
-        if [ $DRONE_BRANCH = master ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; fi
-        echo "IMAGE_TAG=$IMAGE_TAG" >> import.vars
+kind: pipeline
+type: docker
+name: Build Docker Images
 
-  build-image:
-    image:  plugins/docker
-    volumes:
-      - name: dockersock
-        path: /var/run/docker.sock
-    commands:
-      - |
-        source import.vars
-        docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
+steps:
+- name: Fetch repo
+  image: alpine/git
+  commands:
+    - git fetch --tags
 
-  build-ubuntu-image:
-    image:  plugins/docker
-    volumes:
-      - name: dockersock
-        path: /var/run/docker.sock
-    commands:
-      - |
-        source import.vars
-        docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
+- name: Set image tag
+  image: plugins/docker
+  commands:
+    - |
+      echo 'CI_PLATFORM=droneio' > import.vars
+      echo 'IMAGE_NAME=jsloan117/test-ci' >> import.vars
+      if [ $DRONE_BRANCH = master ]; then IMAGE_TAG=latest; else IMAGE_TAG=$DRONE_BRANCH; fi
+      echo "IMAGE_TAG=$IMAGE_TAG" >> import.vars
+
+- name: Build image
+  image: plugins/docker
+  volumes:
+  - name: dockersock
+    path: /var/run/docker.sock
+  commands:
+    - |
+      source import.vars
+      docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
+
+- name: Build ubuntu image
+  image: plugins/docker
+  volumes:
+  - name: dockersock
+    path: /var/run/docker.sock
+  commands:
+    - |
+      source import.vars
+      docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
+
+- name: Test images
+  image: plugins/docker
+  volumes:
+  - name: dockersock
+    path: /var/run/docker.sock
+  commands:
+  - |
+    source import.vars
+    docker run --rm $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG bash --version
+    docker run --rm $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG bash --version
+
+- name: Push images
+  image: plugins/docker
+  volumes:
+  - name: dockersock
+    path: /var/run/docker.sock
+  commands:
+  - |
+    source import.vars
+    echo 'I would be logging in and pushing stuff................'
+  when:
+    branch:
+      include:
+      - master
+      - dev
+    event:
+      exclude:
+      - pull_request
+
+- name: Remove images
+  image: plugins/docker
+  volumes:
+  - name: dockersock
+    path: /var/run/docker.sock
+  commands:
+  - |
+    source import.vars
+    docker rmi $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG
+    docker rmi $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG
+
+- name: Generate documentation
+  image:  python:3.7-alpine3.10
+  environment:
+    SSH_KEY:
+      from_secret: ssh_key
+    GIT_KEY:
+      from_secret: github_hostkey
+  commands:
+    - |
+      mkdir -p "$HOME/.ssh"
+      echo "$SSH_KEY" > $HOME/.ssh/id_rsa
+      #echo "$SSH_CONF" > $HOME/.ssh/config
+      chmod 600 $HOME/.ssh/id_rsa
+      echo "$GIT_KEY" > $HOME/.ssh/known_hosts
+      echo ''
+      apk update && apk --no-cache add git git-fast-import openssh-client
+      git remote set-url origin git@github.com:jsloan117/test-CI.git
+      echo ''
+      pip install mkdocs mkdocs-material pygments
+      git config --global user.name 'drone.io'
+      echo ''
+      #mkdocs build -cs
+      mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
+  when:
+    branch:
+    - master
+
+volumes:
+- name: dockersock
+  host:
+    path: /var/run/docker.sock
+
+---
+kind: pipeline
+type: exec
+name: Documentation Builder
+
+steps:
+- name: Generate documentation
+  commands:
+    - pwd
+    - echo $HOME
+    - docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs mkdocs build -cs
+  when:
+    branch:
+    - master

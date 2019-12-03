@@ -132,7 +132,7 @@ steps:
 
   - task: Bash@3
     displayName: Build documentation
-    condition: and(succeeded(), eq(variables['Source.BranchName'], 'dev')
+    condition: and(succeeded(), eq(variables['Source.BranchName'], 'dev'))
     inputs:
       targetType: inline
       script: |
