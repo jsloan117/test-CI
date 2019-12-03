@@ -88,7 +88,6 @@ steps:
     - |
       mkdir -p "$HOME/.ssh"
       echo "$SSH_KEY" > $HOME/.ssh/id_rsa
-      #echo "$SSH_CONF" > $HOME/.ssh/config
       chmod 600 $HOME/.ssh/id_rsa
       echo "$GIT_KEY" > $HOME/.ssh/known_hosts
       echo ''
@@ -109,17 +108,17 @@ volumes:
   host:
     path: /var/run/docker.sock
 
----
-kind: pipeline
-type: exec
-name: Documentation Builder
+#---
+#kind: pipeline
+#type: exec
+#name: Documentation Builder
 
-steps:
-- name: Generate documentation
-  commands:
-    - pwd
-    - echo $HOME
-    - docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs mkdocs build -cs
-  when:
-    branch:
-    - master
+#steps:
+#- name: Generate documentation
+#  commands:
+#    - pwd
+#    - echo $HOME
+#    - docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs mkdocs build -cs
+#  when:
+#    branch:
+#    - master

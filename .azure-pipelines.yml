@@ -132,7 +132,7 @@ steps:
 
   - task: Bash@3
     displayName: Build documentation
-    condition: and(succeeded(), eq(variables['Source.BranchName'], 'dev'))
+    condition: and(succeeded(), eq(variables['Build.BranchName'], 'dev'))
     inputs:
       targetType: inline
       script: |
@@ -143,8 +143,8 @@ steps:
         pip --version
         pip3 --version
         sudo -H pip install mkdocs mkdocs-material pygments
-        mkdocs build -cs
-        #mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
+        #mkdocs build -cs
+        mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
         #sudo docker run --rm -v $(pwd):/docs jsloan117/docker-mkdocs mkdocs gh-deploy -m "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
     enabled: true
 
