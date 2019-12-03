@@ -7,6 +7,9 @@ steps:
   image: alpine/git
   commands:
     - git fetch --tags
+  when:
+    event:
+      - tag
 
 - name: Set image tag
   image: plugins/docker

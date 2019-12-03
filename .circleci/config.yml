@@ -31,7 +31,6 @@ commands:
 executors:
   default-executor:
     docker:
-      #- image: docker:stable-dind
       - image: circleci/buildpack-deps:bionic
     working_directory: ~/test-CI
     environment:
@@ -130,7 +129,7 @@ jobs:
             echo ${CIRCLE_PULL_REQUEST}
             echo ${CIRCLE_PULL_REQUESTS}
 
-  build-and-deploy-gh-pages:
+  build-and-deploy-documentation:
     docker:
       - image: circleci/python:3.7
     steps:
@@ -175,7 +174,7 @@ workflows:
                 - dev
   documentation-update:
     jobs:
-      - build-and-deploy-gh-pages:
+      - build-and-deploy-documentation:
           filters:
             branches:
               only: master
