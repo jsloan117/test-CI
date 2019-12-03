@@ -42,7 +42,7 @@ pipeline {
           ansiColor('xterm') {
             script {
               /* sh 'echo -e "\033[32m${shortCommit}\033[0m \033[33m${gitmsg}\033[0m\n"' */
-              sh 'echo -e "${shortCommit} ${gitmsg}"'
+              sh 'echo -e "Building: ${shortCommit} ${gitmsg}"'
             }
           }
           /* set build name */
@@ -54,10 +54,10 @@ pipeline {
       /* build images */
       steps {
         script {
-          if (params.BRANCH == 'dev') {
+          if (BRANCH_NAME == 'dev') {
             baseImage = docker.build("${IMAGE_NAME}:${CI_PLATFORM}-dev", "-f Dockerfile .")
             ubuntuImage = docker.build("${IMAGE_NAME}:ubuntu-${CI_PLATFORM}-dev", "-f Dockerfile.ubuntu .")
-          } else if (params.BRANCH == 'master') {
+          } else if (BRANCH_NAME == 'master') {
             baseImage = docker.build("${IMAGE_NAME}:${CI_PLATFORM}-latest", "-f Dockerfile .")
             ubuntuImage = docker.build("${IMAGE_NAME}:ubuntu-${CI_PLATFORM}-latest", "-f Dockerfile.ubuntu .")
           } else {
@@ -98,10 +98,10 @@ pipeline {
       /* remove images after push */
       steps {
         script {
-          if (params.BRANCH == 'dev') {
+          if (BRANCH_NAME == 'dev') {
             sh "docker rmi ${IMAGE_NAME}:${CI_PLATFORM}-dev"
             sh "docker rmi ${IMAGE_NAME}:ubuntu-${CI_PLATFORM}-dev"
-          } else if (params.BRANCH == 'master') {
+          } else if (BRANCH_NAME == 'master') {
             sh "docker rmi ${IMAGE_NAME}:${CI_PLATFORM}-latest"
             sh "docker rmi ${IMAGE_NAME}:ubuntu-${CI_PLATFORM}-latest"
           } else {
@@ -115,7 +115,7 @@ pipeline {
       /* build documentation using mkdocs */
       /* Jenkins running in a container is causing issues for mounting volumes */
       when {
-        branch 'dev'
+        branch 'master'
       }
       steps {
         script {

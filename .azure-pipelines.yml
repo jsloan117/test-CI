@@ -1,6 +1,4 @@
 # Azure DevOps Build Pipeline for test-CI container
-# Trying to prevent all the docker labels ADO likes to inject into the images
-# DEBUG: Not sure wth its doing with vars atm....
 
 name: $(BuildDefinitionName)-$(SourceBranchName)-$(Date:yyyyMMdd)$(Rev:.r)
 
@@ -10,26 +8,26 @@ variables:
   IMAGE_NAME: jsloan117/test-ci
   ADO_BRANCH: $(Build.SourceBranchName)
 
-schedules:
-  - cron: '0 0 * * 6'
-    displayName: Weekly build at midnight
-    branches:
-      include:
-        - '*'
-    always: true
+#schedules:
+#  - cron: '0 0 * * 6'
+#    displayName: Weekly build at midnight
+#    branches:
+#      include:
+#        - '*'
+#    always: true
 
-trigger:
-  branches:
-    include:
-      - '*'
-  tags:
-    include:
-      - '*'
+#trigger:
+#  branches:
+#    include:
+#      - '*'
+#  tags:
+#    include:
+#      - '*'
 
-pr:
-  branches:
-    include:
-      - '*'
+#pr:
+#  branches:
+#    include:
+#      - '*'
 
 pool:
   vmImage: ubuntu-18.04
@@ -55,18 +53,6 @@ steps:
         sudo apt-get update && sudo apt-get -y install docker-ce docker-ce-cli containerd.io
         sudo systemctl enable --now docker.service
     enabled: true
-
-  - task: Bash@3
-    displayName: Get environment info
-    condition: succeeded()
-    inputs:
-      targetType: inline
-      script: |
-        env
-        docker --version
-        printf "\n\n\n"
-        docker info
-    enabled: false
 
   - task: Bash@3
     displayName: Set image tag
@@ -132,7 +118,7 @@ steps:
 
   - task: Bash@3
     displayName: Build documentation
-    condition: and(succeeded(), eq(variables['Build.BranchName'], 'dev'))
+    condition: and(succeeded(), eq(variables['Build.BranchName'], 'refs/heads/dev'))
     inputs:
       targetType: inline
       script: |

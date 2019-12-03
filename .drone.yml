@@ -97,8 +97,8 @@ steps:
       pip install mkdocs mkdocs-material pygments
       git config --global user.name 'drone.io'
       echo ''
-      #mkdocs build -cs
-      mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
+      mkdocs build -cs
+      #mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
   when:
     branch:
     - master
