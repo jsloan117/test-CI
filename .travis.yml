@@ -1,5 +1,5 @@
 language: minimal
-services: docker
+#services: docker
 dist: bionic
 
 env:
@@ -10,30 +10,25 @@ env:
 jobs:
   include:
     - stage: build docker images
+      services: docker
       script: |
-        printf '\n<<< Building docker image >>>\n\n'
-        if [ $TRAVIS_BRANCH = master ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
-        docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
-        printf '\n<<< Testing image >>>\n\n'
-        docker run --rm $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG bash --version
-        if [ $TRAVIS_PULL_REQUEST = false ] && [ $TRAVIS_BRANCH = master -o $TRAVIS_BRANCH = dev ]; then
-          printf '\nI would be logging in and pushing stuff................\n\n'
-          #echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-          #docker push $IMAGE_NAME:$IMAGE_TAG
-        fi
+        echo 'This is script one at work'
       script: |
-        printf '\n<<< Building ubuntu docker image >>>\n\n'
-        if [ $TRAVIS_BRANCH = master ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
-        docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
-        printf '\n<<< Testing image >>>\n\n'
-        docker run --rm $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG bash --version
-        if [ $TRAVIS_PULL_REQUEST = false ] && [ $TRAVIS_BRANCH = master -o $TRAVIS_BRANCH = dev ]; then
-          printf '\nI would be logging in and pushing stuff................\n\n'
-          #echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-          #docker push $IMAGE_NAME:$IMAGE_TAG
-        fi
+        echo 'This is script two at work'
+    #- stage: build docker image
+    #  script: |
+    #    printf '\n<<< Building docker image >>>\n\n'
+    #    if [ $TRAVIS_BRANCH = master ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
+    #    docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
+    #    printf '\n<<< Testing image >>>\n\n'
+    #    docker run --rm $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG bash --version
+    #    if [ $TRAVIS_PULL_REQUEST = false ] && [ $TRAVIS_BRANCH = master -o $TRAVIS_BRANCH = dev ]; then
+    #      printf '\nI would be logging in and pushing stuff................\n\n'
+    #      #echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+    #      #docker push $IMAGE_NAME:$IMAGE_TAG
+    #    fi
 
-    #- stage: build ubuntu docker images
+    #- stage: build ubuntu docker image
     #  script: |
     #    printf '\n<<< Building docker image >>>\n\n'
     #    if [ $TRAVIS_BRANCH = master ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
@@ -50,6 +45,7 @@ jobs:
       if: branch = master
       language: python
       python: 3.7.5
+      cache: pip
       script: |
         mkdir -p "$HOME/.ssh"
         echo "$DEPLOY_KEY" | base64 --decode > "$HOME/.ssh/id_rsa"

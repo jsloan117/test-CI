@@ -102,9 +102,6 @@ steps:
       targetType: inline
       script: |
         printf '\n<<< Building documentation >>>\n\n'
-        echo $PATH
-        whereis pip
-        whereis pip3
         sudo -H /opt/hostedtoolcache/Python/3.7.5/x64/bin/pip3 install mkdocs mkdocs-material pygments
         mkdocs build -cs
         #mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
