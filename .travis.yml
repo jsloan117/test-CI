@@ -11,12 +11,12 @@ jobs:
   include:
     - stage: build docker images
       services: docker
-      name: build base image
       script: |
         echo 'This is script one at work'
-      name: build ubuntu image
+      name: build base image
     - script: |
         echo 'This is script two at work'
+      name: build ubuntu image
     #- stage: build docker image
     #  script: |
     #    printf '\n<<< Building docker image >>>\n\n'
