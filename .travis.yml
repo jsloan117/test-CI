@@ -36,6 +36,7 @@ jobs:
         fi
         docker images
       name: build ubuntu image
+      if: NOT type IN (pull_request) AND branch = master OR branch = dev
 
     #- stage: build docker image
     #  script: |
