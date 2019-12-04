@@ -1,5 +1,5 @@
 FROM alpine:latest
-LABEL Name=test-CI Version=0.4
+LABEL Name=test-CI Version=0.3
 LABEL maintainer="Jonathan Sloan"
 
 RUN echo "*** updating system ***" \
