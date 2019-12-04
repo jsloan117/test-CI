@@ -65,19 +65,19 @@ jobs:
     #    fi
 
     - stage: build documentation
-      if: branch = master
+      if: branch = fixme
       language: python
       python: 3.7.5
       cache: pip
-      script: |
-        mkdir -p "$HOME/.ssh"
-        echo "$DEPLOY_KEY" | base64 --decode > "$HOME/.ssh/id_rsa"
-        chmod 600 "$HOME/.ssh/id_rsa"
-        git remote set-url origin git@github.com:jsloan117/test-CI.git
-        git config --global user.name 'TravisCI'
-        pip3 install mkdocs mkdocs-material pygments
-        echo ''
-        mkdocs build -cs
-        #mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
-        echo ''
-        rm -f "$HOME/.ssh/id_rsa"
+      script: ./scripts/doc-build-and-deploy.sh
+      #  mkdir -p "$HOME/.ssh"
+      #  echo "$DEPLOY_KEY" | base64 --decode > "$HOME/.ssh/id_rsa"
+      #  chmod 600 "$HOME/.ssh/id_rsa"
+      #  git remote set-url origin git@github.com:jsloan117/test-CI.git
+      #  git config --global user.name 'TravisCI'
+      #  pip3 install mkdocs mkdocs-material pygments
+      #  echo ''
+      #  mkdocs build -cs
+      #  #mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
+      #  echo ''
+      #  rm -f "$HOME/.ssh/id_rsa"
