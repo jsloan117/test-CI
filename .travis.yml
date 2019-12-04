@@ -11,32 +11,32 @@ jobs:
   include:
     - stage: build docker images
       services: docker
-      script: |
-        printf '<<< Building default image >>>\n\n'
-        if [ $TRAVIS_BRANCH = master ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
-        docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
-        printf '\n<<< Testing image >>>\n\n'
-        docker run --rm $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG bash --version
-        if [ $TRAVIS_PULL_REQUEST = false ] && [ $TRAVIS_BRANCH = master -o $TRAVIS_BRANCH = dev ]; then
-          printf '\nI would be logging in and pushing stuff................\n\n'
-          #echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-          #docker push $IMAGE_NAME:$IMAGE_TAG
-        fi
-      name: build default image
-    - script: |
-        printf '<<< Building ubuntu image >>>\n\n'
-        if [ $TRAVIS_BRANCH = master ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
-        docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
-        printf '\n<<< Testing image >>>\n\n'
-        docker run --rm $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG bash --version
-        if [ $TRAVIS_PULL_REQUEST = false ] && [ $TRAVIS_BRANCH = master -o $TRAVIS_BRANCH = dev ]; then
-          printf '\nI would be logging in and pushing stuff................\n\n'
-          #echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-          #docker push $IMAGE_NAME:$IMAGE_TAG
-        fi
-        docker images
-      name: build ubuntu image
-      if: NOT type IN (pull_request) AND branch = master OR branch = dev
+      script: ./scripts/build-and-push.sh
+    #    printf '<<< Building default image >>>\n\n'
+    #    if [ $TRAVIS_BRANCH = master ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
+    #    docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
+    #    printf '\n<<< Testing image >>>\n\n'
+    #    docker run --rm $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG bash --version
+    #    if [ $TRAVIS_PULL_REQUEST = false ] && [ $TRAVIS_BRANCH = master -o $TRAVIS_BRANCH = dev ]; then
+    #      printf '\nI would be logging in and pushing stuff................\n\n'
+    #      #echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+    #      #docker push $IMAGE_NAME:$IMAGE_TAG
+    #    fi
+    #  name: build default image
+    #- script: |
+    #    printf '<<< Building ubuntu image >>>\n\n'
+    #    if [ $TRAVIS_BRANCH = master ]; then IMAGE_TAG=latest; else IMAGE_TAG=$TRAVIS_BRANCH; export IMAGE_TAG; fi
+    #    docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
+    #    printf '\n<<< Testing image >>>\n\n'
+    #    docker run --rm $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG bash --version
+    #    if [ $TRAVIS_PULL_REQUEST = false ] && [ $TRAVIS_BRANCH = master -o $TRAVIS_BRANCH = dev ]; then
+    #      printf '\nI would be logging in and pushing stuff................\n\n'
+    #      #echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+    #      #docker push $IMAGE_NAME:$IMAGE_TAG
+    #    fi
+    #    docker images
+    #  name: build ubuntu image
+    ##  if: NOT type IN (pull_request) AND branch = master OR branch = dev
 
     #- stage: build docker image
     #  script: |
