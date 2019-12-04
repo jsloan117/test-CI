@@ -12,8 +12,8 @@ fi
 export IMAGE_TAG
 
 build_images () {
-  docker build -f Dockerfile -t "${IMAGE_NAME}":"${CI_PLATFORM}"-"${IMAGE_TAG}"
-  docker build -f Dockerfile.ubuntu -t $"${IMAGE_NAME}":ubuntu-"${CI_PLATFORM}"-"${IMAGE_TAG}"
+  docker build -f Dockerfile -t "${IMAGE_NAME}":"${CI_PLATFORM}"-"${IMAGE_TAG}" .
+  docker build -f Dockerfile.ubuntu -t $"${IMAGE_NAME}":ubuntu-"${CI_PLATFORM}"-"${IMAGE_TAG}" .
 }
 
 test_images () {
