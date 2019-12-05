@@ -71,18 +71,20 @@ pipeline {
       /* simple testing method */
       steps {
         script {
-          baseImage.inside() {
+          baseImage.withRun
+          ubuntuImage.withRun
+          /*baseImage.inside() {
             sh 'bash --version'
           }
           ubuntuImage.inside() {
             sh 'bash --version'
-          }
+          }*/
         }
       }
     }
     /*stage('Push images') {*/
       /* push images to Docker Hub */
-      /*steps {
+      steps {
         script {
           if (BRANCH_NAME == 'dev') {
             baseImage.push('dev')
@@ -93,7 +95,7 @@ pipeline {
           }
         }
       }
-    }*/
+    }
     stage('Remove unused docker image') {
       /* remove images after push */
       steps {

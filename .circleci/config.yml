@@ -19,14 +19,6 @@ commands:
             fi
             if [ << parameters.dist >> = ubuntu ]; then TAG_DISTRO=<< parameters.dist >>-circleci-; else TAG_DISTRO=circleci-; fi
             echo "export IMAGE_TAG=$TAG_DISTRO$TAG_VERSION" >> $BASH_ENV
-      - run:
-          name: vars
-          command: |
-            echo ${CIRCLE_PR_NUMBER}
-            echo ${CIRCLE_PR_REPONAME}
-            echo ${CIRCLE_PR_USERNAME}
-            echo ${CIRCLE_PULL_REQUEST}
-            echo ${CIRCLE_PULL_REQUESTS}
 
 executors:
   default-executor:
@@ -54,7 +46,7 @@ jobs:
           name: test image
           command: |
             source $BASH_ENV
-            docker run --rm $IMAGE_NAME:$IMAGE_TAG bash --version
+            docker run --rm $IMAGE_NAME:$IMAGE_TAG
       - run:
           name: save image
           command: |
@@ -87,7 +79,7 @@ jobs:
           name: test image
           command: |
             source $BASH_ENV
-            docker run --rm $IMAGE_NAME:$IMAGE_TAG bash --version
+            docker run --rm $IMAGE_NAME:$IMAGE_TAG
       - run:
           name: save image
           command: |
@@ -118,14 +110,6 @@ jobs:
       #- run:
       #    name: Push image
       #    command: docker push $IMAGE_NAME:$IMAGE_TAG
-      - run:
-          name: vars
-          command: |
-            echo ${CIRCLE_PR_NUMBER}
-            echo ${CIRCLE_PR_REPONAME}
-            echo ${CIRCLE_PR_USERNAME}
-            echo ${CIRCLE_PULL_REQUEST}
-            echo ${CIRCLE_PULL_REQUESTS}
 
   build-and-deploy-documentation:
     docker:
@@ -138,20 +122,12 @@ jobs:
       - run:
           name: "Install Mkdocs and Material theme"
           command: pip install --user mkdocs mkdocs-material pygments
+      - add_ssh_keys:
+          fingerprints:
+            - a8:ce:61:1e:75:9c:50:ba:28:da:47:f7:ac:bf:8a:d4
       - run:
-          name: vars
-          command: |
-            echo ${CIRCLE_PR_NUMBER}
-            echo ${CIRCLE_PR_REPONAME}
-            echo ${CIRCLE_PR_USERNAME}
-            echo ${CIRCLE_PULL_REQUEST}
-            echo ${CIRCLE_PULL_REQUESTS}
-      #- add_ssh_keys:
-      #    fingerprints:
-      #      - a8:ce:61:1e:75:9c:50:ba:28:da:47:f7:ac:bf:8a:d4
-      #- run:
-      #    name: "Build and push site"
-      #    command: mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]"
+          name: "Build and push site"
+          command: mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]"
 
 workflows:
   version: 2
@@ -164,7 +140,7 @@ workflows:
       - push-images:
           requires:
             - build-ubuntu-image
-          #context: dockerhub
+          context: dockerhub
           filters:
             branches:
               only:
