@@ -2,13 +2,13 @@ version: 2.1
 
 commands:
   set-image-tag:
-    description: Set docker image tag
+    description: Set image tag
     parameters:
       dist:
         type: string
     steps:
       - run:
-          name: Set docker image tag
+          name: Set image tag
           command: |
             if [ $CIRCLE_BRANCH = master ]; then
               TAG_VERSION=latest

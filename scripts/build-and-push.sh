@@ -26,7 +26,7 @@ test_images () {
 }
 
 push_images () {
-  echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin > /dev/null 2>&1
+  echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin &> /dev/null
   echo -e '\n<<< Pushing default image >>>\n'
   docker push "${IMAGE_NAME}":"${CI_PLATFORM}"-"${IMAGE_TAG}"
   echo -e '\n<<< Pushing ubuntu image >>>\n'

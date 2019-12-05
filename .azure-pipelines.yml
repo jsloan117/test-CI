@@ -1,5 +1,3 @@
-# Azure DevOps Build Pipeline for test-CI container
-
 name: $(BuildDefinitionName)-$(SourceBranchName)-$(Date:yyyyMMdd)$(Rev:.r)
 
 variables:
@@ -46,7 +44,7 @@ steps:
     enabled: true
 
   - task: Bash@3
-    displayName: Build docker image
+    displayName: Build image
     condition: succeeded()
     inputs:
       targetType: inline
@@ -56,7 +54,7 @@ steps:
     enabled: true
 
   - task: Bash@3
-    displayName: Build ubuntu docker image
+    displayName: Build ubuntu image
     condition: succeeded()
     inputs:
       targetType: inline
@@ -85,7 +83,7 @@ steps:
         for img in $(sudo docker images | awk '{OFS = ":";} {print $1,$2}' | tail -n+2 | head -n2); do 
           sudo docker image inspect -f '{{json .Config.Labels}}' "${img}"; printf '\n'; 
         done
-    enabled: true
+    enabled: false
 
   - task: UsePythonVersion@0
     displayName: Add python 3.7.5
@@ -114,7 +112,6 @@ steps:
       targetType: inline
       script: |
         if [ $ADO_BRANCH = master -o $ADO_BRANCH = dev ]; then
-          printf '\n<<< Push images if not PR & Branch master or dev. >>>\n\n'
           #docker push $IMAGE_NAME:$IMAGE_TAG
         fi
     enabled: true

@@ -71,8 +71,8 @@ pipeline {
       /* simple testing method */
       steps {
         script {
-          baseImage.withRun
-          ubuntuImage.withRun
+          baseImage.withRun()
+          ubuntuImage.withRun()
           /*baseImage.inside() {
             sh 'bash --version'
           }
