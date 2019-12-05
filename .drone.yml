@@ -35,20 +35,16 @@ steps:
       docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
 
 - name: Build ubuntu image
-  image: plugins/docker
-  volumes:
-  - name: dockersock
-    path: /var/run/docker.sock
+  image: *default-image
+  volumes: *default-volumes
   commands:
     - |
       source import.vars
       docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
 
 - name: Test images
-  image: plugins/docker
-  volumes:
-  - name: dockersock
-    path: /var/run/docker.sock
+  image: *default-image
+  volumes: *default-volumes
   commands:
   - |
     source import.vars
@@ -56,10 +52,8 @@ steps:
     docker run --rm $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG
 
 - name: Push images
-  image: plugins/docker
-  volumes:
-  - name: dockersock
-    path: /var/run/docker.sock
+  image: *default-image
+  volumes: *default-volumes
   commands:
   - |
     source import.vars
@@ -76,10 +70,8 @@ steps:
       - pull_request
 
 - name: Remove images
-  image: plugins/docker
-  volumes:
-  - name: dockersock
-    path: /var/run/docker.sock
+  image: *default-image
+  volumes: *default-volumes
   commands:
   - |
     source import.vars

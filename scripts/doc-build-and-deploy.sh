@@ -19,8 +19,8 @@ build_documentation () {
   echo -e '\n<<< Installing mkdocs & theme >>>'
   pip3 install mkdocs mkdocs-material pygments
   echo ''
-  mkdocs build -cs
-  #mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
+  #mkdocs build -cs
+  mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
   echo ''
   rm -f "$HOME/.ssh/id_rsa"
 }
