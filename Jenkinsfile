@@ -123,7 +123,7 @@ pipeline {
         script {
           sh '''
             export PATH=${PATH}:${HOME}/.local/bin
-            pip3 install --user mkdocs mkdocs-material pygments
+            pip3 -q install --user mkdocs mkdocs-material pygments
             mkdocs build -cs
           '''
         }

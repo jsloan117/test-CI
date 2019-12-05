@@ -13,7 +13,7 @@ jobs:
       script: ./scripts/build-and-push.sh
 
     - stage: build documentation
-      if: branch = fixme
+      if: branch = master
       language: python
       python: 3.7.5
       cache: pip

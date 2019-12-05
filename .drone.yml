@@ -95,7 +95,7 @@ steps:
       apk update && apk --no-cache add git git-fast-import openssh-client
       git remote set-url origin git@github.com:jsloan117/test-CI.git
       echo ''
-      pip install mkdocs mkdocs-material pygments
+      pip -q install mkdocs mkdocs-material pygments
       git config --global user.name 'drone.io'
       echo ''
       mkdocs build -cs

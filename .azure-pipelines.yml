@@ -97,12 +97,12 @@ steps:
 
   - task: Bash@3
     displayName: Build documentation
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/fixme'))
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     inputs:
       targetType: inline
       script: |
         printf '\n<<< Building documentation >>>\n\n'
-        sudo -H /opt/hostedtoolcache/Python/3.7.5/x64/bin/pip3 install mkdocs mkdocs-material pygments
+        sudo -H /opt/hostedtoolcache/Python/3.7.5/x64/bin/pip3 -q install mkdocs mkdocs-material pygments
         mkdocs build -cs
         #mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
     enabled: true
