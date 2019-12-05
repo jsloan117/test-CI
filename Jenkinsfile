@@ -82,7 +82,7 @@ pipeline {
         }
       }
     }
-    /*stage('Push images') {*/
+    stage('Push images') {
       /* push images to Docker Hub */
       steps {
         script {

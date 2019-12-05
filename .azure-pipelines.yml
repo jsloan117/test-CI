@@ -71,8 +71,8 @@ steps:
     inputs:
       targetType: inline
       script: |
-        docker run --rm $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG bash --version
-        docker run --rm $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG bash --version
+        docker run --rm $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG
+        docker run --rm $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG
     enabled: true
 
   - task: Bash@3

@@ -2,6 +2,12 @@ kind: pipeline
 type: docker
 name: Build Docker Images
 
+x-image: &default-image plugins/docker
+x-volumes:
+  &default-volumes
+  - name: dockersock
+    path: /var/run/docker.sock
+
 steps:
 - name: Fetch repo
   image: alpine/git
@@ -21,10 +27,8 @@ steps:
       echo "IMAGE_TAG=$IMAGE_TAG" >> import.vars
 
 - name: Build image
-  image: plugins/docker
-  volumes:
-  - name: dockersock
-    path: /var/run/docker.sock
+  image: *default-image
+  volumes: *default-volumes
   commands:
     - |
       source import.vars
@@ -48,8 +52,8 @@ steps:
   commands:
   - |
     source import.vars
-    docker run --rm $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG bash --version
-    docker run --rm $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG bash --version
+    docker run --rm $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG
+    docker run --rm $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG
 
 - name: Push images
   image: plugins/docker
