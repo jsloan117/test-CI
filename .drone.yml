@@ -2,11 +2,20 @@ kind: pipeline
 type: docker
 name: Build Docker Images
 
+x-image: &default-image plugins/docker
+x-volumes:
+  &default-volumes
+  - name: dockersock
+    path: /var/run/docker.sock
+
 steps:
 - name: Fetch repo
   image: alpine/git
   commands:
     - git fetch --tags
+  when:
+    event:
+      - tag
 
 - name: Set image tag
   image: plugins/docker
@@ -18,45 +27,39 @@ steps:
       echo "IMAGE_TAG=$IMAGE_TAG" >> import.vars
 
 - name: Build image
-  image: plugins/docker
-  volumes:
-  - name: dockersock
-    path: /var/run/docker.sock
+  image: *default-image
+  volumes: *default-volumes
   commands:
     - |
       source import.vars
       docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
 
 - name: Build ubuntu image
-  image: plugins/docker
-  volumes:
-  - name: dockersock
-    path: /var/run/docker.sock
+  image: *default-image
+  volumes: *default-volumes
   commands:
     - |
       source import.vars
       docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
 
 - name: Test images
-  image: plugins/docker
-  volumes:
-  - name: dockersock
-    path: /var/run/docker.sock
+  image: *default-image
+  volumes: *default-volumes
   commands:
   - |
     source import.vars
-    docker run --rm $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG bash --version
-    docker run --rm $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG bash --version
+    docker run --rm $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG
+    docker run --rm $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG
 
 - name: Push images
-  image: plugins/docker
-  volumes:
-  - name: dockersock
-    path: /var/run/docker.sock
+  image: *default-image
+  volumes: *default-volumes
   commands:
   - |
     source import.vars
     echo 'I would be logging in and pushing stuff................'
+    #echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+    #docker push $IMAGE_NAME:$IMAGE_TAG
   when:
     branch:
       include:
@@ -67,10 +70,8 @@ steps:
       - pull_request
 
 - name: Remove images
-  image: plugins/docker
-  volumes:
-  - name: dockersock
-    path: /var/run/docker.sock
+  image: *default-image
+  volumes: *default-volumes
   commands:
   - |
     source import.vars
@@ -94,7 +95,7 @@ steps:
       apk update && apk --no-cache add git git-fast-import openssh-client
       git remote set-url origin git@github.com:jsloan117/test-CI.git
       echo ''
-      pip install mkdocs mkdocs-material pygments
+      pip -q install mkdocs mkdocs-material pygments
       git config --global user.name 'drone.io'
       echo ''
       mkdocs build -cs

@@ -2,13 +2,13 @@ version: 2.1
 
 commands:
   set-image-tag:
-    description: "Set docker image tag"
+    description: Set image tag
     parameters:
       dist:
         type: string
     steps:
       - run:
-          name: Set docker image tag
+          name: Set image tag
           command: |
             if [ $CIRCLE_BRANCH = master ]; then
               TAG_VERSION=latest
@@ -19,19 +19,10 @@ commands:
             fi
             if [ << parameters.dist >> = ubuntu ]; then TAG_DISTRO=<< parameters.dist >>-circleci-; else TAG_DISTRO=circleci-; fi
             echo "export IMAGE_TAG=$TAG_DISTRO$TAG_VERSION" >> $BASH_ENV
-      - run:
-          name: vars
-          command: |
-            echo ${CIRCLE_PR_NUMBER}
-            echo ${CIRCLE_PR_REPONAME}
-            echo ${CIRCLE_PR_USERNAME}
-            echo ${CIRCLE_PULL_REQUEST}
-            echo ${CIRCLE_PULL_REQUESTS}
 
 executors:
   default-executor:
     docker:
-      #- image: docker:stable-dind
       - image: circleci/buildpack-deps:bionic
     working_directory: ~/test-CI
     environment:
@@ -47,7 +38,7 @@ jobs:
       - set-image-tag:
           dist: alpine
       - run:
-          name: build docker image
+          name: build image
           command: |
             source $BASH_ENV
             docker build -f Dockerfile -t $IMAGE_NAME:$IMAGE_TAG .
@@ -55,18 +46,14 @@ jobs:
           name: test image
           command: |
             source $BASH_ENV
-            docker run --rm $IMAGE_NAME:$IMAGE_TAG bash --version
+            docker run --rm $IMAGE_NAME:$IMAGE_TAG
       - run:
-          name: push image
+          name: save image
           command: |
-            source $BASH_ENV
             mkdir -p ~/images
-            docker save -o ~/images/docker-mkdocs.tar $IMAGE_NAME:$IMAGE_TAG
             if [ $CIRCLE_BRANCH = master -o $CIRCLE_BRANCH = dev ]; then
-              echo 'I would be logging in and pushing stuff................'
-            else
-              echo "Not pushing PR's"
-              exit 0
+              source $BASH_ENV
+              docker save -o ~/images/test-ci.tar $IMAGE_NAME:$IMAGE_TAG
             fi
       - persist_to_workspace:
           root: ~/
@@ -84,7 +71,7 @@ jobs:
       - set-image-tag:
           dist: ubuntu
       - run:
-          name: build docker image
+          name: build image
           command: |
             source $BASH_ENV
             docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:$IMAGE_TAG .
@@ -92,17 +79,13 @@ jobs:
           name: test image
           command: |
             source $BASH_ENV
-            docker run --rm $IMAGE_NAME:$IMAGE_TAG bash --version
+            docker run --rm $IMAGE_NAME:$IMAGE_TAG
       - run:
-          name: push image
+          name: save image
           command: |
-            source $BASH_ENV
-            docker save -o ~/images/docker-mkdocs-ubuntu.tar $IMAGE_NAME:$IMAGE_TAG
             if [ $CIRCLE_BRANCH = master -o $CIRCLE_BRANCH = dev ]; then
-              echo 'I would be logging in and pushing stuff................'
-            else
-              echo "Not pushing PR's"
-              exit 0
+              source $BASH_ENV
+              docker save -o ~/images/test-ci-ubuntu.tar $IMAGE_NAME:$IMAGE_TAG
             fi
       - persist_to_workspace:
           root: ~/
@@ -117,44 +100,34 @@ jobs:
       - setup_remote_docker:
           version: 18.09.3
       - run:
-          name: push images
+          name: load images
           command: |
-            docker load -qi ~/images/docker-mkdocs.tar
-            docker load -qi ~/images/docker-mkdocs-ubuntu.tar
-      - run:
-          name: vars
-          command: |
-            echo ${CIRCLE_PR_NUMBER}
-            echo ${CIRCLE_PR_REPONAME}
-            echo ${CIRCLE_PR_USERNAME}
-            echo ${CIRCLE_PULL_REQUEST}
-            echo ${CIRCLE_PULL_REQUESTS}
+            docker load -qi ~/images/test-ci.tar
+            docker load -qi ~/images/test-ci-ubuntu.tar
+      #- run:
+      #    name: Login to Docker Hub
+      #    command: echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+      #- run:
+      #    name: Push image
+      #    command: docker push $IMAGE_NAME:$IMAGE_TAG
 
-  build-and-deploy-gh-pages:
+  build-and-deploy-documentation:
     docker:
       - image: circleci/python:3.7
     steps:
       - checkout
       - run:
-          name: "Set Git name for commits"
+          name: Set Git name for commits
           command: git config --global user.name 'CircleCI'
       - run:
-          name: "Install Mkdocs and Material theme"
-          command: pip install --user mkdocs mkdocs-material pygments
+          name: Install Mkdocs and Material theme
+          command: pip -q install --user mkdocs mkdocs-material pygments
+      - add_ssh_keys:
+          fingerprints:
+            - a8:ce:61:1e:75:9c:50:ba:28:da:47:f7:ac:bf:8a:d4
       - run:
-          name: vars
-          command: |
-            echo ${CIRCLE_PR_NUMBER}
-            echo ${CIRCLE_PR_REPONAME}
-            echo ${CIRCLE_PR_USERNAME}
-            echo ${CIRCLE_PULL_REQUEST}
-            echo ${CIRCLE_PULL_REQUESTS}
-      #- add_ssh_keys:
-      #    fingerprints:
-      #      - a8:ce:61:1e:75:9c:50:ba:28:da:47:f7:ac:bf:8a:d4
-      #- run:
-      #    name: "Build and push site"
-      #    command: mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]"
+          name: Build and push documentation
+          command: mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
 
 workflows:
   version: 2
@@ -167,7 +140,7 @@ workflows:
       - push-images:
           requires:
             - build-ubuntu-image
-          #context: dockerhub
+          context: dockerhub
           filters:
             branches:
               only:
@@ -175,7 +148,7 @@ workflows:
                 - dev
   documentation-update:
     jobs:
-      - build-and-deploy-gh-pages:
+      - build-and-deploy-documentation:
           filters:
             branches:
               only: master

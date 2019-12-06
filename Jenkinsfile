@@ -61,7 +61,7 @@ pipeline {
             baseImage = docker.build("${IMAGE_NAME}:${CI_PLATFORM}-latest", "-f Dockerfile .")
             ubuntuImage = docker.build("${IMAGE_NAME}:ubuntu-${CI_PLATFORM}-latest", "-f Dockerfile.ubuntu .")
           } else {
-            dockerImage = docker.build("${IMAGE_NAME}:${CI_PLATFORM}-${BRANCH_NAME}", "-f Dockerfile .")
+            baseImage = docker.build("${IMAGE_NAME}:${CI_PLATFORM}-${BRANCH_NAME}", "-f Dockerfile .")
             ubuntuImage = docker.build("${IMAGE_NAME}:ubuntu-${CI_PLATFORM}-${BRANCH_NAME}", "-f Dockerfile.ubuntu .")
           }
         }
@@ -71,29 +71,31 @@ pipeline {
       /* simple testing method */
       steps {
         script {
-          baseImage.inside() {
+          baseImage.withRun()
+          ubuntuImage.withRun()
+          /*baseImage.inside() {
             sh 'bash --version'
           }
           ubuntuImage.inside() {
             sh 'bash --version'
+          }*/
+        }
+      }
+    }
+    stage('Push images') {
+      /* push images to Docker Hub */
+      steps {
+        script {
+          if (BRANCH_NAME == 'dev') {
+            baseImage.push('dev')
+            ubuntuImage.push('ubuntu-dev')
+          } else if (BRANCH_NAME == 'master') {
+            baseImage.push('latest')
+            ubuntuImage.push('ubuntu-latest')
           }
         }
       }
     }
-    /*stage('Push images') {*/
-      /* push images to Docker Hub */
-      /*steps {
-        script {
-          if (params.BRANCH == 'dev') {
-            dockerImage.push('dev')
-            dockerImage.push('ubuntu-dev')
-          } else if (params.BRANCH == 'master') {
-            dockerImage.push('latest')
-            dockerImage.push('ubuntu-latest')
-          }
-        }
-      }
-    }*/
     stage('Remove unused docker image') {
       /* remove images after push */
       steps {
@@ -121,7 +123,7 @@ pipeline {
         script {
           sh '''
             export PATH=${PATH}:${HOME}/.local/bin
-            pip3 install --user mkdocs mkdocs-material pygments
+            pip3 -q install --user mkdocs mkdocs-material pygments
             mkdocs build -cs
           '''
         }
