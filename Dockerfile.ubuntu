@@ -1,0 +1,8 @@
+FROM ubuntu:18.04
+LABEL Name=test-CI Version=0.3
+LABEL maintainer="Jonathan Sloan"
+
+ADD scripts/hello-world.sh /
+RUN chmod +x /hello-world.sh
+
+CMD [ "bash", "/hello-world.sh" ]

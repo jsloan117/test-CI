@@ -1,0 +1,124 @@
+name: $(BuildDefinitionName)-$(SourceBranchName)-$(Date:yyyyMMdd)$(Rev:.r)
+
+variables:
+  system.debug: false
+  CI_PLATFORM: azure-pipelines
+  IMAGE_NAME: jsloan117/test-ci
+  ADO_BRANCH: $(Build.SourceBranchName)
+
+pool:
+  vmImage: ubuntu-18.04
+
+steps:
+  - task: Docker@2
+    displayName: Docker login
+    inputs:
+      containerRegistry: 'Docker Hub'
+      command: login
+    enabled: false
+
+  - task: Bash@3
+    displayName: Install latest version of docker
+    condition: succeeded()
+    inputs:
+      targetType: inline
+      script: |
+        sudo apt-get update
+        sudo apt-get -y install apt-transport-https ca-certificates curl software-properties-common
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+        sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+        sudo apt-get update && sudo apt-get -y install docker-ce docker-ce-cli containerd.io
+        sudo systemctl enable --now docker.service
+    enabled: true
+
+  - task: Bash@3
+    displayName: Set image tag
+    condition: succeeded()
+    inputs:
+      targetType: inline
+      script: |
+        printf '\n<<< Setting image tag >>>\n\n'
+        if [ $ADO_BRANCH = master ]; then IMAGE_TAG=latest; else IMAGE_TAG=$ADO_BRANCH; fi
+        printf "\nImage tag is $IMAGE_TAG\n"
+        echo "##vso[task.setvariable variable=IMAGE_TAG]$IMAGE_TAG"
+    enabled: true
+
+  - task: Bash@3
+    displayName: Build image
+    condition: succeeded()
+    inputs:
+      targetType: inline
+      script: |
+        printf '\n<<< Building image >>>\n\n'
+        sudo docker build -f Dockerfile -t $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG .
+    enabled: true
+
+  - task: Bash@3
+    displayName: Build ubuntu image
+    condition: succeeded()
+    inputs:
+      targetType: inline
+      script: |
+        printf '\n<<< Building ubuntu image >>>\n\n'
+        sudo docker build -f Dockerfile.ubuntu -t $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG .
+    enabled: true
+
+  - task: Bash@3
+    displayName: Test images
+    condition: succeeded()
+    inputs:
+      targetType: inline
+      script: |
+        docker run --rm $IMAGE_NAME:$CI_PLATFORM-$IMAGE_TAG
+        docker run --rm $IMAGE_NAME:ubuntu-$CI_PLATFORM-$IMAGE_TAG
+    enabled: true
+
+  - task: Bash@3
+    displayName: Inspect image labels
+    condition: succeeded()
+    inputs:
+      targetType: inline
+      script: |
+        printf '\n<<< Inspecting images >>>\n\n'
+        for img in $(sudo docker images | awk '{OFS = ":";} {print $1,$2}' | tail -n+2 | head -n2); do 
+          sudo docker image inspect -f '{{json .Config.Labels}}' "${img}"; printf '\n'; 
+        done
+    enabled: false
+
+  - task: UsePythonVersion@0
+    displayName: Add python 3.7.5
+    condition: succeeded()
+    inputs:
+      versionSpec: 3.7.5
+      addToPath: true
+    enabled: true
+
+  - task: Bash@3
+    displayName: Build documentation
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    inputs:
+      targetType: inline
+      script: |
+        printf '\n<<< Building documentation >>>\n\n'
+        sudo -H /opt/hostedtoolcache/Python/3.7.5/x64/bin/pip3 -q install mkdocs mkdocs-material pygments
+        mkdocs build -cs
+        #mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
+    enabled: true
+
+  - task: Bash@3
+    displayName: Push images
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      targetType: inline
+      script: |
+        if [ $ADO_BRANCH = master -o $ADO_BRANCH = dev ]; then
+          #docker push $IMAGE_NAME:$IMAGE_TAG
+        fi
+    enabled: true
+
+  - task: Docker@2
+    displayName: Docker logout
+    inputs:
+      containerRegistry: 'Docker Hub'
+      command: logout
+    enabled: false

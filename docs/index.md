@@ -1,13 +1,23 @@
-# test-CI
+<h1 align="center">
+  test-CI
+</h1>
 
-Testing multiple CIs
+<p align="center">
+  Simple hello-world container used to test multiple CI's.
+  <br/><br/>
 
-[![CircleCI](https://circleci.com/gh/jsloan117/test-CI/tree/dev.svg?style=svg)](https://circleci.com/gh/jsloan117/test-CI/tree/dev)
-[![Build Status](https://travis-ci.org/jsloan117/test-CI.svg?branch=dev)](https://travis-ci.org/jsloan117/test-CI)
+  <a href="https://github.com/jsloan117/test-CI/blob/master/LICENSE">
+    <img alt="license" src="https://img.shields.io/badge/License-GPLv3-blue.svg" />
+  </a>
+  <a href="https://circleci.com/gh/jsloan117/test-CI/tree/dev">
+    <img alt="build" src="https://circleci.com/gh/jsloan117/test-CI/tree/dev.svg?style=svg" />
+  </a>
+  <a href="https://travis-ci.org/jsloan117/test-CI">
+    <img alt="build" src="https://travis-ci.org/jsloan117/test-CI.svg?branch=dev" />
+  </a>
+</p>
 
-This repo and docker image(s) are used for testing out docker builds on multiple CI platforms. Comparing each ones pros vs cons first hand.
-
-```bash
+``` bash
 docker run --rm -it jsloan117/test-ci
 
 Hello, World!

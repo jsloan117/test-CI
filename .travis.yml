@@ -1,1 +1,20 @@
+language: minimal
+dist: bionic
 
+env:
+  global:
+    - IMAGE_NAME=jsloan117/test-ci
+    - CI_PLATFORM=travisci
+
+jobs:
+  include:
+    - stage: build docker images
+      services: docker
+      script: ./scripts/build-and-push.sh
+
+    - stage: build documentation
+      if: branch = master
+      language: python
+      python: 3.7.5
+      cache: pip
+      script: ./scripts/doc-build-and-deploy.sh

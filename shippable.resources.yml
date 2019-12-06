@@ -1,0 +1,49 @@
+resources:
+  - name: github
+    type: integration
+    integration: github
+
+  - name: dockerhub
+    type: integration
+    integration: dockerhub
+
+  - name: test-ci-repo
+    type: gitRepo
+    integration: github
+    versionTemplate:
+      sourceName: jsloan117/test-CI
+      buildOnCommit: true
+      buildOnPullRequest: true
+      buildOnPullRequestClose: true
+      buildOnRelease: true
+      buildOnTagPush: true
+
+  - name: notifier
+    type: notification
+    versionTemplate:
+      method: email
+      recipients:
+        - 
+
+  - name: build_parameters
+    type: params
+    versionTemplate:
+      params:
+        GIT_REPO: docker-test-ci
+        GIT_ACCT: jsloan117
+        DOCKER_REPO: test-ci
+        DOCKER_ACCT: jsloan117
+        DOCKER_TAG: null
+        DOCKERFILE: null
+
+#resources:
+#  - name: testci_repo
+#    type: gitRepo
+#    integration:  github
+
+#  - name: dockerhub
+#    type: image
+#    integration:  dockerhub
+#    versionTemplate:
+#      sourceName: "jsloan117/test-ci"
+#      versionName:  latest

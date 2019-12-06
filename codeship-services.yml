@@ -1,0 +1,37 @@
+## NOT IN A USEABLE STATE ##
+build-images:
+  image:  docker:stable-dind
+  add_docker: true
+  cached: true
+#    build:
+#      dockerfile: Dockerfile
+
+build-alt-images:
+  image:  docker:stable-dind
+  add_docker: true
+  cached: true
+ #   build:
+ #     dockerfile: Dockerfile.ubuntu
+
+##  build_documentation:
+##    image:  jsloan117/docker-mkdocs:latest
+
+#services:
+#  build_images:
+#    add_docker: true
+#    cached: true
+#    build:
+#      #image:  jsloan117/test-ci
+#      dockerfile: Dockerfile
+
+#  build_alt_images:
+#    add_docker: true
+#    cached: true
+#    build:
+#      #image:  jsloan117/test-ci
+#      #image:  docker:stable-dind
+#      dockerfile: Dockerfile.ubuntu
+
+#  build_documentation:
+#    image:  jsloan117/docker-mkdocs:latest
+#    cached: true

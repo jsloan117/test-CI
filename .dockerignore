@@ -1,0 +1,19 @@
+.ssh
+.git
+.cache
+# CI
+*.aes
+.travis.yml
+.drone.yml
+.azure-pipelines.yml
+Jenkinsfile
+codeship-services.yml
+codeship-steps.yml
+.circleci/
+shippable.yml
+shippable.resources.yml
+concourse.yml
+# mkdocs
+docs/
+mkdocs.yml
+site/

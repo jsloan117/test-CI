@@ -1,0 +1,15 @@
+site_name:  test-CI
+site_url: http://jsloan117.github.io/test-CI
+repo_url: https://github.com/jsloan117/test-CI
+theme:
+  name: 'material'
+markdown_extensions:
+  - codehilite:
+      linenums: true
+  - toc:
+      permalink: true
+      separator: "_"
+nav:
+  - 'Home': 'index.md'
+plugins:
+  - search
