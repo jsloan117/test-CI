@@ -127,7 +127,8 @@ jobs:
             - a8:ce:61:1e:75:9c:50:ba:28:da:47:f7:ac:bf:8a:d4
       - run:
           name: Build and push documentation
-          command: mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
+          command: mkdocs build -cs
+          #command: mkdocs gh-deploy -cm "Deployed {sha} with MkDocs version {version}. [skip ci]" --force
 
 workflows:
   version: 2

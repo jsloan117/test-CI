@@ -9,14 +9,8 @@
   <a href="https://github.com/jsloan117/test-CI/blob/master/LICENSE">
     <img alt="license" src="https://img.shields.io/badge/License-GPLv3-blue.svg" />
   </a>
-  <a href="https://dev.azure.com/jsloan117/docker-containers/_build/latest?definitionId=7&branchName=dev">
-    <img alt="build" src="https://dev.azure.com/jsloan117/docker-containers/_apis/build/status/test-CI?branchName=dev" />
-  </a>
   <a href="https://circleci.com/gh/jsloan117/test-CI/tree/dev">
     <img alt="build" src="https://circleci.com/gh/jsloan117/test-CI/tree/dev.svg?style=svg" />
-  </a>
-  <a href="http://drone.macksarchive.com/jsloan117/test-CI">
-    <img alt="build" src="http://drone.macksarchive.com/api/badges/jsloan117/test-CI/status.svg?ref=refs/heads/dev" />
   </a>
   <a href="https://travis-ci.org/jsloan117/test-CI">
     <img alt="build" src="https://travis-ci.org/jsloan117/test-CI.svg?branch=dev" />
