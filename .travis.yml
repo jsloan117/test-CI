@@ -24,7 +24,6 @@ jobs:
       before_deploy: mkdocs build -vcs
       deploy:
         provider: pages
-        cleanup: true
         token: $GIT_TOKEN
         keep_history: false
         local_dir: site
