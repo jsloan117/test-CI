@@ -21,11 +21,11 @@ jobs:
       #script: ./scripts/doc-build-and-deploy.sh
       install: pip3 install mkdocs mkdocs-material pymdown-extensions pygments
       script: skip
-      before_deploy: mkdocs build -vc
+      before_deploy: mkdocs build -vcs
       deploy:
         provider: pages
-        cleanup: false
-        token: $GIT_TOKEN
+        skip_cleanup: true
+        github_token: $GIT_TOKEN
         keep_history: false
         local_dir: site
         name: "Travis CI"
