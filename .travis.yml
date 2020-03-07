@@ -20,6 +20,7 @@ jobs:
       cache: pip
       #script: ./scripts/doc-build-and-deploy.sh
       install: pip3 install mkdocs mkdocs-material pymdown-extensions pygments
+      script: skip
       before_deploy: mkdocs build -vc
       deploy:
         provider: pages
