@@ -17,4 +17,15 @@ jobs:
       language: python
       python: 3.7.5
       cache: pip
-      script: ./scripts/doc-build-and-deploy.sh
+      #script: ./scripts/doc-build-and-deploy.sh
+      install: pip3 install mkdocs mkdocs-material pymdown-extensions pygments
+      before_deploy: mkdocs build -vcs
+      deploy:
+        provider: pages
+        cleanup: false
+        github_token: $GIT_TOKEN
+        keep_history: false
+        local_dir: site
+        name: "Travis CI"
+        on:
+          branch: master

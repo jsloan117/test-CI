@@ -12,8 +12,8 @@
   <a href="https://circleci.com/gh/jsloan117/test-CI/tree/master">
     <img alt="build" src="https://circleci.com/gh/jsloan117/test-CI/tree/master.svg?style=svg" />
   </a>
-  <a href="https://travis-ci.org/jsloan117/test-CI">
-    <img alt="build" src="https://travis-ci.org/jsloan117/test-CI.svg?branch=master" />
+  <a href="https://travis-ci.com/jsloan117/test-CI">
+    <img alt="build" src="https://travis-ci.com/jsloan117/test-CI.svg?branch=master" />
   </a>
 </p>
 
