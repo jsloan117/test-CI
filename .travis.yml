@@ -24,10 +24,11 @@ jobs:
       before_deploy: mkdocs build -vcs
       deploy:
         provider: pages
-        skip_cleanup: true
-        github_token: $GIT_TOKEN
+        cleanup: false
+        token: $GIT_TOKEN
         keep_history: false
         local_dir: site
         name: "Travis CI"
+        commit_message: "Deployed %{git_sha} to %{target_branch} [skip ci]"
         on:
           branch: master
