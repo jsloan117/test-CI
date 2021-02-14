@@ -2,12 +2,13 @@
 name: Build Docker Images
 
 on:
-  branches:
-    - dev
-    - master
+  push:
+    branches:
+      - dev
+      - master
   pull_request:
     branches:
-     - master
+      - master
 
 jobs:
   build:
