@@ -10,10 +10,26 @@ on:
     branches:
       - master
 
+env:
+  IMAGE_NAME=jsloan117/test-ci
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+        fetch-depth: 0
+
+      - name: Set latest image tag
+        if: github.ref == 'refs/heads/master'
+        run: echo "IMAGE_TAG=latest" >> $GITHUB_ENV
+
+      - name: Set other image tag
+        if: github.ref != 'refs/heads/master'
+        run: IMAGE_TAG=$(echo $GITHUB_REF | cut -d'/' -f3) >> $GITHUB_ENV
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
@@ -23,7 +39,7 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v1 
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          username: jsloan117
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push
@@ -31,10 +47,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: jsloan117/test-ci:gh-latest
-          build-args: |
-            arg1=value1
-            arg2=value2
+          tags: ${IMAGE_NAME}:gh-${IMAGE_TAG}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
