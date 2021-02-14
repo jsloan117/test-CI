@@ -11,7 +11,7 @@ on:
       - master
 
 env:
-  IMAGE_NAME=jsloan117/test-ci
+  IMAGE_NAME: jsloan117/test-ci
 
 jobs:
   build:
