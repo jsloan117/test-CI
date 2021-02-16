@@ -2,8 +2,7 @@
 
 Testing multiple CIs
 
-[![CircleCI](https://circleci.com/gh/jsloan117/test-CI/tree/master.svg?style=svg)](https://circleci.com/gh/jsloan117/test-CI/tree/master)
-[![Build Status](https://travis-ci.org/jsloan117/test-CI.svg?branch=master)](https://travis-ci.org/jsloan117/test-CI)
+![Build Docker Images](https://github.com/jsloan117/test-CI/workflows/Build%20Docker%20Images/badge.svg?branch=master)
 
 This repo and docker image(s) are used for testing out docker builds on multiple CI platforms. Comparing each ones pros vs cons first hand.
 
