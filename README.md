@@ -29,6 +29,7 @@ Hello, World!
 |<s> `CodeShip`</s>  |
 |<s> `Concourse`</s> |
 | `Drone.io`         |
+| `Github actions`   |
 | `Jenkins`          |
 |<s> `Shippable`</s> |
 | `TravisCI`         |
