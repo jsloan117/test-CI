@@ -30,7 +30,7 @@ jobs:
           pip install mkdocs mkdocs-material pymdown-extensions pygments
 
       - name: Cache deps
-        uses: actions/cache@v2
+        uses: actions/cache@v2.1.4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
