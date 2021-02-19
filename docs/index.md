@@ -9,11 +9,11 @@
   <a href="https://github.com/jsloan117/test-CI/blob/master/LICENSE">
     <img alt="license" src="https://img.shields.io/badge/License-GPLv3-blue.svg" />
   </a>
-  <a href="https://circleci.com/gh/jsloan117/test-CI/tree/master">
-    <img alt="build" src="https://circleci.com/gh/jsloan117/test-CI/tree/master.svg?style=svg" />
+  <a href="https://github.com/jsloan117/test-CI/actions/workflows/latest-builds.yml">
+    <img alt="build" src="https://github.com/jsloan117/test-CI/actions/workflows/latest-builds.yml/badge.svg" />
   </a>
-  <a href="https://travis-ci.com/jsloan117/test-CI">
-    <img alt="build" src="https://travis-ci.com/jsloan117/test-CI.svg?branch=master" />
+  <a href="https://github.com/jsloan117/test-CI/actions/workflows/build-docs.yml">
+    <img alt="build" src="https://github.com/jsloan117/test-CI/actions/workflows/build-docs.yml/badge.svg" />
   </a>
 </p>
 
@@ -33,16 +33,17 @@ Hello, World!
 
 ## Platforms still being tested
 
-| CI Platforms       |
-|:------------------:|
-| `Azure Pipelines`  |
-| `CircleCI`         |
-|<s> `CodeShip`</s>  |
-|<s> `Concourse`</s> |
-| `Drone.io`         |
-| `Jenkins`          |
-|<s> `Shippable`</s> |
-| `TravisCI`         |
+| CI Platforms              |
+|:-------------------------:|
+|<s> `Azure Pipelines`</s>  |
+|<s> `CircleCI`</s>         |
+|<s> `CodeShip`</s>         |
+|<s> `Concourse`</s>        |
+|<s> `Drone.io`</s>         |
+| `Github actions`          |
+|<s> `Jenkins`</s>          |
+|<s> `Shippable`</s>        |
+| `TravisCI`                |
 
 ## Platforms no longer being tested
 

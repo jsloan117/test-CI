@@ -1,5 +1,5 @@
 ---
-name: Build Docker images
+name: Build dev Docker images
 
 on:
   push:

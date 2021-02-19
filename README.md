@@ -22,17 +22,17 @@ Hello, World!
 
 ## Platforms still being tested
 
-| CI Platforms       |
-|:------------------:|
-| `Azure Pipelines`  |
-| `CircleCI`         |
-|<s> `CodeShip`</s>  |
-|<s> `Concourse`</s> |
-| `Drone.io`         |
-| `Github actions`   |
-| `Jenkins`          |
-|<s> `Shippable`</s> |
-| `TravisCI`         |
+| CI Platforms              |
+|:-------------------------:|
+|<s> `Azure Pipelines`</s>  |
+|<s> `CircleCI`</s>         |
+|<s> `CodeShip`</s>         |
+|<s> `Concourse`</s>        |
+|<s> `Drone.io`</s>         |
+| `Github actions`          |
+|<s> `Jenkins`</s>          |
+|<s> `Shippable`</s>        |
+| `TravisCI`                |
 
 ## Platforms no longer being tested
 
