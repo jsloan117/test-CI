@@ -1,25 +1,31 @@
 ---
-name: Bump version
+name: Tag & Release
 
 on:
   push:
     branches:
       - master
     paths-ignore:
-    - 'docs/**'
+    - '**.md'
+    - 'mkdocs.yml'
 
 jobs:
   release:
+    name: tag & release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Bump version and push tag
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
+
+      - name: version bump and tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v5
         with:
           github_token: ${{ secrets.GH_PAT }}
 
-      - name: Create a GitHub release
+      - name: create release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
