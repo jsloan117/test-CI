@@ -1,0 +1,6 @@
+CI/CD:
+  - .github/workflows/*
+
+documentation:
+  - README.md
+  - docs/*
