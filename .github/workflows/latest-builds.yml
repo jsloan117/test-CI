@@ -50,6 +50,7 @@ jobs:
       - name: test
         run: |
           echo ${{ steps.docker_meta.outputs.tags }}
+          echo ${GITHUB_REF##*/}
 
       - name: ubuntu
         id: docker_build_ubuntu
@@ -58,7 +59,7 @@ jobs:
           file: ./Dockerfile.ubuntu
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
-            jsloan117/test-ci:${{GITHUB_REF##*/}}-ubuntu
+            jsloan117/test-ci:${GITHUB_REF##*/}-ubuntu
             jsloan117/test-ci:latest-ubuntu
           labels: ${{ steps.docker_meta.outputs.labels }}
 
