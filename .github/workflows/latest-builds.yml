@@ -47,13 +47,19 @@ jobs:
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
 
+      - name: test
+        run: |
+          echo ${{ steps.docker_meta.output.version }}
+
       - name: ubuntu
         id: docker_build_ubuntu
         uses: docker/build-push-action@v2
         with:
           file: ./Dockerfile.ubuntu
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.docker_meta.output.version }}-ubuntu,latest-ubuntu
+          tags: |
+            jsloan117/test-ci:${GITHUB_REF##*/}-ubuntu
+            jsloan117/test-ci:latest-ubuntu
           labels: ${{ steps.docker_meta.outputs.labels }}
 
       - name: image digest
