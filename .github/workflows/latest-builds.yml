@@ -68,7 +68,7 @@ jobs:
           file: ./Dockerfile.ubuntu
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
-            jsloan117/test-ci:${ env.IMAGE_TAG }-ubuntu
+            jsloan117/test-ci:${IMAGE_TAG}-ubuntu
             jsloan117/test-ci:latest-ubuntu
           labels: ${{ steps.docker_meta.outputs.labels }}
 
