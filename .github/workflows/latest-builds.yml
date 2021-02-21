@@ -1,5 +1,5 @@
 ---
-name: Build Docker images
+name: images
 
 on:
   push:
@@ -53,7 +53,7 @@ jobs:
         with:
           file: ./Dockerfile.ubuntu
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.docker_meta.outputs.tags }}-ubuntu
+          tags: ${{ steps.docker_meta.output.version }}-ubuntu,latest-ubuntu
           labels: ${{ steps.docker_meta.outputs.labels }}
 
       - name: image digest

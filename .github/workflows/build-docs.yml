@@ -1,13 +1,13 @@
 ---
-name: Build documentation
+name: docs
 
 on:
   push:
     branches:
       - master
     paths:
-    - '**.md'
-    - 'mkdocs.yml'
+      - '**.md'
+      - 'mkdocs.yml'
 
 jobs:
   docs:
