@@ -1,19 +1,18 @@
-.ssh
-.git
-.cache
-# CI
 *.aes
-.travis.yml
-.drone.yml
-.azure-pipelines.yml
-Jenkinsfile
-codeship-services.yml
-codeship-steps.yml
-.circleci/
-shippable.yml
-shippable.resources.yml
-concourse.yml
-# mkdocs
+.cache/
 docs/
-mkdocs.yml
+.dockerignore
+*.enc
+.git/
+.gitignore
+*.yaml
+*.yml
+*.md
+*.toml
 site/
+.travis/
+.trivyignore
+.ssh
+.editorconfig
+LICENSE
+.github/
