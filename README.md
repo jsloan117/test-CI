@@ -2,7 +2,7 @@
 
 Testing multiple CIs
 
-![Build Docker Images](https://github.com/jsloan117/test-CI/workflows/Build%20Docker%20Images/badge.svg?branch=master)
+[![images](https://github.com/jsloan117/test-CI/actions/workflows/images.yml/badge.svg)](https://github.com/jsloan117/test-CI/actions/workflows/images.yml)
 
 This repo and docker image(s) are used for testing out docker builds on multiple CI platforms. Comparing each ones pros vs cons first hand.
 
