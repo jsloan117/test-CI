@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - master
-      - dev
     paths:
       - "**.md"
       - mkdocs.yml
@@ -47,5 +46,5 @@ jobs:
           force_orphan: true
           full_commit_message: "Deployed ${{ github.sha }} to gh-pages [skip ci]"
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages-dev
+          publish_branch: gh-pages
           publish_dir: ./site
