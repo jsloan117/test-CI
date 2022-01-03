@@ -4,6 +4,10 @@
 extends: default
 
 rules:
-  document-start: disable
+  document-start: enable
+  line-length: disable
+  quoted-strings:
+    quote-type: single
+    required: only-when-needed
   braces: { min-spaces-inside: 0, max-spaces-inside: 1 }
   truthy: { allowed-values: ["false", "true", "on", "off"] }
