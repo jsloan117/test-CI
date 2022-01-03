@@ -48,19 +48,12 @@ jobs:
           version: latest
 
       # https://github.com/marketplace/actions/build-and-push-docker-images
-      - name: Build Image
+      - name: Build Test Image
         uses: docker/build-push-action@v2.7.0
         with:
-          file: ./Dockerfile
-          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
           push: false
           load: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            BUILDTIME=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
-            VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
-            REVISION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
 
       # https://github.com/marketplace/actions/anchore-sbom-action
       - name: Anchore SBOM Action
@@ -79,3 +72,18 @@ jobs:
 
       - name: Inspect action SARIF report
         run: cat ${{ steps.scan.outputs.sarif }}
+
+      # https://github.com/marketplace/actions/build-and-push-docker-images
+      - name: Build Image
+        uses: docker/build-push-action@v2.7.0
+        with:
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: false
+          load: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            BUILDTIME=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
+            VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+            REVISION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
