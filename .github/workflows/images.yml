@@ -31,6 +31,7 @@ jobs:
         id: meta
         with:
           images: ${{ env.IMAGE_NAME }}
+          flavor: latest=auto
           tags: type=ref,event=tag
 
       # # https://github.com/marketplace/actions/docker-setup-buildx
