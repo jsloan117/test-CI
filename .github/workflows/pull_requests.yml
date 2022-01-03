@@ -70,9 +70,6 @@ jobs:
           fail-build: false
           severity-cutoff: critical
 
-      - name: Inspect action SARIF report
-        run: cat ${{ steps.scan.outputs.sarif }}
-
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: Build Image
         uses: docker/build-push-action@v2.7.0
