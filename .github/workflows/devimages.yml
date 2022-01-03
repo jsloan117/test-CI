@@ -48,7 +48,7 @@ jobs:
 
       # https://github.com/marketplace/actions/anchore-sbom-action
       - name: Anchore SBOM Action
-        if: github.event_name != "pull_request"
+        if: github.event_name != 'pull_request'
         uses: anchore/sbom-action@v0.6.0
         with:
           image: ${{ env.IMAGE_NAME }}:${{ github.ref_name }}
@@ -66,7 +66,7 @@ jobs:
       # https://github.com/github/codeql-action
       # https://docs.github.com/en/code-security/code-scanning/integrating-with-code-scanning/sarif-support-for-code-scanning
       - name: Upload Anchore scan SARIF report
-        if: github.event_name != "pull_request"
+        if: github.event_name != 'pull_request'
         uses: github/codeql-action/upload-sarif@v1
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
@@ -102,7 +102,7 @@ jobs:
 
       # https://github.com/marketplace/actions/docker-login
       - name: Login to Docker Hub
-        if: github.event_name != "pull_request" && github.ref == "refs/heads/dev"
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/dev'
         uses: docker/login-action@v1.12.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
