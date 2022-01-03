@@ -17,7 +17,7 @@
   </a>
 </p>
 
-``` bash
+```bash
 docker run --rm -it jsloan117/test-ci
 
 Hello, World!
@@ -26,24 +26,24 @@ Hello, World!
 
 ## Requirements of a CI/CD platform
 
-* Build multiple docker images conditionally
-* Test multiple docker images
-* Push multiple docker images
-* Build documentation & push using mkdocs
+- Build multiple docker images conditionally
+- Test multiple docker images
+- Push multiple docker images
+- Build documentation & push using mkdocs
 
 ## Platforms still being tested
 
-| CI Platforms              |
-|:-------------------------:|
-|<s> `Azure Pipelines`</s>  |
-|<s> `CircleCI`</s>         |
-|<s> `CodeShip`</s>         |
-|<s> `Concourse`</s>        |
-|<s> `Drone.io`</s>         |
-| `Github actions`          |
-|<s> `Jenkins`</s>          |
-|<s> `Shippable`</s>        |
-| `TravisCI`                |
+|       CI Platforms        |
+| :-----------------------: |
+| <s> `Azure Pipelines`</s> |
+|    <s> `CircleCI`</s>     |
+|    <s> `CodeShip`</s>     |
+|    <s> `Concourse`</s>    |
+|    <s> `Drone.io`</s>     |
+|     `Github actions`      |
+|     <s> `Jenkins`</s>     |
+|    <s> `Shippable`</s>    |
+|        `TravisCI`         |
 
 ## Platforms no longer being tested
 
