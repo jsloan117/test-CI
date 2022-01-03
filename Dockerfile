@@ -1,4 +1,4 @@
-FROM alpine:3.15
+FROM alpine:3.10
 
 RUN echo "*** updating system ***" \
     && apk update \
