@@ -6,7 +6,7 @@ on:
     branches:
       - master
     paths:
-      - "**.md"
+      - '**.md'
       - mkdocs.yml
       - .github/workflows/mkdocs.yml
 
@@ -26,7 +26,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2.3.1
         with:
-          python-version: "3.9"
+          python-version: '3.9'
 
       - run: pip install wheel
 
@@ -44,7 +44,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3.8.0
         with:
           force_orphan: true
-          full_commit_message: "Deployed ${{ github.sha }} to gh-pages [skip ci]"
+          full_commit_message: Deployed ${{ github.sha }} to gh-pages [skip ci]
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: ./site
