@@ -1,16 +1,12 @@
 ---
 name: dev-images
+# build, test and scan dev images created from branch
 
 # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#onpushpull_requestbranchestags
 on:
   push:
     branches:
       - dev
-    paths-ignore:
-      - '**.md'
-      - mkdocs.yml
-      - .github/workflows/mkdocs.yml
-  pull_request:
     paths-ignore:
       - '**.md'
       - mkdocs.yml
@@ -36,18 +32,16 @@ jobs:
         id: meta
         with:
           images: ${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
+          tags: type=ref,event=branch
 
-      # # https://github.com/marketplace/actions/docker-setup-buildx
+      # https://github.com/marketplace/actions/docker-setup-buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1.6.0
         with:
           install: true
           version: latest
 
-      # # https://github.com/marketplace/actions/build-and-push-docker-images
+      # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: Build Image
         uses: docker/build-push-action@v2.7.0
         with:
@@ -57,7 +51,6 @@ jobs:
 
       # https://github.com/marketplace/actions/anchore-sbom-action
       - name: Anchore SBOM Action
-        if: github.event_name != 'pull_request'
         uses: anchore/sbom-action@v0.6.0
         with:
           image: ${{ steps.meta.outputs.tags }}
@@ -69,13 +62,12 @@ jobs:
         with:
           image: ${{ steps.meta.outputs.tags }}
           acs-report-enable: true
-          fail-build: true
+          fail-build: false
           severity-cutoff: critical
 
       # https://github.com/github/codeql-action
       # https://docs.github.com/en/code-security/code-scanning/integrating-with-code-scanning/sarif-support-for-code-scanning
       - name: Upload Anchore scan SARIF report
-        if: github.event_name != 'pull_request'
         uses: github/codeql-action/upload-sarif@v1
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
@@ -96,9 +88,7 @@ jobs:
         with:
           images: ${{ env.IMAGE_NAME }}
           flavor: latest=false
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
+          tags: type=ref,event=branch
 
       # https://github.com/marketplace/actions/docker-setup-qemu
       - name: Set up QEMU
@@ -113,7 +103,7 @@ jobs:
 
       # https://github.com/marketplace/actions/docker-login
       - name: Login to Docker Hub
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/dev'
+        if: github.event_name != 'pull_request'
         uses: docker/login-action@v1.12.0
         with:
           username: jsloan117
@@ -125,7 +115,7 @@ jobs:
         with:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
-          push: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/dev' }}
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |

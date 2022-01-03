@@ -5,10 +5,10 @@ on:
   push:
     branches:
       - master
-    paths-ignore:
-      - '**.md'
-      - mkdocs.yml
-      - README.md
+    paths:
+      - scripts/hello-world.sh
+      - Dockerfile
+      - Dockerfile.*
 
 jobs:
   tag-release:
@@ -31,10 +31,8 @@ jobs:
       # https://github.com/marketplace/actions/create-release
       # https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes
       - name: Create release
-        if: github.ref == 'refs/heads/master'
         uses: ncipollo/release-action@v1
         with:
-          # body: ${{ steps.tag_version.outputs.changelog }}
           generateReleaseNotes: true
           name: Release ${{ steps.tag_version.outputs.new_tag }}
           tag: ${{ steps.tag_version.outputs.new_tag }}
